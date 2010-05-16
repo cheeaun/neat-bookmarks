@@ -1,0 +1,13 @@
+{
+	"name": "Neat Bookmarks",
+	"version": "0.1",
+	"description": "A neat bookmarks tree popup.",
+	"browser_action": {
+		"default_icon": "icon.png",
+		"popup": "popup.html"
+	},
+	"options_page": "options.html",
+	"permissions": [
+		"http://www.google.com/s2", "bookmarks"
+	]
+}

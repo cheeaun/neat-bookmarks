@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<style>
+body{
+	font: message-box;
+	color: MenuText;
+	background-color: Menu;
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+	cursor: default;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+	overflow: hidden;
+	text-shadow: 0 1px HighlightText;
+}
+#search input{
+	width: 316px;
+	margin: 2px;
+	padding: 2px;
+}
+#results,
+#tree{
+	width: 320px;
+	overflow: auto;
+	height: 500px;
+}
+#results ul,
+#results ul li{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+#results ul li a{
+	-webkit-transition-property: color, background-color;
+	-webkit-transition-duration: .3s;
+	display: block;
+	line-height: 1.3em;
+	padding: 4px 4px 4px 24px;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-position: 4px 50%;
+	-webkit-background-size: 16px 16px;
+	color: MenuText;
+	outline: 0;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+#results ul li a{
+	background-image: url(document.png);
+}
+#results ul li a[href^=javascript]{
+	background-image: url(document-code.png);
+}
+#results ul li a:hover{
+	text-decoration: underline;
+}
+#results ul li a:active,
+#results ul li a:focus{
+	color: HighlightText;
+	background-color: Highlight;
+	text-shadow: none;
+}
+.neat-tree ul,
+.neat-tree ul li{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+.neat-tree ul ul{
+	margin-left: 16px;
+	height: 0;
+	overflow: hidden;
+}
+.neat-tree .open>ul{
+	height: auto;
+}
+.neat-tree ul li a,
+.neat-tree ul li span{
+	-webkit-transition-property: color, background-color;
+	-webkit-transition-duration: .3s;
+	display: block;
+	line-height: 1.3em;
+	padding: 4px 4px 4px 24px;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-position: 4px 50%;
+	-webkit-background-size: 16px 16px;
+	color: MenuText;
+	outline: 0;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.neat-tree ul li a{
+	background-image: url(document.png);
+}
+.neat-tree ul li a[href^=javascript]{
+	background-image: url(document-code.png);
+}
+.neat-tree ul li span{
+	background-image: url(folder.png);
+}
+.neat-tree ul li a:hover{
+	text-decoration: underline;
+}
+.neat-tree ul li a:active,
+.neat-tree ul li span:active,
+.neat-tree ul li a:focus,
+.neat-tree ul li span:focus{
+	color: HighlightText;
+	background-color: Highlight;
+	text-shadow: none;
+}
+</style>
+<script src="mootools.js"></script>
+<script src="NeatTree.js"></script>
+<script>
+window.addEvent('domready', function(){
+	var processBookmarks = function(c){
+		var response = [];
+		for (var i=0, l=c.length; i<l; i++){
+			var item = c[i];
+			var o = {
+				name: item.title || '(untitled)'
+			};
+			if (item.url){
+				o.url = item.url;
+				o.icon = ''
+			}
+			if (item.id) o.id = item.id;
+			var children = item.children;
+			if (children && children.length){
+				o.children = processBookmarks(children);
+			}
+			response.push(o);
+		}
+		return response;
+	};
+	
+	var $tree = $('tree');
+	chrome.bookmarks.getTree(function(tree){
+		var json = processBookmarks(tree[0].children);
+		new NeatTree($tree, json);
+	});
+	
+	var $results = $('results');
+	var searchInput = $('search-input').addEvent('keyup', function(){
+		var value = searchInput.get('value').trim()
+		if (value == ''){
+			$results.setStyle('display', 'none');
+			$tree.setStyle('display', 'block');
+			return;
+		}
+		chrome.bookmarks.search(value, function(results){
+			var html = '<ul>';
+			for (var i=0, l=results.length; i<l; i++){
+				var result = results[i];
+				var url = result.url.replace('>', '&gt;').replace('"', '&quot;');
+				var title = result.title.replace('>', '&gt;').replace('"', '&quot;');
+				html += '<li><a href="' + url + '" title="' + url + '" target="_blank">' + title + '</a></li>';
+			}
+			html += '</ul>';
+			$results.set('html', html).setStyle('display', 'block');
+			$tree.setStyle('display', 'none');
+		});
+	});
+});
+</script>
+<div id="search"><input id="search-input" type="search" autofocus></div>
+<div id="tree"></div>
+<div id="results" style="display: none;"></div>
