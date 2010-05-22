@@ -120,8 +120,12 @@ var NeatTree = new Class({
 					var title = ' title="' + a.set('text', url).get('text') + '"';
 					var name = d.name.replace('>', '&gt;').replace('"', '&quot;');
 					var dataURL = self.dataURLs[a.set('href', url).host];
-					if (dataURL && dataURL != 1){
-						html += '<a href="' + u + '"' + title + ' class="fetched" style="background-image: url(' + dataURL + ')">' + name + '</a>';
+					if (dataURL){
+						if (dataURL === 1){
+							html += '<a href="' + u + '"' + title + ' class="fetched">' + name + '</a>';
+						} else {
+							html += '<a href="' + u + '"' + title + ' class="fetched" style="background-image: url(' + dataURL + ')">' + name + '</a>';
+						}
 					} else {
 						html += '<a href="' + u + '"' + title + '>' + name + '</a>';
 					}
