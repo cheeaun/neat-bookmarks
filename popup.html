@@ -156,7 +156,7 @@ window.addEvent('domready', function(){
 	var $results = $('results');
 	var dataURLs = (localStorage && localStorage.dataURLs) ? JSON.decode(localStorage.dataURLs) : {};
 	var a = new Element('a');
-	var searchInput = $('search-input').addEvent('keyup', function(){
+	var search = function(){
 		var value = searchInput.get('value').trim()
 		if (value == ''){
 			$results.setStyle('display', 'none');
@@ -187,6 +187,10 @@ window.addEvent('domready', function(){
 			$results.set('html', html).setStyle('display', 'block');
 			$tree.setStyle('display', 'none');
 		});
+	};
+	var searchInput = $('search-input').addEvents({
+		keyup: search,
+		click: search
 	});
 	
 	$tree.addEvent('click', function(e){
