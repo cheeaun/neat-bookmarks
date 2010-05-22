@@ -117,7 +117,7 @@ var NeatTree = new Class({
 				html += '<li class="child"' + idHTML + '>';
 				if (url){
 					var u = url.replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;');
-					var title = (/^http/i.test(url)) ? (' title="' + a.set('text', url).get('text') + '"') : '';
+					var title = ' title="' + a.set('text', url).get('text') + '"';
 					var name = d.name.replace('>', '&gt;').replace('"', '&quot;');
 					var dataURL = self.dataURLs[a.set('href', url).host];
 					if (dataURL && dataURL != 1){

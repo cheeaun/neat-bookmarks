@@ -164,12 +164,15 @@ window.addEvent('domready', function(){
 			return;
 		}
 		chrome.bookmarks.search(value, function(results){
+			results.sort(function(a, b){
+				return b.dateAdded - a.dateAdded;
+			});
 			var html = '<ul>';
 			for (var i=0, l=results.length; i<l; i++){
 				var result = results[i];
 				var url = result.url;
 				var u = url.replace('>', '&gt;').replace('"', '&quot;');
-				var title = (/^http/i.test(url)) ? (' title="' + a.set('text', url).get('text') + '"') : '';
+				var title = ' title="' + a.set('text', url).get('text') + '"';
 				var name = result.title.replace('>', '&gt;').replace('"', '&quot;');
 				var dataURL = dataURLs[a.set('href', url).host];
 				html += '<li>';
