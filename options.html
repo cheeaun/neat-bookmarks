@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <style>
+html, body{
+	background-color: Menu;
+}
 body{
 	font: message-box;
 	color: MenuText;
@@ -42,6 +45,9 @@ h1{
 	font-size: 14px;
 	margin-left: 1em;
 }
+.options-list li button span{
+	font-weight: normal;
+}
 #footer{
 	border-top: 1px solid rgba(0,0,0,.2);
 	padding-top: 10px;
@@ -51,15 +57,21 @@ h1{
 <script src="mootools.js"></script>
 <script>
 window.addEvent('domready', function(){
-	$('clear-favicon').addEvent('click', function(e){
-		e.stop();
-		delete localStorage.dataURLs;
-	});
+	if (localStorage){
+		var clearFavicon = $('clear-favicon').addEvent('click', function(e){
+			e.stop();
+			delete localStorage.dataURLs;
+			clearFavicon.setProperty('disabled', 'disabled');
+			(function(){
+				if (localStorage.dataURLs && localStorage.dataURLs.length) clearFavicon.removeProperty('disabled');
+			}).periodical(1000);
+		});
+	}
 });
 </script>
 <h1>Neat Bookmarks <small>Options</small></h1>
 <ul class="options-list">
-<li>Clear favicon cache <small>(will re-fetch the next time opening Neat Bookmarks)</small> <button id="clear-favicon">Clear</button></li>
+<li>Clear favicon cache <small>(will re-fetch the next time opening Neat Bookmarks)</small> <button id="clear-favicon">Clear <span class="space"></span></button></li>
 </ul>
 <div id="footer">
 This extension uses <a href="http://p.yusukekamiyamane.com/" target="_blank">Fugue Icons</a> by Yusuke Kamiyamane.

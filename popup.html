@@ -13,6 +13,9 @@ body{
 	overflow: hidden;
 	text-shadow: 0 1px HighlightText;
 }
+canvas{
+	display: none;
+}
 #search input{
 	width: 316px;
 	margin: 2px;
@@ -151,6 +154,8 @@ window.addEvent('domready', function(){
 	});
 	
 	var $results = $('results');
+	var dataURLs = (localStorage && localStorage.dataURLs) ? JSON.decode(localStorage.dataURLs) : {};
+	var a = new Element('a');
 	var searchInput = $('search-input').addEvent('keyup', function(){
 		var value = searchInput.get('value').trim()
 		if (value == ''){
@@ -162,13 +167,51 @@ window.addEvent('domready', function(){
 			var html = '<ul>';
 			for (var i=0, l=results.length; i<l; i++){
 				var result = results[i];
-				var url = result.url.replace('>', '&gt;').replace('"', '&quot;');
-				var title = result.title.replace('>', '&gt;').replace('"', '&quot;');
-				html += '<li><a href="' + url + '" title="' + url + '" target="_blank">' + title + '</a></li>';
+				var url = result.url;
+				var u = url.replace('>', '&gt;').replace('"', '&quot;');
+				var title = (/^http/i.test(url)) ? (' title="' + a.set('text', url).get('text') + '"') : '';
+				var name = result.title.replace('>', '&gt;').replace('"', '&quot;');
+				var dataURL = dataURLs[a.set('href', url).host];
+				html += '<li>';
+				if (dataURL && dataURL != 1){
+					html += '<a href="' + u + '"' + title + ' style="background-image: url(' + dataURL + ')">' + name + '</a>';
+				} else {
+					html += '<a href="' + u + '"' + title + '>' + name + '</a>';
+				}
+				html += '</li>';
 			}
 			html += '</ul>';
 			$results.set('html', html).setStyle('display', 'block');
 			$tree.setStyle('display', 'none');
+		});
+	});
+	
+	$tree.addEvent('click', function(e){
+		e.stop();
+		var el = e.target;
+		if (el.tagName != 'A') el = el.getParent('a');
+		if (!el) return;
+		chrome.tabs.getSelected(null, function(tab){
+			var button = e.event.button;
+			if (e.control || e.meta) button = 1;
+			var url = el.get('href');
+			var shift = e.shift;
+			if (button == 0){
+				if (shift){
+					chrome.windows.create({
+						url: url
+					});
+				} else {
+					chrome.tabs.update(tab.id, {
+						url: url
+					});
+				}
+			} else if (button == 1){ // middle-click
+				chrome.tabs.create({
+					url: url,
+					selected: !shift
+				});
+			}
 		});
 	});
 });

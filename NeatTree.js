@@ -21,6 +21,7 @@ var NeatTree = new Class({
 	load: function(data){
 		var element = this.element;
 		this.data = data;
+		var dataURLs = this.dataURLs = (localStorage && localStorage.dataURLs) ? JSON.decode(localStorage.dataURLs) : {};
 		
 		var html = '<div class="neat-tree">' + this.generateHTML(data) + '</div>';
 		
@@ -49,6 +50,9 @@ var NeatTree = new Class({
 			element.scrollTop = localStorage.scrollTop || 0;
 			
 			if (this.options.fetchURLIcons){
+				var links = element.getElements('a:not(.fetched)[href^=http]');
+				if (!links.length) return;
+				
 				var c = new Element('canvas', {
 					styles: {
 						display: 'none'
@@ -56,21 +60,19 @@ var NeatTree = new Class({
 				}).inject(document.body);
 				var ctx = c.getContext('2d');
 				
-				var dataURLs = localStorage.dataURLs ? JSON.decode(localStorage.dataURLs) : {};
-				
-				var links = element.getElements('a[href^=http]');
 				var linksLen = links.length-1;
 				var defaultIcon = this.options.defaultIcon;
 				
 				links.each(function(el, i){
+					var img = new Image();
 					var domain = el.host;
 					var data = dataURLs[domain];
 					if (data){
 						if (data !== 1) el.setStyle('background-image', 'url(' + data + ')');
+						linksLen--;
 						return;
 					}
 					var url = 'http://www.google.com/s2/favicons?domain=' + domain;
-					var img = new Image();
 					img.onload = function(){
 						c.width = img.width;
 						c.height = img.height;
@@ -82,11 +84,11 @@ var NeatTree = new Class({
 							data = 1;
 						}
 						dataURLs[domain] = data;
+						img.destroy();
 						
 						if (i == linksLen) localStorage.dataURLs = JSON.encode(dataURLs);
 					};
 					img.src = url;
-					
 				});
 			}
 		}
@@ -94,8 +96,13 @@ var NeatTree = new Class({
 		return this;
 	},
 	
+	_a: new Element('a'),
+	
 	generateHTML: function(data){
 		var html = '<ul>';
+		var a = this._a;
+		var self = this;
+		
 		for (var i=0, l=data.length; i<l; i++){
 			var d = data[i];
 			var children = d.children;
@@ -110,9 +117,14 @@ var NeatTree = new Class({
 				html += '<li class="child"' + idHTML + '>';
 				if (url){
 					var u = url.replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;');
-					var title = (/^http/i.test(url)) ? (' title="' + new Element('div', {text: url}).get('text') + '"') : '';
+					var title = (/^http/i.test(url)) ? (' title="' + a.set('text', url).get('text') + '"') : '';
 					var name = d.name.replace('>', '&gt;').replace('"', '&quot;');
-					html += '<a href="' + u + '"' + title + ' target="_blank">' + name + '</a>';
+					var dataURL = self.dataURLs[a.set('href', url).host];
+					if (dataURL && dataURL != 1){
+						html += '<a href="' + u + '"' + title + ' class="fetched" style="background-image: url(' + dataURL + ')">' + name + '</a>';
+					} else {
+						html += '<a href="' + u + '"' + title + '>' + name + '</a>';
+					}
 				} else {
 					html += '<span tabindex="0">' + d.name + '</span>';
 				}
