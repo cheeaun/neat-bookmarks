@@ -55,11 +55,12 @@ h1{
 </style>
 <script src="mootools.js"></script>
 <script>
-document.addEvent('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function(){
 	if (localStorage){
 		var checkClearFavicon;
-		var clearFavicon = $('clear-favicon').addEvent('click', function(e){
-			e.stop();
+		var clearFavicon = $('clear-favicon');
+		clearFavicon.addEventListener('click', function(e){
+			e.preventDefault();
 			delete localStorage.dataURLs;
 			clearFavicon.setProperty('disabled', 'disabled');
 			checkClearFavicon = (function(){
