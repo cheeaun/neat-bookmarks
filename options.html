@@ -55,14 +55,18 @@ h1{
 </style>
 <script src="mootools.js"></script>
 <script>
-window.addEvent('domready', function(){
+document.addEvent('DOMContentLoaded', function(){
 	if (localStorage){
+		var checkClearFavicon;
 		var clearFavicon = $('clear-favicon').addEvent('click', function(e){
 			e.stop();
 			delete localStorage.dataURLs;
 			clearFavicon.setProperty('disabled', 'disabled');
-			(function(){
-				if (localStorage.dataURLs && localStorage.dataURLs.length) clearFavicon.removeProperty('disabled');
+			checkClearFavicon = (function(){
+				if (localStorage.dataURLs && localStorage.dataURLs.length){
+					clearFavicon.removeProperty('disabled');
+					$clear(checkClearFavicon);
+				}
 			}).periodical(1000);
 		});
 	}

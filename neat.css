@@ -1,0 +1,127 @@
+body{
+	font: message-box;
+	color: #000;
+	background-color: #fff;
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+	cursor: default;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+	overflow: hidden;
+	text-shadow: 0 1px #fff;
+}
+canvas{
+	display: none;
+}
+#search input{
+	width: 316px;
+	margin: 2px;
+	padding: 2px;
+}
+#results,
+#tree{
+	background-color: #eee;
+	width: 320px;
+	overflow: auto;
+	height: 500px;
+	outline: 0;
+}
+#results ul,
+#results ul li{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+#results ul li a{
+	-webkit-transition-property: color, background-color;
+	-webkit-transition-duration: .3s;
+	display: block;
+	line-height: 1.3em;
+	padding: 4px 4px 4px 24px;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-position: 4px 50%;
+	-webkit-background-size: 16px 16px;
+	color: #000;
+	outline: 0;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+#results ul li a{
+	background-image: url(document.png);
+}
+#results ul li a[href^=javascript]{
+	background-image: url(document-code.png);
+}
+#results ul li a:hover{
+	text-decoration: underline;
+}
+#results ul li a:active,
+#results ul li a:focus{
+	color: #fff;
+	background-color: #2B5DCD;
+	text-shadow: none;
+}
+.neat-tree ul,
+.neat-tree ul li{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+.neat-tree ul ul{
+	margin-left: 16px;
+	height: 0;
+	overflow: hidden;
+}
+.neat-tree .open>ul{
+	height: auto;
+}
+.neat-tree ul li a,
+.neat-tree ul li span{
+	-webkit-transition-property: color, background-color;
+	-webkit-transition-duration: .3s;
+	display: block;
+	line-height: 1.3em;
+	padding: 4px 4px 4px 24px;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-position: 4px 50%;
+	-webkit-background-size: 16px 16px;
+	color: #000;
+	outline: 0;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.neat-tree ul li a{
+	background-image: url(document.png);
+}
+.neat-tree ul li a[href^=javascript]{
+	background-image: url(document-code.png);
+}
+.neat-tree ul li span{
+	background-image: url(folder.png);
+}
+.neat-tree ul li a:hover{
+	text-decoration: underline;
+}
+.neat-tree ul li a:active,
+.neat-tree ul li span:active,
+.neat-tree ul li a:focus,
+.neat-tree ul li span:focus{
+	color: #fff;
+	background-color: #2B5DCD;
+	text-shadow: none;
+}
+.neat-tree ul li a.focus,
+.neat-tree ul li span.focus{
+	background-color: rgba(43,93,205,.2);
+}

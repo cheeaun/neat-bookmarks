@@ -12,6 +12,7 @@
 		"popup": "popup.html"
 	},
 	"options_page": "options.html",
+	"background_page": "background.html",
 	"permissions": [
 		"http://www.google.com/s2", "bookmarks", "tabs"
 	]
