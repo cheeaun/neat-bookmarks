@@ -74,39 +74,40 @@ var NeatTree = {
 				var links = element.querySelectorAll('a:not(.fetched)[href^=http]');
 				if (!links.length) return;
 				
-				var c = new Element('canvas').inject(document.body);
-				var ctx = c.getContext('2d');
-				
-				var linksLen = links.length-1;
-				var defaultIcon = NeatTree.options.defaultIcon;
-				
-				Array.each(links, function(el, i){
-					var img = new Image();
-					var domain = el.host;
-					var data = dataURLs[domain];
-					if (data){
-						if (data !== 1) el.style.backgroundImage = 'url(' + data + ')';
-						linksLen--;
-						return;
-					}
-					var url = 'http://www.google.com/s2/favicons?domain=' + domain;
-					img.onload = function(){
-						c.width = img.width;
-						c.height = img.height;
-						ctx.drawImage(img, 0, 0, img.width, img.height);
-						var data = c.toDataURL();
-						if (!data.contains(defaultIcon)){
-							el.style.backgroundImage = 'url(' + data + ')';
-						} else {
-							data = 1;
+				(function(){
+					var c = new Element('canvas').inject(document.body);
+					var ctx = c.getContext('2d');
+					
+					var linksLen = links.length-1;
+					var defaultIcon = NeatTree.options.defaultIcon;
+					
+					Array.each(links, function(el, i){
+						var img = new Image();
+						var domain = el.host;
+						var data = dataURLs[domain];
+						if (data){
+							if (data !== 1) el.style.backgroundImage = 'url(' + data + ')';
+							linksLen--;
+							return;
 						}
-						dataURLs[domain] = data;
-						img.destroy();
-						
-						if (i == linksLen) localStorage.dataURLs = JSON.stringify(dataURLs);
-					};
-					img.src = url;
-				});
+						var url = 'http://www.google.com/s2/favicons?domain=' + domain;
+						img.onload = function(){
+							c.width = img.width;
+							c.height = img.height;
+							ctx.drawImage(img, 0, 0, img.width, img.height);
+							var data = c.toDataURL();
+							if (!data.contains(defaultIcon)){
+								el.style.backgroundImage = 'url(' + data + ')';
+							} else {
+								data = 1;
+							}
+							dataURLs[domain] = data;
+							
+							if (i == linksLen) localStorage.dataURLs = JSON.stringify(dataURLs);
+						};
+						img.src = url;
+					});
+				}).delay(100);
 			}
 		}
 	},
