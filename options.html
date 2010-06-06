@@ -29,12 +29,21 @@ h1{
 	background-color: rgba(255,255,255,.5);
 }
 .options-list li{
-	border-top: 1px solid rgba(0,0,0,.2);
-	border-bottom: 1px solid rgba(255,255,255,.8);
+	border-bottom: 1px solid #fff;
 	padding: .5em 1em;
+	line-height: 30px;
 }
 .options-list li:first-child{
-	border: 0;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+}
+.options-list li:last-child{
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
 }
 .options-list li small{
 	opacity: .5;
@@ -47,8 +56,14 @@ h1{
 .options-list li button span{
 	font-weight: normal;
 }
+.options-list li label{
+	display: block;
+}
+.options-list li input[type=checkbox]{
+	margin: 0 0 0 20px;
+}
 #footer{
-	border-top: 1px solid rgba(0,0,0,.2);
+	border-top: 1px solid rgba(0,0,0,.1);
 	padding-top: 10px;
 	margin-top: 40px;
 }
@@ -70,12 +85,19 @@ document.addEventListener('DOMContentLoaded', function(){
 				}
 			}).periodical(1000);
 		});
+		
+		var popupStayOpen = $('popup-stay-open');
+		popupStayOpen.checked = !!localStorage.bookmarkClickStayOpen;
+		popupStayOpen.addEventListener('change', function(){
+			localStorage.bookmarkClickStayOpen = popupStayOpen.checked ? '1' : '';
+		});
 	}
 });
 </script>
 <h1>Neat Bookmarks <small>Options</small></h1>
 <ul class="options-list">
 <li>Clear favicon cache <small>(will re-fetch the next time opening Neat Bookmarks)</small> <button id="clear-favicon">Clear <span class="space"></span></button></li>
+<li><label>Popup stays open when opening (left-clicking) bookmarks? <input type="checkbox" id="popup-stay-open"></label></li>
 </ul>
 <div id="footer">
 This extension uses <a href="http://p.yusukekamiyamane.com/" target="_blank">Fugue Icons</a> by Yusuke Kamiyamane.

@@ -266,6 +266,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					chrome.tabs.update(tab.id, {
 						url: url
 					});
+					if (!localStorage.bookmarkClickStayOpen) window.close();
 				}
 			} else if (button == 1){ // middle-click
 				chrome.tabs.create({
