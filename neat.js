@@ -336,13 +336,11 @@ document.addEventListener('DOMContentLoaded', function(){
 				});
 				break;
 			case 'bookmark-delete':
-				if (confirm('Are you sure you want to delete this bookmark?')){
-					var li = currentContextLink.parentNode;
-					var id = li.id.replace('neat-tree-item-', '');
-					chrome.bookmarks.remove(id, function(){
-						Element.destroy(li);
-					});
-				}
+				var li = currentContextLink.parentNode;
+				var id = li.id.replace('neat-tree-item-', '');
+				chrome.bookmarks.remove(id, function(){
+					Element.destroy(li);
+				});
 				break;
 		}
 	});
