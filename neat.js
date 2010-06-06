@@ -271,4 +271,72 @@ document.addEventListener('DOMContentLoaded', function(){
 	};
 	$tree.addEventListener('click', linkHandler);
 	$results.addEventListener('click', linkHandler);
+	
+	var body = document.body;
+	var $bookmarkContextMenu = $('bookmark-context-menu');
+	var maxX = body.offsetWidth - $bookmarkContextMenu.offsetWidth;
+	var menuHeight = $bookmarkContextMenu.offsetHeight;
+	var maxY = body.offsetHeight - menuHeight;
+	
+	var clearMenu = function(){
+		var activeA = body.querySelector('a.active');
+		if (activeA) Element.removeClass(activeA, 'active');
+		$bookmarkContextMenu.style.left = '-999px';
+		$bookmarkContextMenu.style.opacity = 0;
+	};
+	
+	body.addEventListener('click', clearMenu);
+	$tree.addEventListener('scroll', clearMenu);
+	$results.addEventListener('scroll', clearMenu);
+	
+	var currentContextLink = null;
+	body.addEventListener('contextmenu', function(e){
+		e.preventDefault();
+		var el = e.target;
+		if (el.tagName != 'A') return;
+		currentContextLink = el;
+		var activeA = body.querySelector('a.active');
+		if (activeA) Element.removeClass(activeA, 'active');
+		Element.addClass(el, 'active');
+		var pageX = Math.min(e.pageX, maxX);
+		var pageY = e.pageY;
+		if (pageY > maxY) pageY = pageY - menuHeight;
+		$bookmarkContextMenu.style.left = pageX + 'px';
+		$bookmarkContextMenu.style.top = pageY + 'px';
+		$bookmarkContextMenu.style.opacity = 1;
+	});
+	
+	$bookmarkContextMenu.addEventListener('click', function(e){
+		if (!currentContextLink) return;
+		var el = e.target;
+		if (el.tagName != 'LI') return;
+		var url = currentContextLink.href;
+		switch (el.id){
+			case 'bookmark-new-tab':
+				chrome.tabs.create({
+					url: url
+				});
+				break;
+			case 'bookmark-new-window':
+				chrome.windows.create({
+					url: url
+				});
+				break;
+			case 'bookmark-new-incognito-window':
+				chrome.windows.create({
+					url: url,
+					incognito: true
+				});
+				break;
+			case 'bookmark-delete':
+				if (confirm('Are you sure you want to delete this bookmark?')){
+					var li = currentContextLink.parentNode;
+					var id = li.id.replace('neat-tree-item-', '');
+					chrome.bookmarks.remove(id, function(){
+						Element.destroy(li);
+					});
+				}
+				break;
+		}
+	});
 });
