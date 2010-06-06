@@ -76,10 +76,10 @@ var NeatTree = {
 		}
 	},
 	
-	fetchIcons: function(){
+	fetchIcons: function(element, dataURLs){
 		if (!NeatTree.options.fetchURLIcons) return;
-		var element = NeatTree.element;
-		var dataURLs = NeatTree.dataURLs;
+		if (!element) element = NeatTree.element;
+		if (!dataURLs) dataURLs = NeatTree.dataURLs;
 		
 		var links = element.querySelectorAll('a:not(.fetched)[href^=http]');
 		if (!links.length) return;
@@ -159,7 +159,7 @@ var NeatTree = {
 							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0" style="background-image: url(' + dataURL + ')">' + name + '</a>';
 						}
 					} else {
-						html += '<a href="' + u + '"' + title + '>' + name + '</a>';
+						html += '<a href="' + u + '"' + title + ' tabindex="0">' + name + '</a>';
 					}
 				} else {
 					html += '<span tabindex="0">' + d.name + '</span>';
@@ -226,16 +226,22 @@ document.addEventListener('DOMContentLoaded', function(){
 				var name = result.title.replace('>', '&gt;').replace('"', '&quot;');
 				var dataURL = dataURLs[a.set('href', url).host];
 				html += '<li>';
-				if (dataURL && dataURL != 1){
-					html += '<a href="' + u + '"' + title + ' style="background-image: url(' + dataURL + ')">' + name + '</a>';
+				if (dataURL){
+					if (dataURL === 1){
+						html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0">' + name + '</a>';
+					} else {
+						html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0" style="background-image: url(' + dataURL + ')">' + name + '</a>';
+					}
 				} else {
-					html += '<a href="' + u + '"' + title + '>' + name + '</a>';
+					html += '<a href="' + u + '"' + title + ' tabindex="0">' + name + '</a>';
 				}
 				html += '</li>';
 			}
 			html += '</ul>';
 			$results.set('html', html).style.display = 'block';
 			$tree.style.display = 'none';
+			
+			NeatTree.fetchIcons($results, dataURLs);
 		});
 	};
 	searchInput.addEventListener('keyup', search);
