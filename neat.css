@@ -26,10 +26,13 @@ canvas{
 }
 #results,
 #tree{
+	position: absolute;
+	left: 0;
+	top: 30px;
+	bottom: 0;
 	background-color: #eee;
 	width: 320px;
 	overflow: auto;
-	height: 500px;
 	outline: 0;
 }
 #results ul,
@@ -127,9 +130,21 @@ canvas{
 	background-color: #2B5DCD;
 	text-shadow: none;
 }
+@-webkit-keyframes blueFade {
+	0% {
+		background-color: transparent;
+	}
+	10%{
+		background-color: rgba(43,93,205,.2);
+	}
+	100% {
+		background-color: transparent;
+	}
+}
 .neat-tree ul li a.focus,
 .neat-tree ul li span.focus{
-	background-color: rgba(43,93,205,.2);
+	-webkit-animation-name: blueFade;
+	-webkit-animation-duration: 4s;
 }
 #bookmark-context-menu{
 	-webkit-transition-property: opacity;

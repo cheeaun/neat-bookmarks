@@ -148,9 +148,9 @@ var NeatTree = {
 			} else {
 				html += '<li class="child"' + idHTML + '>';
 				if (url){
-					var u = url.replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;');
-					var title = ' title="' + a.set('text', url).get('text') + '"';
-					var name = d.name.replace('>', '&gt;').replace('"', '&quot;');
+					var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+					var title = ' title="' + u + '"';
+					var name = d.name.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
 					if (dataURL){
 						if (dataURL === 1){
@@ -174,6 +174,10 @@ var NeatTree = {
 };
 
 document.addEventListener('DOMContentLoaded', function(){
+	var body = document.body;
+	
+	if (localStorage.popupHeight) body.style.height = localStorage.popupHeight + 'px';
+	
 	var processBookmarks = function(c){
 		var response = [];
 		for (var i=0, l=c.length; i<l; i++){
@@ -197,6 +201,10 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	var $tree = $('tree');
 	chrome.bookmarks.getTree(function(tree){
+		var height = screen.height - window.screenY - 40;
+		body.style.height = height + 'px';
+		localStorage.popupHeight = height;
+		
 		var json = processBookmarks(tree[0].children);
 		NeatTree.init($tree, json);
 	});
@@ -208,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	var searchInput = $('search-input');
 	var search = function(){
 		var value = searchInput.get('value').trim();
+		localStorage.searchQuery = value;
 		if (value == ''){
 			$results.style.display = 'none';
 			$tree.style.display = 'block';
@@ -221,11 +230,11 @@ document.addEventListener('DOMContentLoaded', function(){
 			for (var i=0, l=results.length; i<l; i++){
 				var result = results[i];
 				var url = result.url;
-				var u = url.replace('>', '&gt;').replace('"', '&quot;');
-				var title = ' title="' + a.set('text', url).get('text') + '"';
-				var name = result.title.replace('>', '&gt;').replace('"', '&quot;');
+				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+				var title = ' title="' + u + '"';
+				var name = result.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var dataURL = dataURLs[a.set('href', url).host];
-				html += '<li>';
+				html += '<li data-parentId="' + result.parentId + '">';
 				if (dataURL){
 					if (dataURL === 1){
 						html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0">' + name + '</a>';
@@ -242,10 +251,25 @@ document.addEventListener('DOMContentLoaded', function(){
 			$tree.style.display = 'none';
 			
 			NeatTree.fetchIcons($results, dataURLs);
+			
+			var lis = $results.querySelectorAll('li');
+			Array.each(lis, function(li){
+				var parentId = li.get('data-parentId');
+				chrome.bookmarks.get(parentId, function(node){
+					if (!node || !node.length) return;
+					var a = li.querySelector('a');
+					a.title = 'Parent folder: "' + node[0].title + '"\n' + a.title;
+				});
+			});
 		});
 	};
 	searchInput.addEventListener('keyup', search);
 	searchInput.addEventListener('click', search);
+	
+	if (localStorage.searchQuery){
+		searchInput.set('value', localStorage.searchQuery);
+		searchInput.click();
+	}
 	
 	var linkHandler = function(e){
 		e.preventDefault();
@@ -279,7 +303,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	$tree.addEventListener('click', linkHandler);
 	$results.addEventListener('click', linkHandler);
 	
-	var body = document.body;
 	var $bookmarkContextMenu = $('bookmark-context-menu');
 	var maxX = body.offsetWidth - $bookmarkContextMenu.offsetWidth;
 	var menuHeight = $bookmarkContextMenu.offsetHeight;
