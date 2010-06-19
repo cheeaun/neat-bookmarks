@@ -1,6 +1,6 @@
 {
 	"name": "Neat Bookmarks",
-	"version": "0.4",
+	"version": "0.4.1",
 	"description": "A neat bookmarks tree popup.",
 	"icons": {
 		"16": "icon16.png",
