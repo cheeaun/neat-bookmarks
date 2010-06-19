@@ -201,9 +201,12 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	var $tree = $('tree');
 	chrome.bookmarks.getTree(function(tree){
-		var height = screen.height - window.screenY - 40;
-		body.style.height = height + 'px';
-		localStorage.popupHeight = height;
+		// delay because window.screenY sometimes give the wrong value
+		(function(){
+			var height = screen.height - window.screenY - 40;
+			body.style.height = height + 'px';
+			localStorage.popupHeight = height;
+		}).delay(0);
 		
 		var json = processBookmarks(tree[0].children);
 		NeatTree.init($tree, json);
@@ -306,7 +309,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	var $bookmarkContextMenu = $('bookmark-context-menu');
 	var maxX = body.offsetWidth - $bookmarkContextMenu.offsetWidth;
 	var menuHeight = $bookmarkContextMenu.offsetHeight;
-	var maxY = body.offsetHeight - menuHeight;
 	
 	var clearMenu = function(){
 		var activeA = body.querySelector('a.active');
@@ -330,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		Element.addClass(el, 'active');
 		var pageX = Math.min(e.pageX, maxX);
 		var pageY = e.pageY;
-		if (pageY > maxY) pageY = pageY - menuHeight;
+		if (pageY > (window.innerHeight - menuHeight)) pageY -= menuHeight;
 		$bookmarkContextMenu.style.left = pageX + 'px';
 		$bookmarkContextMenu.style.top = pageY + 'px';
 		$bookmarkContextMenu.style.opacity = 1;
