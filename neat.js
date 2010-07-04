@@ -25,6 +25,8 @@ var NeatTree = {
 		element.set('html', html).addEventListener('click', function(e){
 			var el = e.target;
 			if (el.tagName != 'SPAN') return;
+			if (e.button != 0) return;
+			if (e.shiftKey) return;
 			var parent = el.parentNode;
 			Element.toggleClass(parent, 'open');
 			var children = parent.querySelector('ul');
@@ -274,72 +276,123 @@ document.addEventListener('DOMContentLoaded', function(){
 		searchInput.click();
 	}
 	
-	var linkHandler = function(e){
+	var bookmarkHandler = function(e){
+		console.log(e);
 		e.preventDefault();
 		var el = e.target;
-		if (el.tagName != 'A') el = el.getParent('a');
-		if (!el) return;
-		chrome.tabs.getSelected(null, function(tab){
+		if (el.tagName == 'A'){
+			chrome.tabs.getSelected(null, function(tab){
+				var button = e.button;
+				if (e.ctrlKey || e.metaKey) button = 1;
+				var url = el.get('href');
+				var shift = e.shiftKey;
+				if (button == 0){
+					if (shift){ // shift click
+						chrome.windows.create({
+							url: url
+						});
+					} else { // click
+						chrome.tabs.update(tab.id, {
+							url: url
+						});
+						if (!localStorage.bookmarkClickStayOpen) window.close();
+					}
+				} else if (button == 1){ // middle-click
+					chrome.tabs.create({
+						url: url,
+						selected: !shift
+					});
+				}
+			});
+		} else if (el.tagName == 'SPAN'){
+			var li = el.parentNode;
+			var id = li.id.replace('neat-tree-item-', '');
 			var button = e.button;
 			if (e.ctrlKey || e.metaKey) button = 1;
-			var url = el.get('href');
 			var shift = e.shiftKey;
-			if (button == 0){
-				if (shift){
-					chrome.windows.create({
-						url: url
+			chrome.bookmarks.getChildren(id, function(children){
+				var urls = Array.clean(Array.map(children, function(c){
+					return c.url;
+				}));
+				if (!urls.length) return;
+				if (button == 0 && shift){ // shift click
+					chrome.extension.sendRequest({
+						command: 'openAllBookmarksInNewWindow',
+						data: urls
 					});
-				} else {
-					chrome.tabs.update(tab.id, {
-						url: url
-					});
-					if (!localStorage.bookmarkClickStayOpen) window.close();
+				} else if (button == 1){ // middle-click
+					for (var i=0, l=urls.length; i<l; i++){
+						chrome.tabs.create({
+							url: urls[i],
+							selected: !shift
+						});
+					}
 				}
-			} else if (button == 1){ // middle-click
-				chrome.tabs.create({
-					url: url,
-					selected: !shift
-				});
-			}
-		});
+			});
+		}
 	};
-	$tree.addEventListener('click', linkHandler);
-	$results.addEventListener('click', linkHandler);
+	$tree.addEventListener('click', bookmarkHandler);
+	$results.addEventListener('click', bookmarkHandler);
+	
+	// Disable Chrome auto-scroll feature
+	window.addEventListener('mousedown', function(e){
+		if (e.button == 1) e.preventDefault();
+	});
 	
 	var $bookmarkContextMenu = $('bookmark-context-menu');
-	var maxX = body.offsetWidth - $bookmarkContextMenu.offsetWidth;
-	var menuHeight = $bookmarkContextMenu.offsetHeight;
+	var $folderContextMenu = $('folder-context-menu');
+	var bodyWidth = body.offsetWidth;
+	var bookmarkMaxX = bodyWidth - $bookmarkContextMenu.offsetWidth;
+	var bookmarkMenuHeight = $bookmarkContextMenu.offsetHeight;
+	var folderMaxX = bodyWidth - $folderContextMenu.offsetWidth;
+	var folderMenuHeight = $folderContextMenu.offsetHeight;
 	
 	var clearMenu = function(){
-		var activeA = body.querySelector('a.active');
-		if (activeA) Element.removeClass(activeA, 'active');
+		var active = body.querySelector('.active');
+		if (active) Element.removeClass(active, 'active');
 		$bookmarkContextMenu.style.left = '-999px';
 		$bookmarkContextMenu.style.opacity = 0;
+		$folderContextMenu.style.left = '-999px';
+		$folderContextMenu.style.opacity = 0;
 	};
 	
 	body.addEventListener('click', clearMenu);
 	$tree.addEventListener('scroll', clearMenu);
 	$results.addEventListener('scroll', clearMenu);
 	
-	var currentContextLink = null;
+	var currentContext = null;
 	body.addEventListener('contextmenu', function(e){
+		clearMenu();
 		e.preventDefault();
 		var el = e.target;
-		if (el.tagName != 'A') return;
-		currentContextLink = el;
-		var activeA = body.querySelector('a.active');
-		if (activeA) Element.removeClass(activeA, 'active');
-		Element.addClass(el, 'active');
-		var pageX = Math.min(e.pageX, maxX);
-		var pageY = e.pageY;
-		if (pageY > (window.innerHeight - menuHeight)) pageY -= menuHeight;
-		$bookmarkContextMenu.style.left = pageX + 'px';
-		$bookmarkContextMenu.style.top = pageY + 'px';
-		$bookmarkContextMenu.style.opacity = 1;
+		var tagName = el.tagName;
+		if (tagName == 'A'){
+			currentContext = el;
+			var active = body.querySelector('.active');
+			if (active) Element.removeClass(active, 'active');
+			Element.addClass(el, 'active');
+			var pageX = Math.min(e.pageX, bookmarkMaxX);
+			var pageY = e.pageY;
+			if (pageY > (window.innerHeight - bookmarkMenuHeight)) pageY -= bookmarkMenuHeight;
+			$bookmarkContextMenu.style.left = pageX + 'px';
+			$bookmarkContextMenu.style.top = pageY + 'px';
+			$bookmarkContextMenu.style.opacity = 1;
+		} else if (tagName == 'SPAN'){
+			currentContext = el;
+			var active = body.querySelector('.active');
+			if (active) Element.removeClass(active, 'active');
+			Element.addClass(el, 'active');
+			var pageX = Math.min(e.pageX, folderMaxX);
+			var pageY = e.pageY;
+			if (pageY > (window.innerHeight - folderMenuHeight)) pageY -= folderMenuHeight;
+			$folderContextMenu.style.left = pageX + 'px';
+			$folderContextMenu.style.top = pageY + 'px';
+			$folderContextMenu.style.opacity = 1;
+		}
 	});
 	
 	$bookmarkContextMenu.addEventListener('click', function(e){
-		if (!currentContextLink) return;
+		if (!currentContext) return;
 		var el = e.target;
 		if (el.tagName != 'LI') return;
 		var url = currentContextLink.href;
@@ -368,5 +421,44 @@ document.addEventListener('DOMContentLoaded', function(){
 				});
 				break;
 		}
+	});
+	
+	$folderContextMenu.addEventListener('click', function(e){
+		if (!currentContext) return;
+		var el = e.target;
+		if (el.tagName != 'LI') return;
+		var id = currentContext.parentNode.id.replace('neat-tree-item-', '');
+		chrome.bookmarks.getChildren(id, function(children){
+			var urls = Array.clean(Array.map(children, function(c){
+				return c.url;
+			}));
+			if (!urls.length) return;
+			switch (el.id){
+				case 'folder-window':
+					for (var i=0, l=urls.length; i<l; i++){
+						chrome.tabs.create({
+							url: urls[i]
+						});
+					}
+					break;
+				case 'folder-new-window':
+					chrome.extension.sendRequest({
+						command: 'openAllBookmarksInNewWindow',
+						data: urls
+					});
+					break;
+				case 'folder-new-incognito-window':
+					chrome.extension.sendRequest({
+						command: 'openAllBookmarksInIncognitoWindow',
+						data: urls
+					});
+					break;
+				case 'folder-delete':
+					chrome.bookmarks.removeTree(id, function(){
+						el.destroy();
+					});
+					break;
+			}
+		});
 	});
 });

@@ -1,3 +1,40 @@
+<script>
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+	switch (request.command){
+		case 'openAllBookmarksInNewWindow':
+			var urls = request.data;
+			chrome.windows.create({
+				url: urls.shift()
+			}, function(w){
+				var id = w.id;
+				for (var i=0, l=urls.length; i<l; i++){
+					chrome.tabs.create({
+						windowId: id,
+						url: urls[i],
+						selected: false
+					});
+				}
+			});
+			break;
+		case 'openAllBookmarksInIncognitoWindow':
+			var urls = request.data;
+			chrome.windows.create({
+				url: urls.shift(),
+				incognito: true
+			}, function(w){
+				var id = w.id;
+				for (var i=0, l=urls.length; i<l; i++){
+					chrome.tabs.create({
+						windowId: id,
+						url: urls[i],
+						selected: false
+					});
+				}
+			});
+			break;
+	}
+});
+</script>
 <!--
 <script>
 var _gaq = _gaq || [];
