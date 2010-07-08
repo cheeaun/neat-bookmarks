@@ -175,6 +175,29 @@ var NeatTree = {
 	
 };
 
+var ConfirmDialog = {
+	
+	open: function(opts){
+		if (opts){
+			$('confirm-dialog-text').set('html', opts.dialog);
+			$('confirm-dialog-button-1').set('html', opts.button1);
+			$('confirm-dialog-button-2').set('html', opts.button2);
+			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
+			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
+		}
+		document.body.addClass('needConfirm');
+	},
+	
+	close: function(){
+		document.body.removeClass('needConfirm');
+	},
+	
+	fn1: function(){},
+	
+	fn2: function(){}
+	
+};
+
 document.addEventListener('DOMContentLoaded', function(){
 	var body = document.body;
 	
@@ -395,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		if (!currentContext) return;
 		var el = e.target;
 		if (el.tagName != 'LI') return;
-		var url = currentContextLink.href;
+		var url = currentContext.href;
 		switch (el.id){
 			case 'bookmark-new-tab':
 				chrome.tabs.create({
@@ -414,10 +437,17 @@ document.addEventListener('DOMContentLoaded', function(){
 				});
 				break;
 			case 'bookmark-delete':
-				var li = currentContextLink.parentNode;
+				var li = currentContext.parentNode;
 				var id = li.id.replace('neat-tree-item-', '');
-				chrome.bookmarks.remove(id, function(){
-					Element.destroy(li);
+				ConfirmDialog.open({
+					dialog: 'Are you sure you want to delete the <strong>' + currentContext.get('text') + '</strong> bookmark?',
+					button1: '<strong>Delete</strong>',
+					button2: 'Cancel',
+					fn1: function(){
+						chrome.bookmarks.remove(id, function(){
+							Element.destroy(li);
+						});
+					}
 				});
 				break;
 		}
@@ -427,35 +457,91 @@ document.addEventListener('DOMContentLoaded', function(){
 		if (!currentContext) return;
 		var el = e.target;
 		if (el.tagName != 'LI') return;
-		var id = currentContext.parentNode.id.replace('neat-tree-item-', '');
+		var li = currentContext.parentNode;
+		var id = li.id.replace('neat-tree-item-', '');
 		chrome.bookmarks.getChildren(id, function(children){
 			var urls = Array.clean(Array.map(children, function(c){
 				return c.url;
 			}));
-			if (!urls.length) return;
+			var urlsLen = urls.length;
+			var noURLS = !urlsLen;
+			var limit = 10;
 			switch (el.id){
 				case 'folder-window':
-					for (var i=0, l=urls.length; i<l; i++){
-						chrome.tabs.create({
-							url: urls[i]
+					if (noURLS) return;
+					if (urlsLen > limit){
+						ConfirmDialog.open({
+							dialog: 'Are you sure you want to open all <strong>' + urlsLen + ' bookmarks</strong>?',
+							button1: '<strong>Open</strong>',
+							button2: 'Cancel',
+							fn1: function(){
+								for (var i=0; i<urlsLen; i++){
+									chrome.tabs.create({
+										url: urls[i]
+									});
+								}
+							}
 						});
+					} else {
+						for (var i=0; i<urlsLen; i++){
+							chrome.tabs.create({
+								url: urls[i]
+							});
+						}
 					}
 					break;
 				case 'folder-new-window':
-					chrome.extension.sendRequest({
-						command: 'openAllBookmarksInNewWindow',
-						data: urls
-					});
+					if (noURLS) return;
+					if (urlsLen > limit){
+						ConfirmDialog.open({
+							dialog: 'Are you sure you want to open all <strong>' + urlsLen + ' bookmarks</strong> in a new window?',
+							button1: '<strong>Open</strong>',
+							button2: 'Cancel',
+							fn1: function(){
+								chrome.extension.sendRequest({
+									command: 'openAllBookmarksInNewWindow',
+									data: urls
+								});
+							}
+						});
+					} else {
+						chrome.extension.sendRequest({
+							command: 'openAllBookmarksInNewWindow',
+							data: urls
+						});
+					}
 					break;
 				case 'folder-new-incognito-window':
-					chrome.extension.sendRequest({
-						command: 'openAllBookmarksInIncognitoWindow',
-						data: urls
-					});
+					if (noURLS) return;
+					if (urlsLen > limit){
+						ConfirmDialog.open({
+							dialog: 'Are you sure you want to open all <strong>' + urlsLen + ' bookmarks</strong> in a new incognito window?',
+							button1: '<strong>Open</strong>',
+							button2: 'Cancel',
+							fn1: function(){
+								chrome.extension.sendRequest({
+									command: 'openAllBookmarksInIncognitoWindow',
+									data: urls
+								});
+							}
+						});
+					} else {
+						chrome.extension.sendRequest({
+							command: 'openAllBookmarksInIncognitoWindow',
+							data: urls
+						});
+					}
 					break;
 				case 'folder-delete':
-					chrome.bookmarks.removeTree(id, function(){
-						el.destroy();
+					ConfirmDialog.open({
+						dialog: 'Are you sure you want to delete the <strong>' + currentContext.get('text') + '</strong> folder and <strong>' + urls.length + ' bookmark(s)</strong> in it?',
+						button1: '<strong>Delete</strong>',
+						button2: 'Cancel',
+						fn1: function(){
+							chrome.bookmarks.removeTree(id, function(){
+								li.destroy();
+							});
+						}
 					});
 					break;
 			}
