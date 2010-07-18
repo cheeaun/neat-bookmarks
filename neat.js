@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	chrome.bookmarks.getTree(function(tree){
 		// delay because window.screenY sometimes give the wrong value
 		(function(){
-			var height = screen.height - window.screenY - 40;
+			var height = screen.height - window.screenY - 50;
 			body.style.height = height + 'px';
 			localStorage.popupHeight = height;
 		}).delay(0);
