@@ -107,11 +107,12 @@ var NeatTree = {
 				}
 				var url = 'http://www.google.com/s2/favicons?domain=' + domain;
 				img.onload = function(){
-					c.width = img.width;
-					c.height = img.height;
-					ctx.drawImage(img, 0, 0, img.width, img.height);
+					var w = img.width, h = img.height;
+					c.width = w;
+					c.height = w;
+					ctx.drawImage(img, 0, 0, w, h);
 					var data = c.toDataURL();
-					var d = Array.join(ctx.getImageData(0 ,0 , img.width, img.height).data, '');
+					var d = Array.join(ctx.getImageData(0 ,0 , w, h).data, '');
 					if (ignoredIcons.contains(d)){
 						data = 1;
 					} else {
