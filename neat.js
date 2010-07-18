@@ -1,10 +1,10 @@
 var NeatTree = {
 	
-	options: {
-		fetchURLIcons: true,
-		defaultIcon: 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACu0lEQVQ4jaWTXVMaZxTHfwK7sLu4CyNqIRRUJFKttiX4EieZqbbpTLhJJpf9BMnYi/aLJDf2qt/A8aJvMf0Cph0jNDFjImNiBKGGFVI04CILbC+qTJz2Lv+r88w8//P8znnOgfdU11lgswuSILh9A4MfTU5cSi64lGDi2MANILmontTy60/SK99nXz1/ZJrVUrtlGgD2M7PT5QnEp5K3B6Pzd2Ij0cj0bMw7FPF1jY35u67NjzqLxRPVJgamNVXTDg7y2+22WbesdtMOIDo1f3wyefvDodmvL1/9NDI6FpK9mszns8P4+zXGR/r4eHxADg9e6N1+WQ8rsiTqr3c3W836kR0gEo1/GY7O3fnu25sRUXR06svvH9Lv68bT7USWBPKvD5majGobz/7uaZ6UMuXS3nMbwCfx5MLF4XDfzGehjtk0W5hmC68mA1AzmlQODbyaxPBQqG8ifn0BwAbgVIKJGzenempG81yHv7hyEVX5l0iRHIxE+tjJveHWrekeUQomABwAx4bl7vepqIoDRRYJ+j0E/Z6OGcBug2LpLQD9PhXDsNwdAgBFFgGYiQ+Q36/QMM/TnEkQ7ABYp2fH2T/v5EqqvzeEqjj46uowq6kcmdNLQyEf/l6ZuZlBSpU6mZc6kotqh6BxXFj/+ce18rsvjccC6KUqeqnKH+ld1jb+AsDncbG09LDcMArrnQRP0vcXMy+y+moq97/YAIX9Cq02rKZy7GYL+tP0yiKcTmK1WqtpqqZtbtXCF0IfaKGAhlO0IQgC+mnjxmMBMjs6d+/9slcspJa3Nh/+1Bkky2qZBwf5bUWWxMdPyz1rqT1bt1eVK4fH7OtHHL2t8+BBuvzr/d+zxUJq+XHqtx8ajaOiZbWb/1mm8EAsMXEp+Y0oBRNGHbdlWUguqqZReLTx58pi9tVW6t1lem/9A8T0Fk4ivpzMAAAAAElFTkSuQmCC',
-		anotherDefaultIcon: 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACgklEQVQ4EaVTS2tTQRQ+edy8bt43iSQ2N40NtSVWsUQaoi5ECD4gyy5cSBG6iht/iZt0UUq3Ci7jY1HcSS6hSSs0FFvQ2CY1asz7dZObl3OmRhRxowdm7rlzvvPNN2fOyMbjMfyPKSfJoeXHWqautl0Nea5Ig1G0WhcDjUZXj3GDQdOymrRpBSNfSwrHqb6pVxKePRIxJkMFmKztsy7/rH211ZIiPi/n4Gc4TuoPQcUowMtzsLV1UD7KV4omVh3ff/9tQ2TaBSShCnBn/0X7arszuHfhksvt9XDA6lSwuDAF7Y4EHpcRzvE2LnNQ4J48TevnfXbI7A3WiIC8HGUEiex6uxd5sLJEk3ENd0/uHqNLzcHpgCFqVu4vuRsEizkYoATD/ig67bY6gpf5UzSZ+4QAh8Wko2ttcQC1ukj+tcCftThILIoBSlAhBQuH5zgE/Wo3r82CkT2tM6tVwvkZB2RzFbh9a56rVMUAYmm00RD1Z2xGCsazTznNdEySEaggW30tNdEFxDZJDvpUATqYiBZcnIaTzzVSg9/V0CCZsA5ok+6hCvCes7mS0WnnqYrwdR8kdnJwSKGANwBOuw5uBL1QqnXh8EOR9gaGqQLOrEu/Jvf8A08/C3MuKJZadCR3j2B7r0DXbWYNPH+RKVtJDi5QAkYli2VJk+Cuf7NP5FjDEVBlhS/NooaRx34SCIlcGjtsY1PIT0iwgKhiYugn3+ZgfUPIG/XquJDMUQW0Btjb2J7YYeubQuTlq33H3Tt+DvugWu+AJA0htZ0snxRqRaNBHX9HsJiD5PQtoDN5TKEgH+gNRw/xnpvNrh7fChbZZmFTaq0ylnjzceePx4QE/2rfAQCqHU3jzrYUAAAAAElFTkSuQmCC'
-	},
+	fetchURLIcons: (localStorage && localStorage.fetchIcons),
+	
+	ignoredIcons: [
+		'000000000000000000000000000000000000000000000000000000000000000000000000568514196170149291211271808211412417818998108169241839416125383941612539710716924111412217818911812718082617014929568514190000000000005685141965801533510811817413696106168214132139186236163174206255157169203255163174206255196204225255126133184236941041662141081161741366580153355685141900000000617014929108116174136981081702261411531942551741842132551851942192552352392472552242292412552552552552552302342452551851942192559410416622610611617413661701492900000000118127180829410416621419620422525517418421325517418421325517918921625517918921625522422924125525525525525525225325525519019922225519119922225592104166214118127180820000000011412217818912613318423625225325525517418421325517418421325517418421325517418421325524124425125525525525525524124425125517418421325520821423125512313118323611312217618900000000971071692411962042252552412442512551741842132551741842132551741842132552412442512552552552552552552552552552522532552552132192352551741842132551962042252559510516824100000000829316025321922423925525525525525518519421925521321923525524124425125525525525525525525525525525525525525525525525525519019922225517418421325521922423925581911592530000000082931602532302342452552552552552552412442512551851942192552352392472552552552552552552552552552552552552552552552552551901992222551791892162552192242392558091159253000000009610616824119620422525525525525525525525525525525525525525519620422525519620422525519620422525523023424525525525525525525525525525523523924725519620422525594104167241000000001141221781891271331842362552552552552552552552552552552552552412442512551741842132551741842132551741842132552012092292552552552552552552552552551181271802361111211761890000000011912917981941041662141962042252552552552552552552552552552412442512551741842132551741842132551741842132551741842132552522532552551962042252559210316621411912517981000000006170149291081161741369410416622619620422525525525525525525525525525521922423925517418421325517418421325521922423925519620422525592102166226106116174136617014929000000005685141965801533510611617413692104166214121129181236196204225255191199222255157169203255151163200255121129182236921031662141061161741366580153355685141900000000000056851419617014929119125179811131221761899510516824181921602538091159253941041672411131221771881211301818061701492956851419000000000000000000000000000000000000000000000000000000000000000000000000'
+	],
 
 	nonOpens: {},
 	
@@ -24,11 +24,13 @@ var NeatTree = {
 		var nonOpens = NeatTree.nonOpens;
 		element.set('html', html).addEventListener('click', function(e){
 			var el = e.target;
+			if (el.tagName != 'SPAN') el = el.parentNode;
 			if (el.tagName != 'SPAN') return;
 			if (e.button != 0) return;
 			if (e.shiftKey) return;
 			var parent = el.parentNode;
 			Element.toggleClass(parent, 'open');
+			Element.setProperty(parent, 'aria-expanded', Element.hasClass(parent, 'open'));
 			var children = parent.querySelector('ul');
 			if (!children){
 				var id = parent.id.replace('neat-tree-item-', '');
@@ -55,6 +57,7 @@ var NeatTree = {
 			
 			element.addEventListener('focus', function(e){
 				var el = e.target;
+				console.log(el)
 				var tagName = el.tagName;
 				var focusEl = element.querySelector('.focus');
 				if (focusEl) focusEl.removeClass('focus');
@@ -70,8 +73,7 @@ var NeatTree = {
 			if (typeof focusID != 'undefined' && focusID != null){
 				var focusEl = $('neat-tree-item-' + focusID);
 				if (focusEl) focusEl = focusEl.firstChild;
-				if (!focusEl) return;
-				focusEl.addClass('focus');
+				if (focusEl) focusEl.addClass('focus');
 			}
 			
 			NeatTree.fetchIcons();
@@ -79,7 +81,7 @@ var NeatTree = {
 	},
 	
 	fetchIcons: function(element, dataURLs){
-		if (!NeatTree.options.fetchURLIcons) return;
+		if (!NeatTree.fetchURLIcons) return;
 		if (!element) element = NeatTree.element;
 		if (!dataURLs) dataURLs = NeatTree.dataURLs;
 		
@@ -91,15 +93,15 @@ var NeatTree = {
 			var ctx = c.getContext('2d');
 			
 			var linksLen = links.length-1;
-			var defaultIcon = NeatTree.options.defaultIcon;
-			var anotherDefaultIcon = NeatTree.options.anotherDefaultIcon;
+			var ignoredIcons = NeatTree.ignoredIcons;
 			
 			Array.each(links, function(el, i){
+				var elImg = el.firstElementChild;
 				var img = new Image();
 				var domain = el.host;
 				var data = dataURLs[domain];
 				if (data){
-					if (data !== 1) el.style.backgroundImage = 'url(' + data + ')';
+					if (data !== 1) el.src = data;
 					linksLen--;
 					return;
 				}
@@ -109,10 +111,11 @@ var NeatTree = {
 					c.height = img.height;
 					ctx.drawImage(img, 0, 0, img.width, img.height);
 					var data = c.toDataURL();
-					if (!data.contains(defaultIcon) && !data.contains(anotherDefaultIcon)){
-						el.style.backgroundImage = 'url(' + data + ')';
-					} else {
+					var d = Array.join(ctx.getImageData(0 ,0 , img.width, img.height).data, '');
+					if (ignoredIcons.contains(d)){
 						data = 1;
+					} else {
+						elImg.src = data;
 					}
 					dataURLs[domain] = data;
 					
@@ -125,11 +128,12 @@ var NeatTree = {
 	
 	_a: new Element('a'),
 	
-	generateHTML: function(data){
-		var html = '<ul>';
+	generateHTML: function(data, group){
+		var html = '<ul role="' + (group ? 'group' : 'tree') + '">';
 		var a = NeatTree._a;
 		var opens = NeatTree.opens;
 		var nonOpens = NeatTree.nonOpens;
+		var fetchURLIcons = NeatTree.fetchURLIcons;
 		
 		for (var i=0, l=data.length; i<l; i++){
 			var d = data[i];
@@ -140,31 +144,32 @@ var NeatTree = {
 			if (!!children){
 				var isOpen = opens.contains(id);
 				var open = isOpen ? ' open' : '';
-				html += '<li class="parent' + open + '"' + idHTML + '>'
-					+ '<span tabindex="0">' + d.name + '</span>';
+				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '">'
+					+ '<span tabindex="0"><img src="folder.png" width="16" height="16" alt="">' + d.name + '</span>';
 				if (isOpen){
-					html += NeatTree.generateHTML(children);
+					html += NeatTree.generateHTML(children, true);
 				} else {
 					nonOpens[id] = children;
 				}
 			} else {
-				html += '<li class="child"' + idHTML + '>';
-				if (url){
-					var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-					var title = ' title="' + u + '"';
-					var name = d.name.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+				html += '<li class="child"' + idHTML + ' role="treeitem">';
+				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+				var title = ' title="' + u + '"';
+				var name = d.name.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
+				if (fetchURLIcons){
 					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
 					if (dataURL){
 						if (dataURL === 1){
-							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0">' + name + '</a>';
+							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 						} else {
-							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0" style="background-image: url(' + dataURL + ')">' + name + '</a>';
+							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0"><img src="' + dataURL + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 						}
 					} else {
-						html += '<a href="' + u + '"' + title + ' tabindex="0">' + name + '</a>';
+						html += '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 					}
 				} else {
-					html += '<span tabindex="0">' + d.name + '</span>';
+					html += '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 				}
 			}
 			html += '</li>';
@@ -179,7 +184,7 @@ var ConfirmDialog = {
 	
 	open: function(opts){
 		if (opts){
-			$('confirm-dialog-text').set('html', opts.dialog);
+			$('confirm-dialog-text').set('html', opts.dialog.replace(/\s([^\s]+)$/i, '&nbsp;$1'));
 			$('confirm-dialog-button-1').set('html', opts.button1);
 			$('confirm-dialog-button-2').set('html', opts.button2);
 			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
@@ -202,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	var body = document.body;
 	
 	if (localStorage.popupHeight) body.style.height = localStorage.popupHeight + 'px';
+	if (localStorage.popupWidth) body.style.width = localStorage.popupWidth + 'px';
 	
 	var processBookmarks = function(c){
 		var response = [];
@@ -239,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	var $results = $('results');
 	var dataURLs = (localStorage && localStorage.dataURLs) ? JSON.parse(localStorage.dataURLs) : {};
+	var fetchURLIcons = NeatTree.fetchURLIcons;
 	var a = new Element('a');
 	
 	var searchInput = $('search-input');
@@ -254,23 +261,28 @@ document.addEventListener('DOMContentLoaded', function(){
 			results.sort(function(a, b){
 				return b.dateAdded - a.dateAdded;
 			});
-			var html = '<ul>';
+			var html = '<ul role="list">';
 			for (var i=0, l=results.length; i<l; i++){
 				var result = results[i];
 				var url = result.url;
 				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var title = ' title="' + u + '"';
 				var name = result.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-				var dataURL = dataURLs[a.set('href', url).host];
-				html += '<li data-parentId="' + result.parentId + '">';
-				if (dataURL){
-					if (dataURL === 1){
-						html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0">' + name + '</a>';
+				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
+				html += '<li data-parentId="' + result.parentId + '" role="listitem">';
+				if (fetchURLIcons){
+					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
+					if (dataURL){
+						if (dataURL === 1){
+							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
+						} else {
+							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0"><img src="' + dataURL + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
+						}
 					} else {
-						html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0" style="background-image: url(' + dataURL + ')">' + name + '</a>';
+						html += '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 					}
 				} else {
-					html += '<a href="' + u + '"' + title + ' tabindex="0">' + name + '</a>';
+					html += '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 				}
 				html += '</li>';
 			}
@@ -299,16 +311,16 @@ document.addEventListener('DOMContentLoaded', function(){
 		searchInput.click();
 	}
 	
+	var openBookmarksLimit = 10;
 	var bookmarkHandler = function(e){
-		console.log(e);
 		e.preventDefault();
 		var el = e.target;
-		if (el.tagName == 'A'){
+		var button = e.button;
+		if (e.ctrlKey || e.metaKey) button = 1;
+		var shift = e.shiftKey;
+		if (el.tagName == 'A' || el.parentNode.tagName == 'A' && (el = el.parentNode)){
+			var url = el.get('href');
 			chrome.tabs.getSelected(null, function(tab){
-				var button = e.button;
-				if (e.ctrlKey || e.metaKey) button = 1;
-				var url = el.get('href');
-				var shift = e.shiftKey;
 				if (button == 0){
 					if (shift){ // shift click
 						chrome.windows.create({
@@ -327,28 +339,56 @@ document.addEventListener('DOMContentLoaded', function(){
 					});
 				}
 			});
-		} else if (el.tagName == 'SPAN'){
+		} else if (el.tagName == 'SPAN' || el.parentNode.tagName == 'SPAN' && (el = el.parentNode)){
 			var li = el.parentNode;
 			var id = li.id.replace('neat-tree-item-', '');
-			var button = e.button;
-			if (e.ctrlKey || e.metaKey) button = 1;
-			var shift = e.shiftKey;
 			chrome.bookmarks.getChildren(id, function(children){
 				var urls = Array.clean(Array.map(children, function(c){
 					return c.url;
 				}));
-				if (!urls.length) return;
+				var urlsLen = urls.length;
+				if (!urlsLen) return;
 				if (button == 0 && shift){ // shift click
-					chrome.extension.sendRequest({
-						command: 'openAllBookmarksInNewWindow',
-						data: urls
-					});
-				} else if (button == 1){ // middle-click
-					for (var i=0, l=urls.length; i<l; i++){
-						chrome.tabs.create({
-							url: urls[i],
-							selected: !shift
+					if (urlsLen > openBookmarksLimit){
+						ConfirmDialog.open({
+							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new window?',
+							button1: '<strong>Open</strong>',
+							button2: 'Nope',
+							fn1: function(){
+								chrome.extension.sendRequest({
+									command: 'openAllBookmarksInNewWindow',
+									data: urls
+								});
+							}
 						});
+					} else {
+						chrome.extension.sendRequest({
+							command: 'openAllBookmarksInNewWindow',
+							data: urls
+						});
+					}
+				} else if (button == 1){ // middle-click
+					if (urlsLen > openBookmarksLimit){
+						ConfirmDialog.open({
+							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks?',
+							button1: '<strong>Open</strong>',
+							button2: 'Nope',
+							fn1: function(){
+								for (var i=0; i<urlsLen; i++){
+									chrome.tabs.create({
+										url: urls[i],
+										selected: !shift
+									});
+								}
+							}
+						});
+					} else {
+						for (var i=0; i<urlsLen; i++){
+							chrome.tabs.create({
+								url: urls[i],
+								selected: !shift
+							});
+						}
 					}
 				}
 			});
@@ -364,10 +404,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	var $bookmarkContextMenu = $('bookmark-context-menu');
 	var $folderContextMenu = $('folder-context-menu');
-	var bodyWidth = body.offsetWidth;
-	var bookmarkMaxX = bodyWidth - $bookmarkContextMenu.offsetWidth;
+	var bookmarkMenuWidth = $bookmarkContextMenu.offsetWidth;
 	var bookmarkMenuHeight = $bookmarkContextMenu.offsetHeight;
-	var folderMaxX = bodyWidth - $folderContextMenu.offsetWidth;
+	var folderMenuWidth = $folderContextMenu.offsetWidth;
 	var folderMenuHeight = $folderContextMenu.offsetHeight;
 	
 	var clearMenu = function(){
@@ -388,24 +427,23 @@ document.addEventListener('DOMContentLoaded', function(){
 		clearMenu();
 		e.preventDefault();
 		var el = e.target;
-		var tagName = el.tagName;
-		if (tagName == 'A'){
+		if (el.tagName == 'A' || el.parentNode.tagName == 'A' && (el = el.parentNode)){
 			currentContext = el;
 			var active = body.querySelector('.active');
 			if (active) Element.removeClass(active, 'active');
 			Element.addClass(el, 'active');
-			var pageX = Math.min(e.pageX, bookmarkMaxX);
+			var pageX = Math.min(e.pageX, body.offsetWidth - bookmarkMenuWidth);
 			var pageY = e.pageY;
 			if (pageY > (window.innerHeight - bookmarkMenuHeight)) pageY -= bookmarkMenuHeight;
 			$bookmarkContextMenu.style.left = pageX + 'px';
 			$bookmarkContextMenu.style.top = pageY + 'px';
 			$bookmarkContextMenu.style.opacity = 1;
-		} else if (tagName == 'SPAN'){
+		} else if (el.tagName == 'SPAN' || el.parentNode.tagName == 'SPAN' && (el = el.parentNode)){
 			currentContext = el;
 			var active = body.querySelector('.active');
 			if (active) Element.removeClass(active, 'active');
 			Element.addClass(el, 'active');
-			var pageX = Math.min(e.pageX, folderMaxX);
+			var pageX = Math.min(e.pageX, body.offsetWidth - folderMenuWidth);
 			var pageY = e.pageY;
 			if (pageY > (window.innerHeight - folderMenuHeight)) pageY -= folderMenuHeight;
 			$folderContextMenu.style.left = pageX + 'px';
@@ -439,15 +477,8 @@ document.addEventListener('DOMContentLoaded', function(){
 			case 'bookmark-delete':
 				var li = currentContext.parentNode;
 				var id = li.id.replace('neat-tree-item-', '');
-				ConfirmDialog.open({
-					dialog: 'Are you sure you want to delete the <strong>' + currentContext.get('text') + '</strong> bookmark?',
-					button1: '<strong>Delete</strong>',
-					button2: 'Cancel',
-					fn1: function(){
-						chrome.bookmarks.remove(id, function(){
-							Element.destroy(li);
-						});
-					}
+				chrome.bookmarks.remove(id, function(){
+					Element.destroy(li);
 				});
 				break;
 		}
@@ -465,15 +496,14 @@ document.addEventListener('DOMContentLoaded', function(){
 			}));
 			var urlsLen = urls.length;
 			var noURLS = !urlsLen;
-			var limit = 10;
 			switch (el.id){
 				case 'folder-window':
 					if (noURLS) return;
-					if (urlsLen > limit){
+					if (urlsLen > openBookmarksLimit){
 						ConfirmDialog.open({
-							dialog: 'Are you sure you want to open all <strong>' + urlsLen + ' bookmarks</strong>?',
+							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks?',
 							button1: '<strong>Open</strong>',
-							button2: 'Cancel',
+							button2: 'Nope',
 							fn1: function(){
 								for (var i=0; i<urlsLen; i++){
 									chrome.tabs.create({
@@ -492,11 +522,11 @@ document.addEventListener('DOMContentLoaded', function(){
 					break;
 				case 'folder-new-window':
 					if (noURLS) return;
-					if (urlsLen > limit){
+					if (urlsLen > openBookmarksLimit){
 						ConfirmDialog.open({
-							dialog: 'Are you sure you want to open all <strong>' + urlsLen + ' bookmarks</strong> in a new window?',
+							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new window?',
 							button1: '<strong>Open</strong>',
-							button2: 'Cancel',
+							button2: 'Nope',
 							fn1: function(){
 								chrome.extension.sendRequest({
 									command: 'openAllBookmarksInNewWindow',
@@ -513,11 +543,11 @@ document.addEventListener('DOMContentLoaded', function(){
 					break;
 				case 'folder-new-incognito-window':
 					if (noURLS) return;
-					if (urlsLen > limit){
+					if (urlsLen > openBookmarksLimit){
 						ConfirmDialog.open({
-							dialog: 'Are you sure you want to open all <strong>' + urlsLen + ' bookmarks</strong> in a new incognito window?',
+							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new incognito window?',
 							button1: '<strong>Open</strong>',
-							button2: 'Cancel',
+							button2: 'Nope',
 							fn1: function(){
 								chrome.extension.sendRequest({
 									command: 'openAllBookmarksInIncognitoWindow',
@@ -533,18 +563,54 @@ document.addEventListener('DOMContentLoaded', function(){
 					}
 					break;
 				case 'folder-delete':
-					ConfirmDialog.open({
-						dialog: 'Are you sure you want to delete the <strong>' + currentContext.get('text') + '</strong> folder and <strong>' + urls.length + ' bookmark(s)</strong> in it?',
-						button1: '<strong>Delete</strong>',
-						button2: 'Cancel',
-						fn1: function(){
-							chrome.bookmarks.removeTree(id, function(){
-								li.destroy();
-							});
-						}
-					});
+					if (urlsLen){
+						ConfirmDialog.open({
+							dialog: 'Are you sure you want to delete <cite>' + currentContext.get('text') + '</cite> folder and ' + urlsLen + ' bookmark' + (urlsLen==1 ? '' : 's') + ' in it?',
+							button1: '<strong>Delete</strong>',
+							button2: 'Nope',
+							fn1: function(){
+								chrome.bookmarks.removeTree(id, function(){
+									li.destroy();
+								});
+							}
+						});
+					} else {
+						chrome.bookmarks.removeTree(id, function(){
+							li.destroy();
+						});
+					}
 					break;
 			}
 		});
+	});
+	
+	var $resizer = $('resizer');
+	var resizerDown = false;
+	var bodyWidth;
+	var screenX;
+	$resizer.addEventListener('mousedown', function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		resizerDown = true;
+		bodyWidth = body.offsetWidth;
+		screenX = e.screenX;
+	});
+	document.addEventListener('mousemove', function(e){
+		if (!resizerDown) return;
+		e.preventDefault();
+		var width = bodyWidth - (e.screenX - screenX);
+		if (width < 320){
+			width = 320;
+		} else if (width > 640){
+			width = 640;
+		}
+		document.body.style.width = width + 'px';
+		localStorage.popupWidth = width;
+		clearMenu(); // messes the context menu
+	});
+	document.addEventListener('mouseup', function(e){
+		if (!resizerDown) return;
+		e.preventDefault();
+		resizerDown = false;
 	});
 });

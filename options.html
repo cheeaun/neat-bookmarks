@@ -20,6 +20,9 @@ h1{
 	margin: 0;
 	padding: 0;
 }
+h1 img{
+	vertical-align: text-bottom;
+}
 .options-list{
 	margin: 10px 0;
 	padding: 0;
@@ -28,24 +31,27 @@ h1{
 	-webkit-border-radius: 5px;
 	background-color: rgba(255,255,255,.5);
 }
-.options-list li{
+.options-list li ul{
+	list-style-type: disc;
+}
+.options-list>li{
 	border-bottom: 1px solid #fff;
 	padding: .5em 1em;
 	line-height: 30px;
 }
-.options-list li:first-child{
+.options-list>li:first-child{
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
 }
-.options-list li:last-child{
+.options-list>li:last-child{
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 	-webkit-border-bottom-left-radius: 5px;
 	-webkit-border-bottom-right-radius: 5px;
 }
-.options-list li small{
+.options-list>li small{
 	opacity: .5;
 }
 .options-list li button{
@@ -63,6 +69,7 @@ h1{
 	margin: 0 0 0 20px;
 }
 #footer{
+	color: #999;
 	border-top: 1px solid rgba(0,0,0,.1);
 	padding-top: 10px;
 	margin-top: 40px;
@@ -72,6 +79,12 @@ h1{
 <script>
 document.addEventListener('DOMContentLoaded', function(){
 	if (localStorage){
+		var fetchFavicons = $('fetch-favicons');
+		fetchFavicons.checked = !!localStorage.fetchIcons;
+		fetchFavicons.addEventListener('change', function(){
+			localStorage.fetchIcons = fetchFavicons.checked ? '1' : '';
+		});
+		
 		var checkClearFavicon;
 		var clearFavicon = $('clear-favicon');
 		clearFavicon.addEventListener('click', function(e){
@@ -94,24 +107,15 @@ document.addEventListener('DOMContentLoaded', function(){
 	}
 });
 </script>
-<h1>Neat Bookmarks <small>Options</small></h1>
+<h1><img src="icon32.png" width="32" height="32" alt=""> Neat Bookmarks <small>Options</small></h1>
 <ul class="options-list">
-<li>Clear favicon cache <small>(will re-fetch the next time opening Neat Bookmarks)</small> <button id="clear-favicon">Clear <span class="space"></span></button></li>
 <li><label>Popup stays open when opening (left-clicking) bookmarks? <input type="checkbox" id="popup-stay-open"></label></li>
+<li><label>Fetch favicons, instead of using Chrome's internal favicons resource <small>(not recommended)</small><input type="checkbox" id="fetch-favicons"></label></label>
+<ul>
+	<li>Clear favicon cache <small>(will re-fetch the next time opening Neat Bookmarks)</small> <button id="clear-favicon">Clear <span class="space"></span></button></li>
+</ul>
+</li>
 </ul>
 <div id="footer">
-This extension uses <a href="http://p.yusukekamiyamane.com/" target="_blank">Fugue Icons</a> by Yusuke Kamiyamane.
+This extensions steals the folder icon from Mac OSX and the document icon from Google Chrome. Pretty neat, huh?
 </div>
-<!--
-<script>
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-279900-12']);
-_gaq.push(['_trackPageview']);
-
-(function(){
-var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-ga.src = 'https://ssl.google-analytics.com/ga.js';
-var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-</script>
--->

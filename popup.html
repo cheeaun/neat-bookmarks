@@ -3,41 +3,29 @@
 <link rel="stylesheet" href="neat.css">
 <script src="mootools.js"></script>
 <script src="neat.js"></script>
-<div id="search"><input id="search-input" type="search" autofocus></div>
+<div id="search"><input id="search-input" type="search" placeholder="Search bookmarks" autofocus></div>
 <div id="tree" tabindex="0"></div>
 <div id="results" style="display: none;"></div>
-<ul id="bookmark-context-menu" class="context-menu">
-<li id="bookmark-new-tab">Open in new tab</li>
-<li id="bookmark-new-window">Open in new window</li>
-<li id="bookmark-new-incognito-window">Open in incognito window</li>
-<li class="separator"></li>
-<li id="bookmark-delete">Delete</li>
+<ul id="bookmark-context-menu" class="context-menu" role="menu">
+<li id="bookmark-new-tab" role="menuitem">Open in new tab</li>
+<li id="bookmark-new-window" role="menuitem">Open in new window</li>
+<li id="bookmark-new-incognito-window" role="menuitem">Open in incognito window</li>
+<li class="separator" role="separator"></li>
+<li id="bookmark-delete" role="menuitem">Delete</li>
 </ul>
-<ul id="folder-context-menu" class="context-menu">
-<li id="folder-window">Open all bookmarks</li>
-<li id="folder-new-window">Open all bookmarks in new window</li>
-<li id="folder-new-incognito-window">Open all bookmarks in incognito window</li>
-<li class="separator"></li>
-<li id="folder-delete">Delete</li>
+<ul id="folder-context-menu" class="context-menu" role="menu">
+<li id="folder-window" role="menuitem">Open all bookmarks</li>
+<li id="folder-new-window" role="menuitem">Open all bookmarks in new window</li>
+<li id="folder-new-incognito-window" role="menuitem">Open all bookmarks in incognito window</li>
+<li class="separator" role="separator"></li>
+<li id="folder-delete" role="menuitem">Delete</li>
 </ul>
+<div id="resizer"></div>
 <div id="cover"></div>
-<div id="confirm-dialog">
+<div id="confirm-dialog" role="dialog">
 <p id="confirm-dialog-text"></p>
 <div class="buttons">
 <button id="confirm-dialog-button-1" onclick="ConfirmDialog.fn1(); ConfirmDialog.close();"></button>
 <button id="confirm-dialog-button-2" onclick="ConfirmDialog.fn2(); ConfirmDialog.close();"></button>
 </div>
 </div>
-<!--
-<script>
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-279900-12']);
-_gaq.push(['_trackPageview']);
-
-(function(){
-var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-ga.src = 'https://ssl.google-analytics.com/ga.js';
-var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-</script>
--->

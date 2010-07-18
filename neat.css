@@ -18,10 +18,12 @@ canvas{
 }
 #search{
 	height: 30px;
+	padding: 0 2px;
 }
 #search input{
-	width: 316px;
-	margin: 2px;
+	-webkit-box-sizing: border-box;
+	width: 100%;
+	margin: 2px 0;
 	padding: 2px;
 }
 #results,
@@ -31,7 +33,7 @@ canvas{
 	top: 30px;
 	bottom: 0;
 	background-color: #eee;
-	width: 320px;
+	width: 100%;
 	overflow: auto;
 	outline: 0;
 }
@@ -46,33 +48,33 @@ canvas{
 	-webkit-transition-property: color, background-color;
 	-webkit-transition-duration: .3s;
 	display: block;
-	line-height: 1.3em;
-	padding: 4px 4px 4px 24px;
+	line-height: 24px;
+	padding: 0 4px;
 	text-decoration: none;
-	background-repeat: no-repeat;
-	background-position: 4px 50%;
-	-webkit-background-size: 16px 16px;
 	color: #000;
 	outline: 0;
-	border-radius: 3px;
-	-webkit-border-radius: 3px;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
-#results ul li a{
-	background-image: url(document.png);
+#results ul li a img,
+#results ul li span img{
+	vertical-align: text-bottom;
+	margin-right: 4px;
 }
-#results ul li a[href^=javascript]{
-	background-image: url(document-code.png);
+#results ul li a i{
+	font-style: normal;
 }
-#results ul li a:hover{
+#results ul li a:hover i{
 	text-decoration: underline;
 }
 #results ul li a:active,
 #results ul li a:focus{
 	color: #fff;
-	background-color: #2B5DCD;
+	background-color: #5c93d5;
+	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #4480c8),color-stop(.05, #5c93d5),color-stop(1, #1755ab));
 	text-shadow: none;
 }
 .neat-tree ul,
@@ -95,30 +97,26 @@ canvas{
 	-webkit-transition-property: color, background-color;
 	-webkit-transition-duration: .3s;
 	display: block;
-	line-height: 1.3em;
-	padding: 4px 4px 4px 24px;
+	line-height: 24px;
+	padding: 0 4px;
 	text-decoration: none;
-	background-repeat: no-repeat;
-	background-position: 4px 50%;
-	-webkit-background-size: 16px 16px;
 	color: #000;
 	outline: 0;
-	border-radius: 3px;
-	-webkit-border-radius: 3px;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
-.neat-tree ul li a{
-	background-image: url(document.png);
+.neat-tree ul li a img,
+.neat-tree ul li span img{
+	vertical-align: text-bottom;
+	margin-right: 4px;
 }
-.neat-tree ul li a[href^=javascript]{
-	background-image: url(document-code.png);
+.neat-tree ul li a i{
+	font-style: normal;
 }
-.neat-tree ul li span{
-	background-image: url(folder.png);
-}
-.neat-tree ul li a:hover{
+.neat-tree ul li a:hover i{
 	text-decoration: underline;
 }
 .neat-tree ul li a:active,
@@ -127,7 +125,8 @@ canvas{
 .neat-tree ul li a:focus,
 .neat-tree ul li span:focus{
 	color: #fff;
-	background-color: #2B5DCD;
+	background-color: #5c93d5;
+	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #4480c8),color-stop(.05, #5c93d5),color-stop(1, #1755ab));
 	text-shadow: none;
 }
 @-webkit-keyframes blueFade {
@@ -155,11 +154,12 @@ canvas{
 	list-style: none;
 	position: absolute;
 	left: -999px;
+	border: 1px solid #bbb;
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
 	background-color: rgba(255,255,255,.96);
-	box-shadow: 0 2px 6px rgba(0,0,0,.3);
-	-webkit-box-shadow: 0 2px 6px rgba(0,0,0,.3);
+	box-shadow: 0 2px 6px rgba(0,0,0,.2);
+	-webkit-box-shadow: 0 2px 6px rgba(0,0,0,.2);
 }
 .context-menu li{
 	padding: 4px 10px;
@@ -167,7 +167,8 @@ canvas{
 }
 .context-menu li:hover{
 	color: #fff;
-	background-color: #2B5DCD;
+	background-color: #5c93d5;
+	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #4480c8),color-stop(.05, #5c93d5),color-stop(1, #1755ab));
 }
 .context-menu li.separator,
 .context-menu li.separator:hover{
@@ -175,6 +176,46 @@ canvas{
 	height: 1px;
 	margin: 2px 0;
 	background-color: #eee;
+}
+
+#resizer{
+	border-left: 1px solid #fff;
+	border-right: 1px solid #bbb;
+	width: 3px;
+	height: 16px;
+	position: absolute;
+	left: 1px;
+	bottom: 1px;
+	cursor: w-resize;
+	opacity: 0;
+	-webkit-transition-property: opacity;
+	-webkit-transition-duration: .3s;
+}
+
+#resizer:before{
+	content: '';
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 1px;
+	height: 16px;
+	background-color: #bbb;
+}
+
+#resizer:after{
+	content: '';
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 1px;
+	height: 16px;
+	background-color: #fff;
+}
+
+body:hover #resizer{
+	opacity: 1;
 }
 
 #cover{
@@ -204,14 +245,14 @@ canvas{
 	padding: 1em;
 	-webkit-transition-property: opacity, top;
 	-webkit-transition-duration: .3s;
-	-webkit-box-shadow: 0 0 50px rgba(0,0,0,.1);
-	box-shadow: 0 0 50px rgba(0,0,0,.1);
+	-webkit-box-shadow: 0 0 100px rgba(0,0,0,.1);
+	box-shadow: 0 0 100px rgba(0,0,0,.1);
 }
 
 #confirm-dialog-text{
 	padding: 0;
 	margin: 0 0 1em;
-	font-size: 1.2em;
+	font-size: 1.1em;
 	line-height: 1.4em;
 }
 
@@ -220,8 +261,7 @@ canvas{
 }
 
 #confirm-dialog .buttons button{
-	font-size: 1.2em;
-	padding: .5em 1em;
+	padding: .3em 1.5em;
 }
 
 .needConfirm #confirm-dialog{
