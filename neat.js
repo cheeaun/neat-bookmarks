@@ -57,7 +57,6 @@ var NeatTree = {
 			
 			element.addEventListener('focus', function(e){
 				var el = e.target;
-				console.log(el)
 				var tagName = el.tagName;
 				var focusEl = element.querySelector('.focus');
 				if (focusEl) focusEl.removeClass('focus');
@@ -68,6 +67,16 @@ var NeatTree = {
 					localStorage.focusID = null;
 				}
 			}, true);
+			// Force middle clicks to trigger the focus event
+			element.addEventListener('click', function(e){
+				if (e.button != 1) return;
+				var el = e.target;
+				var tagName = el.tagName;
+				if (tagName != 'A' && tagName != 'SPAN') el = el.parentNode;
+				var parentTagName = el.tagName;
+				if (parentTagName != 'A' && parentTagName != 'SPAN') return;
+				el.focus();
+			});
 			
 			var focusID = localStorage.focusID;
 			if (typeof focusID != 'undefined' && focusID != null){
