@@ -148,15 +148,16 @@ var NeatTree = {
 		for (var i=0, l=data.length; i<l; i++){
 			var d = data[i];
 			var children = d.children;
+			var hasChildren = !!children;
 			var url = d.url;
 			var id = d.id;
 			var idHTML = id ? ' id="neat-tree-item-' + id + '"': '';
-			if (!!children){
+			if (hasChildren || typeof url == 'undefined'){
 				var isOpen = opens.contains(id);
 				var open = isOpen ? ' open' : '';
 				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '">'
 					+ '<span tabindex="0"><img src="folder.png" width="16" height="16" alt="">' + d.name + '</span>';
-				if (isOpen){
+				if (isOpen && hasChildren){
 					html += NeatTree.generateHTML(children, true);
 				} else {
 					nonOpens[id] = children;
