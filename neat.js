@@ -215,6 +215,8 @@ var ConfirmDialog = {
 };
 
 document.addEventListener('DOMContentLoaded', function(){
+	try {
+	
 	var body = document.body;
 	
 	if (localStorage.popupHeight) body.style.height = localStorage.popupHeight + 'px';
@@ -624,4 +626,18 @@ document.addEventListener('DOMContentLoaded', function(){
 		e.preventDefault();
 		resizerDown = false;
 	});
+	
+	} catch(e){
+		var status = 'd cheeaun Neat Bookmarks: ' + e + ' ' + navigator.platform + ' ' + navigator.userAgent.match(/Chrome\/[^\s]*/);
+		ConfirmDialog.open({
+			dialog: '<strong>Oops, an error occured.</strong><br>It would be great if you could report this error to the author via Twitter direct message (if you have an account there).',
+			button1: '<strong>Report this error</strong>',
+			button2: 'Ignore',
+			fn1: function(){
+				chrome.tabs.create({
+					url: 'http://twitter.com/home?status=' + encodeURIComponent(status)
+				});
+			}
+		});
+	}
 });
