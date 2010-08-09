@@ -1,6 +1,6 @@
 {
 	"name": "Neat Bookmarks",
-	"version": "0.5",
+	"version": "0.6",
 	"description": "A neat bookmarks tree popup.",
 	"icons": {
 		"16": "icon16.png",
@@ -15,5 +15,6 @@
 	"background_page": "background.html",
 	"permissions": [
 		"http://*/*", "chrome://favicon/", "bookmarks", "tabs"
-	]
+	],
+	"minimum_chrome_version": "5"
 }
