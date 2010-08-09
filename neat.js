@@ -167,20 +167,16 @@ var NeatTree = {
 				var title = ' title="' + u + '"';
 				var name = d.name.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
+				var fetched = false;
 				if (fetchURLIcons){
 					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
 					if (dataURL){
-						if (dataURL === 1){
-							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
-						} else {
-							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0"><img src="' + dataURL + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
-						}
-					} else {
-						html += '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
+						fetched = true;
+						if (dataURL !== 1) favicon = dataURL;
 					}
-				} else {
-					html += '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 				}
+				var fetchedHTML = fetched ? ' class="fetched"' : '';
+				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 			}
 			html += '</li>';
 		}
@@ -267,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	var searchMode = false;
 	var searchInput = $('search-input');
+	var prevValue = '';
 	var search = function(){
 		var value = searchInput.value.trim();
 		localStorage.searchQuery = value;
@@ -276,6 +273,8 @@ document.addEventListener('DOMContentLoaded', function(){
 			$tree.style.display = 'block';
 			return;
 		}
+		if (value == prevValue) return;
+		prevValue = value;
 		searchMode = true;
 		chrome.bookmarks.search(value, function(results){
 			results.sort(function(a, b){
@@ -290,20 +289,16 @@ document.addEventListener('DOMContentLoaded', function(){
 				var name = result.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
 				html += '<li data-parentId="' + result.parentId + '" role="listitem">';
+				var fetched = false;
 				if (fetchURLIcons){
 					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
 					if (dataURL){
-						if (dataURL === 1){
-							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
-						} else {
-							html += '<a href="' + u + '"' + title + ' class="fetched" tabindex="0"><img src="' + dataURL + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
-						}
-					} else {
-						html += '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
+						fetched = true;
+						if (dataURL !== 1) favicon = dataURL;
 					}
-				} else {
-					html += '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 				}
+				var fetchedHTML = fetched ? ' class="fetched"' : '';
+				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 				html += '</li>';
 			}
 			html += '</ul>';
