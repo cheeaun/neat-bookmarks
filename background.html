@@ -4,23 +4,8 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 		case 'openAllBookmarksInNewWindow':
 			var urls = request.data;
 			chrome.windows.create({
-				url: urls.shift()
-			}, function(w){
-				var id = w.id;
-				for (var i=0, l=urls.length; i<l; i++){
-					chrome.tabs.create({
-						windowId: id,
-						url: urls[i],
-						selected: false
-					});
-				}
-			});
-			break;
-		case 'openAllBookmarksInIncognitoWindow':
-			var urls = request.data;
-			chrome.windows.create({
 				url: urls.shift(),
-				incognito: true
+				incognito: request.incognito
 			}, function(w){
 				var id = w.id;
 				for (var i=0, l=urls.length; i<l; i++){

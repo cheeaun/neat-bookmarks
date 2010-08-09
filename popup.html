@@ -4,21 +4,21 @@
 <script src="mootools.js"></script>
 <script src="neat.js"></script>
 <div id="search"><input id="search-input" type="search" placeholder="Search bookmarks" autofocus></div>
-<div id="tree" tabindex="0"></div>
-<div id="results" style="display: none;"></div>
-<ul id="bookmark-context-menu" class="context-menu" role="menu">
-<li id="bookmark-new-tab" role="menuitem">Open in new tab</li>
-<li id="bookmark-new-window" role="menuitem">Open in new window</li>
-<li id="bookmark-new-incognito-window" role="menuitem">Open in incognito window</li>
+<div id="tree" tabindex="-1"></div>
+<div id="results" tabindex="-1" style="display: none;"></div>
+<ul id="bookmark-context-menu" class="context-menu" role="menu" tabindex="-1">
+<li id="bookmark-new-tab" role="menuitem" tabindex="-1">Open in new tab</li>
+<li id="bookmark-new-window" role="menuitem" tabindex="-1">Open in new window</li>
+<li id="bookmark-new-incognito-window" role="menuitem" tabindex="-1">Open in incognito window</li>
 <li class="separator" role="separator"></li>
-<li id="bookmark-delete" role="menuitem">Delete</li>
+<li id="bookmark-delete" role="menuitem" tabindex="-1">Delete</li>
 </ul>
-<ul id="folder-context-menu" class="context-menu" role="menu">
-<li id="folder-window" role="menuitem">Open all bookmarks</li>
-<li id="folder-new-window" role="menuitem">Open all bookmarks in new window</li>
-<li id="folder-new-incognito-window" role="menuitem">Open all bookmarks in incognito window</li>
+<ul id="folder-context-menu" class="context-menu" role="menu" tabindex="-1">
+<li id="folder-window" role="menuitem" tabindex="-1">Open all bookmarks</li>
+<li id="folder-new-window" role="menuitem" tabindex="-1">Open all bookmarks in new window</li>
+<li id="folder-new-incognito-window" role="menuitem" tabindex="-1">Open all bookmarks in incognito window</li>
 <li class="separator" role="separator"></li>
-<li id="folder-delete" role="menuitem">Delete</li>
+<li id="folder-delete" role="menuitem" tabindex="-1">Delete</li>
 </ul>
 <div id="resizer"></div>
 <div id="cover"></div>

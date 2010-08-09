@@ -21,7 +21,6 @@ var NeatTree = {
 		
 		var html = '<div class="neat-tree">' + NeatTree.generateHTML(data) + '</div>';
 		
-		var nonOpens = NeatTree.nonOpens;
 		element.set('html', html).addEventListener('click', function(e){
 			var el = e.target;
 			if (el.tagName != 'SPAN') el = el.parentNode;
@@ -34,7 +33,7 @@ var NeatTree = {
 			var children = parent.querySelector('ul');
 			if (!children){
 				var id = parent.id.replace('neat-tree-item-', '');
-				var html = NeatTree.generateHTML(nonOpens[id]);
+				var html = NeatTree.generateHTML(NeatTree.nonOpens[id]);
 				var div = new Element('div', {html: html});
 				var ul = div.querySelector('ul');
 				Element.inject(ul, parent);
@@ -66,7 +65,7 @@ var NeatTree = {
 				} else {
 					localStorage.focusID = null;
 				}
-			}, true);
+			});
 			// Force middle clicks to trigger the focus event
 			element.addEventListener('click', function(e){
 				if (e.button != 1) return;
@@ -200,12 +199,14 @@ var ConfirmDialog = {
 			$('confirm-dialog-button-2').set('html', opts.button2);
 			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
 			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
+			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
 		}
 		document.body.addClass('needConfirm');
 	},
 	
 	close: function(){
 		document.body.removeClass('needConfirm');
+		$('search-input').focus(); // temporary solution
 	},
 	
 	fn1: function(){},
@@ -219,9 +220,11 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	var body = document.body;
 	
+	// Popup dimensions
 	if (localStorage.popupHeight) body.style.height = localStorage.popupHeight + 'px';
 	if (localStorage.popupWidth) body.style.width = localStorage.popupWidth + 'px';
 	
+	// Bookmark processing
 	var processBookmarks = function(c){
 		var response = [];
 		for (var i=0, l=c.length; i<l; i++){
@@ -256,20 +259,24 @@ document.addEventListener('DOMContentLoaded', function(){
 		NeatTree.init($tree, json);
 	});
 	
+	// Search
 	var $results = $('results');
 	var dataURLs = (localStorage && localStorage.dataURLs) ? JSON.parse(localStorage.dataURLs) : {};
 	var fetchURLIcons = NeatTree.fetchURLIcons;
 	var a = new Element('a');
 	
+	var searchMode = false;
 	var searchInput = $('search-input');
 	var search = function(){
-		var value = searchInput.get('value').trim();
+		var value = searchInput.value.trim();
 		localStorage.searchQuery = value;
 		if (value == ''){
+			searchMode = false;
 			$results.style.display = 'none';
 			$tree.style.display = 'block';
 			return;
 		}
+		searchMode = true;
 		chrome.bookmarks.search(value, function(results){
 			results.sort(function(a, b){
 				return b.dateAdded - a.dateAdded;
@@ -316,15 +323,150 @@ document.addEventListener('DOMContentLoaded', function(){
 			});
 		});
 	};
+	searchInput.addEventListener('keydown', function(e){
+		var key = e.keyCode;
+		if (key == 40 && searchInput.value.length == searchInput.selectionEnd){ // down
+			if (searchMode){
+				$results.querySelector('ul>li:first-child a').focus();
+			} else {
+				$tree.querySelector('ul>li:first-child').querySelector('span, a').focus();
+			}
+		} else if (key == 13 && searchInput.value.length){ // enter
+			var item = $results.querySelector('ul>li:first-child a');
+			item.focus();
+			setTimeout(function(){
+				var event = document.createEvent('MouseEvents');
+				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				item.dispatchEvent(event);
+			}, 100);
+		}
+	});
 	searchInput.addEventListener('keyup', search);
 	searchInput.addEventListener('click', search);
 	
+	// Pressing esc shouldn't close the popup when search field has value
+	searchInput.addEventListener('keydown', function(e){
+		if (e.keyCode == 27 && searchInput.value){ // esc
+			e.preventDefault();
+			searchInput.value = '';
+		}
+	});
+	
+	// Saved search query
 	if (localStorage.searchQuery){
 		searchInput.set('value', localStorage.searchQuery);
 		searchInput.click();
 	}
 	
+	// Bookmark handling
 	var openBookmarksLimit = 10;
+	var actions = {
+		
+		openBookmark: function(url){
+			chrome.tabs.getSelected(null, function(tab){
+				chrome.tabs.update(tab.id, {
+					url: url
+				});
+				if (!localStorage.bookmarkClickStayOpen) window.close();
+			});
+		},
+		
+		openBookmarkNewTab: function(url, selected){
+			chrome.tabs.create({
+				url: url,
+				selected: selected
+			});
+		},
+		
+		openBookmarkNewWindow: function(url, incognito){
+			chrome.windows.create({
+				url: url,
+				incognito: incognito
+			});
+		},
+		
+		openBookmarks: function(urls, selected){
+			var urlsLen = urls.length;
+			var open = function(){
+				for (var i=0; i<urlsLen; i++){
+					chrome.tabs.create({
+						url: urls[i],
+						selected: selected
+					});
+				}
+			};
+			if (urlsLen > openBookmarksLimit){
+				ConfirmDialog.open({
+					dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks?',
+					button1: '<strong>Open</strong>',
+					button2: 'Nope',
+					fn1: open
+				});
+			} else {
+				open();
+			}
+		},
+		
+		openBookmarksNewWindow: function(urls, incognito){
+			var urlsLen = urls.length;
+			var open = function(){
+				chrome.extension.sendRequest({
+					command: 'openAllBookmarksInNewWindow',
+					data: urls,
+					incognito: incognito
+				});
+			};
+			if (urlsLen > openBookmarksLimit){
+				var dialog = incognito ? 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new incognito window?' : 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new window?';
+				ConfirmDialog.open({
+					dialog: dialog,
+					button1: '<strong>Open</strong>',
+					button2: 'Nope',
+					fn1: open
+				});
+			} else {
+				open();
+			}
+		},
+		
+		deleteBookmark: function(id){
+			var li = $('neat-tree-item-' + id);
+			chrome.bookmarks.remove(id, function(){
+				Element.destroy(li);
+			});
+		},
+		
+		deleteBookmarks: function(id, bookmarkCount, folderCount){
+			var li = $('neat-tree-item-' + id);
+			var item = li.querySelector('span');
+			if (bookmarkCount || folderCount){
+				var dialog = 'Are you sure you want to delete <cite>' + item.get('text').trim() + '</cite> folder';
+				if (bookmarkCount && folderCount){
+					dialog += ', ' + folderCount + ' sub-folder' + (folderCount==1 ? '' : 's') + ' and ' + bookmarkCount + ' bookmark' + (bookmarkCount==1 ? '' : 's') + ' in it?';
+				} else if (bookmarkCount){
+					dialog += ' and ' + bookmarkCount + ' bookmark' + (bookmarkCount==1 ? '' : 's') + ' in it?';
+				} else {
+					dialog += ' and ' + folderCount + ' sub-folder' + (folderCount==1 ? '' : 's') + ' in it?';
+				}
+				ConfirmDialog.open({
+					dialog: dialog,
+					button1: '<strong>Delete</strong>',
+					button2: 'Nope',
+					fn1: function(){
+						chrome.bookmarks.removeTree(id, function(){
+							li.destroy();
+						});
+					}
+				});
+			} else {
+				chrome.bookmarks.removeTree(id, function(){
+					li.destroy();
+				});
+			}
+		}
+		
+	};
+	
 	var bookmarkHandler = function(e){
 		e.preventDefault();
 		var el = e.target;
@@ -333,25 +475,15 @@ document.addEventListener('DOMContentLoaded', function(){
 		var shift = e.shiftKey;
 		if (el.tagName == 'A' || el.parentNode.tagName == 'A' && (el = el.parentNode)){
 			var url = el.get('href');
-			chrome.tabs.getSelected(null, function(tab){
-				if (button == 0){
-					if (shift){ // shift click
-						chrome.windows.create({
-							url: url
-						});
-					} else { // click
-						chrome.tabs.update(tab.id, {
-							url: url
-						});
-						if (!localStorage.bookmarkClickStayOpen) window.close();
-					}
-				} else if (button == 1){ // middle-click
-					chrome.tabs.create({
-						url: url,
-						selected: !shift
-					});
+			if (button == 0){
+				if (shift){
+					actions.openBookmarkNewWindow(url);
+				} else {
+					actions.openBookmark(url);
 				}
-			});
+			} else if (button == 1){
+				actions.openBookmarkNewTab(url, !shift);
+			}
 		} else if (el.tagName == 'SPAN' || el.parentNode.tagName == 'SPAN' && (el = el.parentNode)){
 			var li = el.parentNode;
 			var id = li.id.replace('neat-tree-item-', '');
@@ -362,47 +494,9 @@ document.addEventListener('DOMContentLoaded', function(){
 				var urlsLen = urls.length;
 				if (!urlsLen) return;
 				if (button == 0 && shift){ // shift click
-					if (urlsLen > openBookmarksLimit){
-						ConfirmDialog.open({
-							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new window?',
-							button1: '<strong>Open</strong>',
-							button2: 'Nope',
-							fn1: function(){
-								chrome.extension.sendRequest({
-									command: 'openAllBookmarksInNewWindow',
-									data: urls
-								});
-							}
-						});
-					} else {
-						chrome.extension.sendRequest({
-							command: 'openAllBookmarksInNewWindow',
-							data: urls
-						});
-					}
+					actions.openBookmarksNewWindow(urls);
 				} else if (button == 1){ // middle-click
-					if (urlsLen > openBookmarksLimit){
-						ConfirmDialog.open({
-							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks?',
-							button1: '<strong>Open</strong>',
-							button2: 'Nope',
-							fn1: function(){
-								for (var i=0; i<urlsLen; i++){
-									chrome.tabs.create({
-										url: urls[i],
-										selected: !shift
-									});
-								}
-							}
-						});
-					} else {
-						for (var i=0; i<urlsLen; i++){
-							chrome.tabs.create({
-								url: urls[i],
-								selected: !shift
-							});
-						}
-					}
+					actions.openBookmarks(urls, !shift);
 				}
 			});
 		}
@@ -415,6 +509,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		if (e.button == 1) e.preventDefault();
 	});
 	
+	// Context menu
 	var $bookmarkContextMenu = $('bookmark-context-menu');
 	var $folderContextMenu = $('folder-context-menu');
 	var bookmarkMenuWidth = $bookmarkContextMenu.offsetWidth;
@@ -423,8 +518,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	var folderMenuHeight = $folderContextMenu.offsetHeight;
 	
 	var clearMenu = function(){
+		currentContext = null;
 		var active = body.querySelector('.active');
-		if (active) Element.removeClass(active, 'active');
+		if (active) Element.removeClass(active, 'active').focus();
 		$bookmarkContextMenu.style.left = '-999px';
 		$bookmarkContextMenu.style.opacity = 0;
 		$folderContextMenu.style.left = '-999px';
@@ -434,6 +530,8 @@ document.addEventListener('DOMContentLoaded', function(){
 	body.addEventListener('click', clearMenu);
 	$tree.addEventListener('scroll', clearMenu);
 	$results.addEventListener('scroll', clearMenu);
+	$tree.addEventListener('focus', clearMenu);
+	$results.addEventListener('focus', clearMenu);
 	
 	var currentContext = null;
 	body.addEventListener('contextmenu', function(e){
@@ -451,6 +549,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			$bookmarkContextMenu.style.left = pageX + 'px';
 			$bookmarkContextMenu.style.top = pageY + 'px';
 			$bookmarkContextMenu.style.opacity = 1;
+			$bookmarkContextMenu.focus();
 		} else if (el.tagName == 'SPAN' || el.parentNode.tagName == 'SPAN' && (el = el.parentNode)){
 			currentContext = el;
 			var active = body.querySelector('.active');
@@ -462,42 +561,37 @@ document.addEventListener('DOMContentLoaded', function(){
 			$folderContextMenu.style.left = pageX + 'px';
 			$folderContextMenu.style.top = pageY + 'px';
 			$folderContextMenu.style.opacity = 1;
+			$folderContextMenu.focus();
 		}
 	});
 	
 	$bookmarkContextMenu.addEventListener('click', function(e){
+		e.stopPropagation();
 		if (!currentContext) return;
 		var el = e.target;
 		if (el.tagName != 'LI') return;
 		var url = currentContext.href;
 		switch (el.id){
 			case 'bookmark-new-tab':
-				chrome.tabs.create({
-					url: url
-				});
+				actions.openBookmarkNewTab(url);
 				break;
 			case 'bookmark-new-window':
-				chrome.windows.create({
-					url: url
-				});
+				actions.openBookmarkNewWindow(url);
 				break;
 			case 'bookmark-new-incognito-window':
-				chrome.windows.create({
-					url: url,
-					incognito: true
-				});
+				actions.openBookmarkNewWindow(url, true);
 				break;
 			case 'bookmark-delete':
 				var li = currentContext.parentNode;
 				var id = li.id.replace('neat-tree-item-', '');
-				chrome.bookmarks.remove(id, function(){
-					Element.destroy(li);
-				});
+				actions.deleteBookmark(id);
 				break;
 		}
+		clearMenu();
 	});
 	
 	$folderContextMenu.addEventListener('click', function(e){
+		e.stopPropagation();
 		if (!currentContext) return;
 		var el = e.target;
 		if (el.tagName != 'LI') return;
@@ -512,91 +606,168 @@ document.addEventListener('DOMContentLoaded', function(){
 			switch (el.id){
 				case 'folder-window':
 					if (noURLS) return;
-					if (urlsLen > openBookmarksLimit){
-						ConfirmDialog.open({
-							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks?',
-							button1: '<strong>Open</strong>',
-							button2: 'Nope',
-							fn1: function(){
-								for (var i=0; i<urlsLen; i++){
-									chrome.tabs.create({
-										url: urls[i]
-									});
-								}
-							}
-						});
-					} else {
-						for (var i=0; i<urlsLen; i++){
-							chrome.tabs.create({
-								url: urls[i]
-							});
-						}
-					}
+					actions.openBookmarks(urls);
 					break;
 				case 'folder-new-window':
 					if (noURLS) return;
-					if (urlsLen > openBookmarksLimit){
-						ConfirmDialog.open({
-							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new window?',
-							button1: '<strong>Open</strong>',
-							button2: 'Nope',
-							fn1: function(){
-								chrome.extension.sendRequest({
-									command: 'openAllBookmarksInNewWindow',
-									data: urls
-								});
-							}
-						});
-					} else {
-						chrome.extension.sendRequest({
-							command: 'openAllBookmarksInNewWindow',
-							data: urls
-						});
-					}
+					actions.openBookmarksNewWindow(urls);
 					break;
 				case 'folder-new-incognito-window':
 					if (noURLS) return;
-					if (urlsLen > openBookmarksLimit){
-						ConfirmDialog.open({
-							dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new incognito window?',
-							button1: '<strong>Open</strong>',
-							button2: 'Nope',
-							fn1: function(){
-								chrome.extension.sendRequest({
-									command: 'openAllBookmarksInIncognitoWindow',
-									data: urls
-								});
-							}
-						});
-					} else {
-						chrome.extension.sendRequest({
-							command: 'openAllBookmarksInIncognitoWindow',
-							data: urls
-						});
-					}
+					actions.openBookmarksNewWindow(urls, true);
 					break;
 				case 'folder-delete':
-					if (urlsLen){
-						ConfirmDialog.open({
-							dialog: 'Are you sure you want to delete <cite>' + currentContext.get('text') + '</cite> folder and ' + urlsLen + ' bookmark' + (urlsLen==1 ? '' : 's') + ' in it?',
-							button1: '<strong>Delete</strong>',
-							button2: 'Nope',
-							fn1: function(){
-								chrome.bookmarks.removeTree(id, function(){
-									li.destroy();
-								});
-							}
-						});
-					} else {
-						chrome.bookmarks.removeTree(id, function(){
-							li.destroy();
-						});
-					}
+					actions.deleteBookmarks(id, urlsLen, children.length-urlsLen);
 					break;
 			}
+			clearMenu();
 		});
 	});
 	
+	// Keyboard navigation
+	var treeKeyDown = function(e){
+		var item = document.activeElement;
+		if (!/^(a|span)$/i.test(item.tagName)) item = $tree.querySelector('.focus') || $tree.querySelector('li:first-child>span');
+		var li = item.parentNode;
+		switch (e.keyCode){
+			case 40: // down
+				e.preventDefault();
+				if (li.hasClass('open')){
+					li.querySelector('ul>li:first-child').querySelector('a, span').focus();
+				} else {
+					var nextLi = li.getNext();
+					if (nextLi){
+						nextLi.querySelector('a, span').focus();
+					} else {
+						var nextLi;
+						do {
+							li = li.parentNode.parentNode;
+							if (li) nextLi = li.getNext();
+							if (nextLi) nextLi.querySelector('a, span').focus();
+						} while (li && !nextLi);
+					}
+				}
+				break;
+			case 38: // up
+				e.preventDefault();
+				var prevLi = li.getPrevious();
+				if (prevLi){
+					while (prevLi.hasClass('open')){
+						var lis = prevLi.querySelectorAll('ul>li:last-child');
+						prevLi = Array.filter(lis, function(li){
+							return !!li.parentNode.offsetHeight;
+						}).getLast();
+					};
+					prevLi.querySelector('a, span').focus();
+				} else {
+					var parentPrevLi = li.parentNode.parentNode;
+					if (parentPrevLi && parentPrevLi.tagName == 'LI'){
+						parentPrevLi.querySelector('a, span').focus();
+					} else {
+						searchInput.focus();
+					}
+				}
+				break;
+			case 39: // right
+				e.preventDefault();
+				if (!li.hasClass('open')){
+					var event = document.createEvent('MouseEvents');
+					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+					li.firstElementChild.dispatchEvent(event);
+				}
+				break;
+			case 37: // left
+				e.preventDefault();
+				if (li.hasClass('open')){
+					var event = document.createEvent('MouseEvents');
+					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+					li.firstElementChild.dispatchEvent(event);
+				}
+				break;
+			case 13: // enter
+				e.preventDefault();
+				var event = document.createEvent('MouseEvents');
+				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, 0, null);
+				li.firstElementChild.dispatchEvent(event);
+				break;
+		}
+	};
+	$tree.addEventListener('keydown', treeKeyDown);
+	$results.addEventListener('keydown', treeKeyDown);
+	
+	var treeKeyUp = function(e){
+		var item = document.activeElement;
+		if (!/^(a|span)$/i.test(item.tagName)) item = $tree.querySelector('.focus') || $tree.querySelector('li:first-child>span');
+		var li = item.parentNode;
+		switch (e.keyCode){
+			case 46: // delete
+				e.preventDefault();
+				var id = li.id.replace('neat-tree-item-', '');
+				if (li.hasClass('parent')){
+					chrome.bookmarks.getChildren(id, function(children){
+						var urlsLen = Array.clean(Array.map(children, function(c){
+							return c.url;
+						})).length;
+						actions.deleteBookmarks(id, urlsLen, children.length-urlsLen);
+					});
+				} else if (li.hasClass('child')){
+					actions.deleteBookmark(id);
+				}
+				break;
+		}
+	};
+	$tree.addEventListener('keyup', treeKeyUp);
+	$results.addEventListener('keyup', treeKeyUp);
+	
+	var contextKeyDown = function(e){
+		var item = document.activeElement;
+		switch (e.keyCode){
+			case 40: // down
+				e.preventDefault();
+				if (item.tagName == 'LI'){
+					var nextItem = item.getNext();
+					if (nextItem.hasClass('separator')) nextItem = nextItem.getNext();
+					if (nextItem) nextItem.focus();
+				} else {
+					item.firstElementChild.focus();
+				}
+				break;
+			case 38: // up
+				e.preventDefault();
+				if (item.tagName == 'LI'){
+					var prevItem = item.getPrevious();
+					if (prevItem.hasClass('separator')) prevItem = prevItem.getPrevious();
+					if (prevItem) prevItem.focus();
+				} else {
+					item.lastElementChild.focus();
+				}
+				break;
+			case 13: // enter
+				e.preventDefault();
+				var event = document.createEvent('MouseEvents');
+				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				item.dispatchEvent(event);
+			case 27: // esc
+				e.preventDefault();
+				clearMenu();
+		}
+	};
+	$bookmarkContextMenu.addEventListener('keydown', contextKeyDown);
+	$folderContextMenu.addEventListener('keydown', contextKeyDown);
+	
+	var contextMouseMove = function(e){
+		e.target.focus();
+	};
+	$bookmarkContextMenu.addEventListener('mousemove', contextMouseMove);
+	$folderContextMenu.addEventListener('mousemove', contextMouseMove);
+	
+	var contextMouseOut = function(){
+		this.focus();
+	};
+	$bookmarkContextMenu.addEventListener('mouseout', contextMouseOut);
+	$folderContextMenu.addEventListener('mouseout', contextMouseOut);
+	
+	// Resizer
 	var $resizer = $('resizer');
 	var resizerDown = false;
 	var bodyWidth;
