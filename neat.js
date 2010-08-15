@@ -529,10 +529,17 @@ document.addEventListener('DOMContentLoaded', function(){
 	var folderMenuWidth = $folderContextMenu.offsetWidth;
 	var folderMenuHeight = $folderContextMenu.offsetHeight;
 	
-	var clearMenu = function(){
+	var clearMenu = function(e){
 		currentContext = null;
 		var active = body.querySelector('.active');
-		if (active) Element.removeClass(active, 'active').focus();
+		if (active){
+			Element.removeClass(active, 'active');
+			// This is kinda hacky. Oh well.
+			if (e){
+				var el = e.target;
+				if (el == $tree || el == $results) active.focus();
+			}
+		}
 		$bookmarkContextMenu.style.left = '-999px';
 		$bookmarkContextMenu.style.opacity = 0;
 		$folderContextMenu.style.left = '-999px';
@@ -583,6 +590,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		var el = e.target;
 		if (el.tagName != 'LI') return;
 		var url = currentContext.href;
+		clearMenu();
 		switch (el.id){
 			case 'bookmark-new-tab':
 				actions.openBookmarkNewTab(url);
@@ -599,7 +607,6 @@ document.addEventListener('DOMContentLoaded', function(){
 				actions.deleteBookmark(id);
 				break;
 		}
-		clearMenu();
 	});
 	
 	$folderContextMenu.addEventListener('click', function(e){
@@ -609,6 +616,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		if (el.tagName != 'LI') return;
 		var li = currentContext.parentNode;
 		var id = li.id.replace('neat-tree-item-', '');
+		clearMenu();
 		chrome.bookmarks.getChildren(id, function(children){
 			var urls = Array.clean(Array.map(children, function(c){
 				return c.url;
@@ -632,7 +640,6 @@ document.addEventListener('DOMContentLoaded', function(){
 					actions.deleteBookmarks(id, urlsLen, children.length-urlsLen);
 					break;
 			}
-			clearMenu();
 		});
 	});
 	

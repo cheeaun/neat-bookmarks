@@ -70,6 +70,7 @@ canvas{
 	text-decoration: underline;
 }
 #results ul li a:active,
+#results ul li a.active,
 #results ul li a:focus{
 	color: #fff;
 	background-color: #5c93d5;
