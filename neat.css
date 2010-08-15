@@ -180,8 +180,8 @@ canvas{
 }
 
 #resizer{
-	border-@@bidi_start_edge__: 1px solid #fff;
-	border-@@bidi_end_edge__: 1px solid #bbb;
+	border-__MSG_@@bidi_start_edge__: 1px solid #fff;
+	border-__MSG_@@bidi_end_edge__: 1px solid #bbb;
 	width: 3px;
 	height: 16px;
 	position: absolute;
