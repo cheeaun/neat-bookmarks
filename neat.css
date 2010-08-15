@@ -1,4 +1,5 @@
 body{
+	direction: __MSG_@@bidi_dir__;
 	font: menu;
 	color: #000;
 	background-color: #fff;
@@ -60,7 +61,7 @@ canvas{
 #results ul li a img,
 #results ul li span img{
 	vertical-align: text-bottom;
-	margin-right: 4px;
+	margin-__MSG_@@bidi_end_edge__: 4px;
 }
 #results ul li a i{
 	font-style: normal;
@@ -83,7 +84,7 @@ canvas{
 	display: block;
 }
 .neat-tree ul ul{
-	margin-left: 16px;
+	margin-__MSG_@@bidi_start_edge__: 16px;
 	height: 0;
 	overflow: hidden;
 }
@@ -107,7 +108,7 @@ canvas{
 .neat-tree ul li a img,
 .neat-tree ul li span img{
 	vertical-align: text-bottom;
-	margin-right: 4px;
+	margin-__MSG_@@bidi_end_edge__: 4px;
 }
 .neat-tree ul li a i{
 	font-style: normal;
@@ -178,12 +179,12 @@ canvas{
 }
 
 #resizer{
-	border-left: 1px solid #fff;
-	border-right: 1px solid #bbb;
+	border-@@bidi_start_edge__: 1px solid #fff;
+	border-@@bidi_end_edge__: 1px solid #bbb;
 	width: 3px;
 	height: 16px;
 	position: absolute;
-	left: 1px;
+	__MSG_@@bidi_start_edge__: 1px;
 	bottom: 1px;
 	cursor: w-resize;
 	opacity: 0;
@@ -195,7 +196,7 @@ canvas{
 	content: '';
 	display: block;
 	position: absolute;
-	left: 0;
+	__MSG_@@bidi_start_edge__: 0;
 	top: 0;
 	width: 1px;
 	height: 16px;
@@ -206,7 +207,7 @@ canvas{
 	content: '';
 	display: block;
 	position: absolute;
-	right: 0;
+	__MSG_@@bidi_end_edge__: 0;
 	top: 0;
 	width: 1px;
 	height: 16px;
@@ -257,7 +258,7 @@ body:hover #resizer{
 }
 
 #confirm-dialog .buttons{
-	text-align: right;
+	text-align: __MSG_@@bidi_end_edge__;
 }
 
 #confirm-dialog .buttons button{

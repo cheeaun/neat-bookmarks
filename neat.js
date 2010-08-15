@@ -220,13 +220,29 @@ document.addEventListener('DOMContentLoaded', function(){
 	if (localStorage.popupHeight) body.style.height = localStorage.popupHeight + 'px';
 	if (localStorage.popupWidth) body.style.width = localStorage.popupWidth + 'px';
 	
+	// Some i18n
+	var _m = chrome.i18n.getMessage;
+	$('search-input').placeholder = _m('searchBookmarks');
+	$each({
+		'bookmark-new-tab': 'openNewTab',
+		'bookmark-new-window': 'openNewWindow',
+		'bookmark-new-incognito-window': 'openIncognitoWindow',
+		'bookmark-delete': 'delete',
+		'folder-window': 'openBookmarks',
+		'folder-new-window': 'openBookmarksNewWindow',
+		'folder-new-incognito-window': 'openBookmarksIncognitoWindow',
+		'folder-delete': 'delete'
+	}, function(msg, id){
+		$(id).innerHTML = _m(msg);
+	});
+	
 	// Bookmark processing
 	var processBookmarks = function(c){
 		var response = [];
 		for (var i=0, l=c.length; i<l; i++){
 			var item = c[i];
 			var o = {
-				name: item.title || '(untitled)'
+				name: item.title || _m('untitledBookmark')
 			};
 			if (item.url){
 				o.url = item.url;
@@ -313,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				chrome.bookmarks.get(parentId, function(node){
 					if (!node || !node.length) return;
 					var a = li.querySelector('a');
-					a.title = 'Parent folder: "' + node[0].title + '"\n' + a.title;
+					a.title = _m('parentFolder', node[0].title) + '\n' + a.title;
 				});
 			});
 		});
@@ -392,9 +408,9 @@ document.addEventListener('DOMContentLoaded', function(){
 			};
 			if (urlsLen > openBookmarksLimit){
 				ConfirmDialog.open({
-					dialog: 'Are you sure you want to open all ' + urlsLen + ' bookmarks?',
-					button1: '<strong>Open</strong>',
-					button2: 'Nope',
+					dialog: _m('confirmOpenBookmarks', ''+urlsLen),
+					button1: '<strong>' + _m('open') + '</strong>',
+					button2: _m('nope'),
 					fn1: open
 				});
 			} else {
@@ -412,11 +428,11 @@ document.addEventListener('DOMContentLoaded', function(){
 				});
 			};
 			if (urlsLen > openBookmarksLimit){
-				var dialog = incognito ? 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new incognito window?' : 'Are you sure you want to open all ' + urlsLen + ' bookmarks in a new window?';
+				var dialog = incognito ? _m('confirmOpenBookmarksNewIncognitoWindow', ''+urlsLen) : _m('confirmOpenBookmarksNewWindow', ''+urlsLen);
 				ConfirmDialog.open({
 					dialog: dialog,
-					button1: '<strong>Open</strong>',
-					button2: 'Nope',
+					button1: '<strong>' + _m('open') + '</strong>',
+					button2: _m('nope'),
 					fn1: open
 				});
 			} else {
@@ -435,18 +451,19 @@ document.addEventListener('DOMContentLoaded', function(){
 			var li = $('neat-tree-item-' + id);
 			var item = li.querySelector('span');
 			if (bookmarkCount || folderCount){
-				var dialog = 'Are you sure you want to delete <cite>' + item.get('text').trim() + '</cite> folder';
+				var dialog = '';
+				var folderName = '<cite>' + item.get('text').trim() + '</cite>';
 				if (bookmarkCount && folderCount){
-					dialog += ', ' + folderCount + ' sub-folder' + (folderCount==1 ? '' : 's') + ' and ' + bookmarkCount + ' bookmark' + (bookmarkCount==1 ? '' : 's') + ' in it?';
+					dialog = _m('confirmDeleteFolderSubfoldersBookmarks', [folderName, folderCount, bookmarkCount]);
 				} else if (bookmarkCount){
-					dialog += ' and ' + bookmarkCount + ' bookmark' + (bookmarkCount==1 ? '' : 's') + ' in it?';
+					dialog = _m('confirmDeleteFolderBookmarks', [folderName, bookmarkCount]);
 				} else {
-					dialog += ' and ' + folderCount + ' sub-folder' + (folderCount==1 ? '' : 's') + ' in it?';
+					dialog = _m('confirmDeleteFolderSubfolders', [folderName, folderCount]);
 				}
 				ConfirmDialog.open({
 					dialog: dialog,
-					button1: '<strong>Delete</strong>',
-					button2: 'Nope',
+					button1: '<strong>' + _m('delete') + '</strong>',
+					button2: _m('nope'),
 					fn1: function(){
 						chrome.bookmarks.removeTree(id, function(){
 							li.destroy();
@@ -796,9 +813,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	} catch(e){
 		var status = 'd cheeaun Neat Bookmarks: ' + e + ' ' + navigator.platform + ' ' + navigator.userAgent.match(/Chrome\/[^\s]*/);
 		ConfirmDialog.open({
-			dialog: '<strong>Oops, an error occured.</strong><br>It would be great if you could report this error to the author via Twitter direct message (if you have an account there).',
-			button1: '<strong>Report this error</strong>',
-			button2: 'Ignore',
+			dialog: '<strong>' + _m('errorOccured') + '</strong><br>' + _m('errorOccuredAction'),
+			button1: '<strong>' + _m('reportError') + '</strong>',
+			button2: _m('ignore'),
 			fn1: function(){
 				chrome.tabs.create({
 					url: 'http://twitter.com/home?status=' + encodeURIComponent(status)

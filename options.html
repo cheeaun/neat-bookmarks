@@ -4,13 +4,13 @@ html, body{
 	background-color: #eee;
 }
 body{
+	direction: __MSG_@@bidi_dir__;
 	font: message-box;
 	color: #000;
 	background-color: #eee;
 	cursor: default;
 	-webkit-user-drag: none;
 	-webkit-user-select: none;
-	overflow: hidden;
 	text-shadow: 0 1px #fff;
 	font-size: 14px;
 	margin: 0;
@@ -66,7 +66,8 @@ h1 img{
 	display: block;
 }
 .options-list li input[type=checkbox]{
-	margin: 0 0 0 20px;
+	margin: 0;
+	margin-__MSG_@@bidi_start_edge__: 20px;
 }
 #footer{
 	color: #999;
@@ -77,7 +78,13 @@ h1 img{
 </style>
 <script src="mootools.js"></script>
 <script>
+var _m = chrome.i18n.getMessage;
+var __m = function(){
+	document.write(_m.run(arguments));
+};
 document.addEventListener('DOMContentLoaded', function(){
+	document.title = _m('extName') + ' ' + _m('options');
+
 	if (localStorage){
 		var fetchFavicons = $('fetch-favicons');
 		fetchFavicons.checked = !!localStorage.fetchIcons;
@@ -107,15 +114,15 @@ document.addEventListener('DOMContentLoaded', function(){
 	}
 });
 </script>
-<h1><img src="icon32.png" width="32" height="32" alt=""> Neat Bookmarks <small>Options</small></h1>
+<h1><img src="icon32.png" width="32" height="32" alt=""> <script>__m('extName')</script> <small><script>__m('options')</script></small></h1>
 <ul class="options-list">
-<li><label>Popup stays open when opening (left-clicking) bookmarks? <input type="checkbox" id="popup-stay-open"></label></li>
-<li><label>Fetch favicons, instead of using Chrome's internal favicons resource <small>(not recommended)</small><input type="checkbox" id="fetch-favicons"></label></label>
+<li><label><script>__m('optionPopupStays')</script> <input type="checkbox" id="popup-stay-open"></label></li>
+<li><label><script>__m('optionFetchFavicons')</script><small><script>__m('optionFetchFaviconsNote')</script></small><input type="checkbox" id="fetch-favicons"></label></label>
 <ul>
-	<li>Clear favicon cache <small>(will re-fetch the next time opening Neat Bookmarks)</small> <button id="clear-favicon">Clear <span class="space"></span></button></li>
+	<li><script>__m('optionClearFaviconCache')</script> <small><script>__m('optionClearFaviconCacheNote')</script></small> <button id="clear-favicon"><script>__m('clear')</script></button></li>
 </ul>
 </li>
 </ul>
 <div id="footer">
-This extensions steals the folder icon from Mac OSX and the document icon from Google Chrome. Pretty neat, huh?
+<script>__m('optionsFooterText', '<a href="http://twitter.com/cheeaun">Lim Chee Aun</a>')</script>
 </div>

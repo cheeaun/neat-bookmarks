@@ -1,0 +1,162 @@
+{
+	"extName": {
+		"message": "Neat Bookmarks",
+		"description": "The extension name."
+	},
+	"extDesc": {
+		"message": "A neat bookmarks tree popup.",
+		"description": "The extension description."
+	},
+	"searchBookmarks": {
+		"message": "Search Bookmarks",
+		"description": "Placeholder text for search field."
+	},
+	"openNewTab": {
+		"message": "Open in new tab"
+	},
+	"openNewWindow": {
+		"message": "Open in new window"
+	},
+	"openIncognitoWindow": {
+		"message": "Open in incognito window"
+	},
+	"delete": {
+		"message": "Delete"
+	},
+	"openBookmarks": {
+		"message": "Open all bookmarks"
+	},
+	"openBookmarksNewWindow": {
+		"message": "Open all bookmarks in new window"
+	},
+	"openBookmarksIncognitoWindow": {
+		"message": "Open all bookmarks in incognito window"
+	},
+	"untitledBookmark": {
+		"message": "(untitled)",
+		"description": "The title for untitled bookmarks."
+	},
+	"parentFolder": {
+		"message": "Parent folder: \"$folderName$\"",
+		"description": "Parent folder information displayed in the tooltip of bookmarks in search results list.",
+		"placeholders": {
+			"folderName": {
+				"content": "$1",
+				"example": "Bookmarks bar"
+			}
+		}
+	},
+	"confirmOpenBookmarks": {
+		"message": "Are you sure you want to open all $count$ bookmarks?",
+		"description": "Confirmation message for opening all bookmarks.",
+		"placeholders": {
+			"count": {
+				"content": "$1"
+			}
+		}
+	},
+	"confirmOpenBookmarksNewWindow": {
+		"message": "Are you sure you want to open all $count$ bookmarks in a new window?",
+		"description": "Confirmation message for opening all bookmarks in a new window.",
+		"placeholders": {
+			"count": {
+				"content": "$1"
+			}
+		}
+	},
+	"confirmOpenBookmarksNewIncognitoWindow": {
+		"message": "Are you sure you want to open all $count$ bookmarks in a new incognito window?",
+		"description": "Confirmation message for opening all bookmarks in a new incognito window.",
+		"placeholders": {
+			"count": {
+				"content": "$1"
+			}
+		}
+	},
+	"confirmDeleteFolderSubfoldersBookmarks": {
+		"message": "Are you sure you want to delete $folderName$ folder, $subFolderCount$ sub-folder(s) and $bookmarkCount$ bookmark(s) in it?",
+		"placeholders": {
+			"folderName": {
+				"content": "$1"
+			},
+			"subFolderCount": {
+				"content": "$2"
+			},
+			"bookmarkCount": {
+				"content": "$3"
+			}
+		}
+	},
+	"confirmDeleteFolderBookmarks": {
+		"message": "Are you sure you want to delete $folderName$ folder and $bookmarkCount$ bookmark(s) in it?",
+		"placeholders": {
+			"folderName": {
+				"content": "$1"
+			},
+			"bookmarkCount": {
+				"content": "$2"
+			}
+		}
+	},
+	"confirmDeleteFolderSubfolders": {
+		"message": "Are you sure you want to delete $folderName$ folder and $subFolderCount$ sub-folder(s) in it?",
+		"placeholders": {
+			"folderName": {
+				"content": "$1"
+			},
+			"subFolderCount": {
+				"content": "$2"
+			}
+		}
+	},
+	"open": {
+		"message": "Open",
+		"description": "Action to open bookmarks."
+	},
+	"nope": {
+		"message": "Nope"
+	},
+	"errorOccured": {
+		"message": "Oops, an error occured."
+	},
+	"errorOccuredAction": {
+		"message": "It would be great if you could report this error to the author via Twitter direct message (if you have an account there)."
+	},
+	"reportError": {
+		"message": "Report this error"
+	},
+	"ignore": {
+		"message": "Ignore"
+	},
+	"options": {
+		"message": "Options"
+	},
+	"optionPopupStays": {
+		"message": "Popup stays open when opening (left-clicking) bookmarks?"
+	},
+	"optionFetchFavicons": {
+		"message": "Fetch favicons, instead of using Chrome's internal favicons resource"
+	},
+	"optionFetchFaviconsNote": {
+		"message": "(not recommended)"
+	},
+	"optionClearFaviconCache": {
+		"message": "Clear favicon cache"
+	},
+	"optionClearFaviconCacheNote": {
+		"message": "(will re-fetch the next time opening Neat Bookmarks)"
+	},
+	"clear": {
+		"message": "Clear",
+		"description": "Action to clear bookmarks favion cache."
+	},
+	"optionsFooterText": {
+		"message": "Handcrafted by $authorName$.",
+		"description": "Footer text for the Options page",
+		"placeholders": {
+			"authorName": {
+				"content": "$1"
+			}
+		}
+	}
+}

@@ -1,7 +1,7 @@
 {
-	"name": "Neat Bookmarks",
+	"name": "__MSG_extName__",
 	"version": "0.6",
-	"description": "A neat bookmarks tree popup.",
+	"description": "__MSG_extDesc__",
 	"icons": {
 		"16": "icon16.png",
 		"48": "icon48.png",
@@ -16,5 +16,6 @@
 	"permissions": [
 		"http://*/*", "chrome://favicon/", "bookmarks", "tabs"
 	],
-	"minimum_chrome_version": "5"
+	"minimum_chrome_version": "5",
+	"default_locale": "en"
 }
