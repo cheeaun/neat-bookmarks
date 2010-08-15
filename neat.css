@@ -180,43 +180,12 @@ canvas{
 }
 
 #resizer{
-	border-__MSG_@@bidi_start_edge__: 1px solid #fff;
-	border-__MSG_@@bidi_end_edge__: 1px solid #bbb;
-	width: 3px;
-	height: 16px;
 	position: absolute;
-	__MSG_@@bidi_start_edge__: 1px;
-	bottom: 1px;
-	cursor: w-resize;
-	opacity: 0;
-	-webkit-transition-property: opacity;
-	-webkit-transition-duration: .3s;
-}
-
-#resizer:before{
-	content: '';
-	display: block;
-	position: absolute;
+	width: 4px;
+	height: 100%;
 	__MSG_@@bidi_start_edge__: 0;
 	top: 0;
-	width: 1px;
-	height: 16px;
-	background-color: #bbb;
-}
-
-#resizer:after{
-	content: '';
-	display: block;
-	position: absolute;
-	__MSG_@@bidi_end_edge__: 0;
-	top: 0;
-	width: 1px;
-	height: 16px;
-	background-color: #fff;
-}
-
-body:hover #resizer{
-	opacity: 1;
+	cursor: w-resize;
 }
 
 #cover{

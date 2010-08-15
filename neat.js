@@ -260,16 +260,26 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	var $tree = $('tree');
 	chrome.bookmarks.getTree(function(tree){
-		// delay because window.screenY sometimes give the wrong value
-		(function(){
-			var height = screen.height - window.screenY - 50;
-			body.style.height = height + 'px';
-			localStorage.popupHeight = height;
-		}).delay(0);
-		
 		var json = processBookmarks(tree[0].children);
 		NeatTree.init($tree, json);
 	});
+	
+	// Popup auto-height
+	var resetHeight = function(){
+		var neatTree = $tree.firstElementChild;
+		var fullHeight = neatTree.offsetHeight + $tree.offsetTop + 10;
+		var maxHeight = screen.height - window.screenY - 50;
+		var height = Math.min(fullHeight, maxHeight);
+		body.style.height = height + 'px';
+		localStorage.popupHeight = height;
+	};
+	(function(){
+		body.style.webkitTransitionProperty = 'height';
+		body.style.webkitTransitionDuration = '.3s';
+		resetHeight();
+	}).delay(300);
+	document.addEventListener('click', resetHeight);
+	document.addEventListener('keyup', resetHeight);
 	
 	// Search
 	var $results = $('results');
