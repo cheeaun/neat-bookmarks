@@ -266,20 +266,20 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	// Popup auto-height
 	var resetHeight = function(){
-		var neatTree = $tree.firstElementChild;
-		var fullHeight = neatTree.offsetHeight + $tree.offsetTop + 10;
-		var maxHeight = screen.height - window.screenY - 50;
-		var height = Math.min(fullHeight, maxHeight);
-		body.style.height = height + 'px';
-		localStorage.popupHeight = height;
+		setTimeout(function(){
+			if (!body.style.webkitTransitionProperty) body.style.webkitTransitionProperty = 'height';
+			var neatTree = $tree.firstElementChild;
+			var fullHeight = neatTree.offsetHeight + $tree.offsetTop + 16;
+			body.style.webkitTransitionDuration = (fullHeight < window.innerHeight) ? '.3s' : '.1s';
+			var maxHeight = screen.height - window.screenY - 50;
+			var height = Math.max(200, Math.min(fullHeight, maxHeight));
+			body.style.height = height + 'px';
+			localStorage.popupHeight = height;
+		}, 100);
 	};
-	(function(){
-		body.style.webkitTransitionProperty = 'height';
-		body.style.webkitTransitionDuration = '.3s';
-		resetHeight();
-	}).delay(300);
-	document.addEventListener('click', resetHeight);
-	document.addEventListener('keyup', resetHeight);
+	resetHeight();
+	$tree.addEventListener('click', resetHeight);
+	$tree.addEventListener('keyup', resetHeight);
 	
 	// Search
 	var $results = $('results');
@@ -812,11 +812,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		if (!resizerDown) return;
 		e.preventDefault();
 		var width = bodyWidth - (e.screenX - screenX);
-		if (width < 320){
-			width = 320;
-		} else if (width > 640){
-			width = 640;
-		}
+		width = Math.min(640, Math.max(320, width));
 		document.body.style.width = width + 'px';
 		localStorage.popupWidth = width;
 		clearMenu(); // messes the context menu

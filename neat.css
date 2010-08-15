@@ -21,6 +21,7 @@ canvas{
 	padding: 0 2px;
 }
 #search input{
+	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	width: 100%;
 	margin: 2px 0;
@@ -39,44 +40,7 @@ canvas{
 	outline: 0;
 }
 #results ul,
-#results ul li{
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: block;
-}
-#results ul li a{
-	display: block;
-	line-height: 22px;
-	padding: 0 4px;
-	text-decoration: none;
-	color: #000;
-	outline: 0;
-	border-radius: 2px;
-	-webkit-border-radius: 2px;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;
-}
-#results ul li a img,
-#results ul li span img{
-	vertical-align: text-bottom;
-	margin-__MSG_@@bidi_end_edge__: 4px;
-}
-#results ul li a i{
-	font-style: normal;
-}
-#results ul li a:hover i{
-	text-decoration: underline;
-}
-#results ul li a:active,
-#results ul li a.active,
-#results ul li a:focus{
-	color: #fff;
-	background-color: #5c93d5;
-	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #4480c8),color-stop(.05, #5c93d5),color-stop(1, #1755ab));
-	text-shadow: none;
-}
+#results ul li,
 .neat-tree ul,
 .neat-tree ul li{
 	list-style: none;
@@ -84,14 +48,7 @@ canvas{
 	padding: 0;
 	display: block;
 }
-.neat-tree ul ul{
-	margin-__MSG_@@bidi_start_edge__: 16px;
-	height: 0;
-	overflow: hidden;
-}
-.neat-tree .open>ul{
-	height: auto;
-}
+#results ul li a,
 .neat-tree ul li a,
 .neat-tree ul li span{
 	display: block;
@@ -106,27 +63,44 @@ canvas{
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
+#results ul li a img,
+#results ul li span img,
 .neat-tree ul li a img,
 .neat-tree ul li span img{
 	vertical-align: text-bottom;
 	margin-__MSG_@@bidi_end_edge__: 4px;
 }
+#results ul li a i,
 .neat-tree ul li a i{
 	font-style: normal;
 }
+#results ul li a:hover i,
 .neat-tree ul li a:hover i{
 	text-decoration: underline;
 }
+#results ul li a:active,
+#results ul li a.active,
+#results ul li a:focus,
 .neat-tree ul li a:active,
 .neat-tree ul li span:active,
 .neat-tree ul li a.active,
 .neat-tree ul li span.active,
 .neat-tree ul li a:focus,
-.neat-tree ul li span:focus{
+.neat-tree ul li span:focus,
+.context-menu li:not(.separator):focus{
 	color: #fff;
 	background-color: #5c93d5;
-	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #4480c8),color-stop(.05, #5c93d5),color-stop(1, #1755ab));
-	text-shadow: none;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#4480c8), color-stop(.05, #5c93d5), to(#1755ab));
+	text-shadow: 0 0 #fff, 0 1px rgba(0,0,0,.75);
+	outline: 0;
+}
+.neat-tree ul ul{
+	margin-__MSG_@@bidi_start_edge__: 16px;
+	height: 0;
+	overflow: hidden;
+}
+.neat-tree .open>ul{
+	height: auto;
 }
 @-webkit-keyframes blueFade {
 	0% {
@@ -165,12 +139,6 @@ canvas{
 	padding: 0 10px;
 	line-height: 22px;
 	text-shadow: none;
-}
-.context-menu li:not(.separator):focus{
-	color: #fff;
-	background-color: #5c93d5;
-	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #4480c8),color-stop(.05, #5c93d5),color-stop(1, #1755ab));
-	outline: 0;
 }
 .context-menu li.separator{
 	padding: 0;
