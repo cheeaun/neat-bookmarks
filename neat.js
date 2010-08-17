@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				chrome.tabs.update(tab.id, {
 					url: url
 				});
-				if (!localStorage.bookmarkClickStayOpen) window.close();
+				if (!localStorage.bookmarkClickStayOpen) window.close.delay(200);
 			});
 		},
 		
