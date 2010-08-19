@@ -147,6 +147,11 @@ canvas{
 	background-color: #eee;
 }
 
+.context-menu.hide-editables li.separator,
+.context-menu.hide-editables li#folder-delete{
+	display: none;
+}
+
 #resizer{
 	position: absolute;
 	width: 4px;

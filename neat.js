@@ -150,11 +150,12 @@ var NeatTree = {
 			var hasChildren = !!children;
 			var url = d.url;
 			var id = d.id;
+			var parentID = d.parentId;
 			var idHTML = id ? ' id="neat-tree-item-' + id + '"': '';
 			if (hasChildren || typeof url == 'undefined'){
 				var isOpen = opens.contains(id);
 				var open = isOpen ? ' open' : '';
-				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '">'
+				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '" data-parentid="' + parentID + '">'
 					+ '<span tabindex="0"><img src="folder.png" width="16" height="16" alt="">' + d.name + '</span>';
 				if (isOpen && hasChildren){
 					html += NeatTree.generateHTML(children, true);
@@ -162,7 +163,7 @@ var NeatTree = {
 					nonOpens[id] = children;
 				}
 			} else {
-				html += '<li class="child"' + idHTML + ' role="treeitem">';
+				html += '<li class="child"' + idHTML + ' role="treeitem" data-parentid="' + parentID + '">';
 				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var title = ' title="' + u + '"';
 				var name = d.name.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
@@ -249,6 +250,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				o.icon = ''
 			}
 			if (item.id) o.id = item.id;
+			if (item.parentId) o.parentId = item.parentId;
 			var children = item.children;
 			if (children && children.length){
 				o.children = processBookmarks(children);
@@ -314,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				var title = ' title="' + u + '"';
 				var name = result.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
-				html += '<li data-parentId="' + result.parentId + '" role="listitem">';
+				html += '<li data-parentid="' + result.parentId + '" role="listitem">';
 				var fetched = false;
 				if (fetchURLIcons){
 					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
@@ -335,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			
 			var lis = $results.querySelectorAll('li');
 			Array.each(lis, function(li){
-				var parentId = li.get('data-parentId');
+				var parentId = li.get('data-parentid');
 				chrome.bookmarks.get(parentId, function(node){
 					if (!node || !node.length) return;
 					var a = li.querySelector('a');
@@ -536,8 +538,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	var $folderContextMenu = $('folder-context-menu');
 	var bookmarkMenuWidth = $bookmarkContextMenu.offsetWidth;
 	var bookmarkMenuHeight = $bookmarkContextMenu.offsetHeight;
-	var folderMenuWidth = $folderContextMenu.offsetWidth;
-	var folderMenuHeight = $folderContextMenu.offsetHeight;
 	
 	var clearMenu = function(e){
 		currentContext = null;
@@ -584,6 +584,13 @@ document.addEventListener('DOMContentLoaded', function(){
 			var active = body.querySelector('.active');
 			if (active) Element.removeClass(active, 'active');
 			Element.addClass(el, 'active');
+			if (el.parentNode.get('data-parentid') == '0'){
+				$folderContextMenu.addClass('hide-editables');
+			} else {
+				$folderContextMenu.removeClass('hide-editables');
+			}
+			var folderMenuWidth = $folderContextMenu.offsetWidth;
+			var folderMenuHeight = $folderContextMenu.offsetHeight;
 			var pageX = Math.min(e.pageX, body.offsetWidth - folderMenuWidth);
 			var pageY = e.pageY;
 			if (pageY > (window.innerHeight - folderMenuHeight)) pageY -= folderMenuHeight;
@@ -600,7 +607,6 @@ document.addEventListener('DOMContentLoaded', function(){
 		var el = e.target;
 		if (el.tagName != 'LI') return;
 		var url = currentContext.href;
-		clearMenu();
 		switch (el.id){
 			case 'bookmark-new-tab':
 				actions.openBookmarkNewTab(url);
@@ -612,11 +618,13 @@ document.addEventListener('DOMContentLoaded', function(){
 				actions.openBookmarkNewWindow(url, true);
 				break;
 			case 'bookmark-delete':
+				console.log(currentContext)
 				var li = currentContext.parentNode;
 				var id = li.id.replace('neat-tree-item-', '');
 				actions.deleteBookmark(id);
 				break;
 		}
+		clearMenu();
 	});
 	
 	$folderContextMenu.addEventListener('click', function(e){
@@ -626,7 +634,6 @@ document.addEventListener('DOMContentLoaded', function(){
 		if (el.tagName != 'LI') return;
 		var li = currentContext.parentNode;
 		var id = li.id.replace('neat-tree-item-', '');
-		clearMenu();
 		chrome.bookmarks.getChildren(id, function(children){
 			var urls = Array.clean(Array.map(children, function(c){
 				return c.url;
@@ -651,6 +658,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					break;
 			}
 		});
+		clearMenu();
 	});
 	
 	// Keyboard navigation
