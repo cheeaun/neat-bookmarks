@@ -618,7 +618,6 @@ document.addEventListener('DOMContentLoaded', function(){
 				actions.openBookmarkNewWindow(url, true);
 				break;
 			case 'bookmark-delete':
-				console.log(currentContext)
 				var li = currentContext.parentNode;
 				var id = li.id.replace('neat-tree-item-', '');
 				actions.deleteBookmark(id);
