@@ -23,7 +23,6 @@ var NeatTree = {
 		
 		element.set('html', html).addEventListener('click', function(e){
 			var el = e.target;
-			if (el.tagName != 'SPAN') el = el.parentNode;
 			if (el.tagName != 'SPAN') return;
 			if (e.button != 0) return;
 			if (e.shiftKey) return;
@@ -33,7 +32,7 @@ var NeatTree = {
 			var children = parent.querySelector('ul');
 			if (!children){
 				var id = parent.id.replace('neat-tree-item-', '');
-				var html = NeatTree.generateHTML(NeatTree.nonOpens[id]);
+				var html = NeatTree.generateHTML(NeatTree.nonOpens[id], parseInt(parent.parentNode.get('data-level'))+1);
 				var div = new Element('div', {html: html});
 				var ul = div.querySelector('ul');
 				Element.inject(ul, parent);
@@ -71,9 +70,7 @@ var NeatTree = {
 				if (e.button != 1) return;
 				var el = e.target;
 				var tagName = el.tagName;
-				if (tagName != 'A' && tagName != 'SPAN') el = el.parentNode;
-				var parentTagName = el.tagName;
-				if (parentTagName != 'A' && parentTagName != 'SPAN') return;
+				if (tagName != 'A' && tagName != 'SPAN') return;
 				el.focus();
 			});
 			
@@ -137,8 +134,12 @@ var NeatTree = {
 	
 	_a: new Element('a'),
 	
-	generateHTML: function(data, group){
-		var html = '<ul role="' + (group ? 'group' : 'tree') + '">';
+	generateHTML: function(data, level){
+		if (!level) level = 0;
+		var group = (level == 0) ? 'tree' : 'group';
+		var paddingStart = 14*level;
+		var aPaddingStart = paddingStart+16;
+		var html = '<ul role="' + group + '" data-level="' + level + '">';
 		var a = NeatTree._a;
 		var opens = NeatTree.opens;
 		var nonOpens = NeatTree.nonOpens;
@@ -156,9 +157,9 @@ var NeatTree = {
 				var isOpen = opens.contains(id);
 				var open = isOpen ? ' open' : '';
 				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '" data-parentid="' + parentID + '">'
-					+ '<span tabindex="0"><img src="folder.png" width="16" height="16" alt="">' + d.name + '</span>';
+					+ '<span tabindex="0" style="-webkit-padding-start: ' + paddingStart + 'px"><i class="twisty"></i><img src="folder.png" width="16" height="16" alt="">' + d.name + '</span>';
 				if (isOpen && hasChildren){
-					html += NeatTree.generateHTML(children, true);
+					html += NeatTree.generateHTML(children, level+1);
 				} else {
 					nonOpens[id] = children;
 				}
@@ -177,7 +178,7 @@ var NeatTree = {
 					}
 				}
 				var fetchedHTML = fetched ? ' class="fetched"' : '';
-				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
+				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 			}
 			html += '</li>';
 		}
@@ -265,23 +266,6 @@ document.addEventListener('DOMContentLoaded', function(){
 		var json = processBookmarks(tree[0].children);
 		NeatTree.init($tree, json);
 	});
-	
-	// Popup auto-height
-	var resetHeight = function(){
-		setTimeout(function(){
-			if (!body.style.webkitTransitionProperty) body.style.webkitTransitionProperty = 'height';
-			var neatTree = $tree.firstElementChild;
-			var fullHeight = neatTree.offsetHeight + $tree.offsetTop + 16;
-			body.style.webkitTransitionDuration = (fullHeight < window.innerHeight) ? '.3s' : '.1s';
-			var maxHeight = screen.height - window.screenY - 50;
-			var height = Math.max(200, Math.min(fullHeight, maxHeight));
-			body.style.height = height + 'px';
-			localStorage.popupHeight = height;
-		}, 100);
-	};
-	resetHeight();
-	$tree.addEventListener('click', resetHeight);
-	$tree.addEventListener('keyup', resetHeight);
 	
 	// Search
 	var $results = $('results');
@@ -380,6 +364,23 @@ document.addEventListener('DOMContentLoaded', function(){
 		searchInput.set('value', localStorage.searchQuery);
 		searchInput.click();
 	}
+	
+	// Popup auto-height
+	var resetHeight = function(){
+		setTimeout(function(){
+			if (!body.style.webkitTransitionProperty) body.style.webkitTransitionProperty = 'height';
+			var neatTree = $tree.firstElementChild;
+			var fullHeight = neatTree.offsetHeight + $tree.offsetTop + 16;
+			body.style.webkitTransitionDuration = (fullHeight < window.innerHeight) ? '.3s' : '.1s';
+			var maxHeight = screen.height - window.screenY - 50;
+			var height = Math.max(200, Math.min(fullHeight, maxHeight));
+			body.style.height = height + 'px';
+			localStorage.popupHeight = height;
+		}, 100);
+	};
+	if (!searchMode) resetHeight();
+	$tree.addEventListener('click', resetHeight);
+	$tree.addEventListener('keyup', resetHeight);
 	
 	// Bookmark handling
 	var openBookmarksLimit = 10;
@@ -497,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		var button = e.button;
 		if (e.ctrlKey || e.metaKey) button = 1;
 		var shift = e.shiftKey;
-		if (el.tagName == 'A' || el.parentNode.tagName == 'A' && (el = el.parentNode)){
+		if (el.tagName == 'A'){
 			var url = el.get('href');
 			if (button == 0){
 				if (shift){
@@ -508,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			} else if (button == 1){
 				actions.openBookmarkNewTab(url, !shift);
 			}
-		} else if (el.tagName == 'SPAN' || el.parentNode.tagName == 'SPAN' && (el = el.parentNode)){
+		} else if (el.tagName == 'SPAN'){
 			var li = el.parentNode;
 			var id = li.id.replace('neat-tree-item-', '');
 			chrome.bookmarks.getChildren(id, function(children){
@@ -567,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		clearMenu();
 		e.preventDefault();
 		var el = e.target;
-		if (el.tagName == 'A' || el.parentNode.tagName == 'A' && (el = el.parentNode)){
+		if (el.tagName == 'A'){
 			currentContext = el;
 			var active = body.querySelector('.active');
 			if (active) Element.removeClass(active, 'active');
@@ -579,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			$bookmarkContextMenu.style.top = pageY + 'px';
 			$bookmarkContextMenu.style.opacity = 1;
 			$bookmarkContextMenu.focus();
-		} else if (el.tagName == 'SPAN' || el.parentNode.tagName == 'SPAN' && (el = el.parentNode)){
+		} else if (el.tagName == 'SPAN'){
 			currentContext = el;
 			var active = body.querySelector('.active');
 			if (active) Element.removeClass(active, 'active');

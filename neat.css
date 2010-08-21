@@ -38,6 +38,10 @@ canvas{
 	width: 100%;
 	overflow: auto;
 	outline: 0;
+	padding-top: 3px;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,.03)), to(rgba(0,0,0,0)));
+	-webkit-background-size: 100% 3px;
+	background-repeat: no-repeat;
 }
 #results ul,
 #results ul li,
@@ -52,22 +56,40 @@ canvas{
 .neat-tree ul li a,
 .neat-tree ul li span{
 	display: block;
-	line-height: 22px;
+	line-height: 20px;
 	padding: 0 4px;
 	text-decoration: none;
 	color: #000;
 	outline: 0;
-	border-radius: 2px;
-	-webkit-border-radius: 2px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
+}
+#results ul li a *,
+.neat-tree ul li a *,
+.neat-tree ul li span *{
+	pointer-events: none;
+}
+.neat-tree ul li span .twisty{
+	display: inline-block;
+	position: relative;
+	width: 0;
+	height: 0;
+	border-width: 4.5px 0 4.5px 8px;
+	border-color: transparent #84919f;
+	border-style: solid;
+	margin: 0 4px;
+	-webkit-transition-property: -webkit-transform;
+	-webkit-transition-duration: .15s;
+}
+.neat-tree ul li.open>span .twisty{
+	-webkit-transform: rotate(90deg);
 }
 #results ul li a img,
 #results ul li span img,
 .neat-tree ul li a img,
 .neat-tree ul li span img{
-	vertical-align: text-bottom;
+	vertical-align: text-top;
 	margin-__MSG_@@bidi_end_edge__: 4px;
 }
 #results ul li a i,
@@ -89,13 +111,17 @@ canvas{
 .neat-tree ul li span:focus,
 .context-menu li:not(.separator):focus{
 	color: #fff;
-	background-color: #5c93d5;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#4480c8), color-stop(.05, #5c93d5), to(#1755ab));
-	text-shadow: 0 0 #fff, 0 1px rgba(0,0,0,.75);
+	background-color: #4687cb;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#5594d2), color-stop(.05, #6fa6de), to(#1e6cbb));
+	text-shadow: 0 0 rgba(255,255,255,.75), 0 1px rgba(0,0,0,.75);
 	outline: 0;
 }
+.neat-tree ul li span:active .twisty,
+.neat-tree ul li span.active .twisty,
+.neat-tree ul li span:focus .twisty{
+	border-color: transparent #e5eef8;
+}
 .neat-tree ul ul{
-	margin-__MSG_@@bidi_start_edge__: 16px;
 	height: 0;
 	overflow: hidden;
 }
@@ -137,7 +163,7 @@ canvas{
 }
 .context-menu li{
 	padding: 0 10px;
-	line-height: 22px;
+	line-height: 20px;
 	text-shadow: none;
 }
 .context-menu li.separator{
@@ -145,6 +171,7 @@ canvas{
 	height: 1px;
 	margin: 2px 0;
 	background-color: #eee;
+	pointer-events: none;
 }
 
 .context-menu.hide-editables li.separator,
