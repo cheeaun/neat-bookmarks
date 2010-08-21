@@ -142,7 +142,7 @@ canvas{
 .neat-tree ul li a.focus,
 .neat-tree ul li span.focus{
 	-webkit-animation-name: blueFade;
-	-webkit-animation-duration: 4s;
+	-webkit-animation-duration: 3s;
 }
 .context-menu{
 	-webkit-transition-property: opacity;

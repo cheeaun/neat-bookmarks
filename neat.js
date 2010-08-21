@@ -64,7 +64,7 @@ var NeatTree = {
 				} else {
 					localStorage.focusID = null;
 				}
-			});
+			}, true);
 			// Force middle clicks to trigger the focus event
 			element.addEventListener('click', function(e){
 				if (e.button != 1) return;
@@ -560,8 +560,8 @@ document.addEventListener('DOMContentLoaded', function(){
 	body.addEventListener('click', clearMenu);
 	$tree.addEventListener('scroll', clearMenu);
 	$results.addEventListener('scroll', clearMenu);
-	$tree.addEventListener('focus', clearMenu);
-	$results.addEventListener('focus', clearMenu);
+	$tree.addEventListener('focus', clearMenu, true);
+	$results.addEventListener('focus', clearMenu, true);
 	
 	var currentContext = null;
 	body.addEventListener('contextmenu', function(e){
