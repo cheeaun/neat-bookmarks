@@ -213,14 +213,10 @@ var ConfirmDialog = {
 	
 };
 
-document.addEventListener('DOMContentLoaded', function(){
+(function(){
 	try {
 	
 	var body = document.body;
-	
-	// Popup dimensions
-	if (localStorage.popupHeight) body.style.height = localStorage.popupHeight + 'px';
-	if (localStorage.popupWidth) body.style.width = localStorage.popupWidth + 'px';
 	
 	// Some i18n
 	var _m = chrome.i18n.getMessage;
@@ -673,7 +669,11 @@ document.addEventListener('DOMContentLoaded', function(){
 		var item = document.activeElement;
 		if (!/^(a|span)$/i.test(item.tagName)) item = $tree.querySelector('.focus') || $tree.querySelector('li:first-child>span');
 		var li = item.parentNode;
-		switch (e.keyCode){
+		var keyCode = e.keyCode;
+		var metaKey = e.metaKey;
+		if (keyCode == 40 && metaKey) keyCode = 35; // cmd + down (Mac)
+		if (keyCode == 38 && metaKey) keyCode = 36; // cmd + up (Mac)
+		switch (keyCode){
 			case 40: // down
 				e.preventDefault();
 				if (li.hasClass('open')){
@@ -908,4 +908,4 @@ document.addEventListener('DOMContentLoaded', function(){
 			}
 		});
 	}
-});
+})();

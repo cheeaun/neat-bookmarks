@@ -76,7 +76,7 @@ canvas{
 	width: 0;
 	height: 0;
 	border-width: 4.5px 0 4.5px 8px;
-	border-color: transparent #84919f;
+	border-color: transparent transparent transparent #84919f;
 	border-style: solid;
 	margin: 0 4px;
 	-webkit-transition-property: -webkit-transform;
@@ -125,7 +125,7 @@ canvas{
 .neat-tree ul li span:active .twisty,
 .neat-tree ul li span.active .twisty,
 .neat-tree ul li span:focus .twisty{
-	border-color: transparent #e5eef8;
+	border-color: transparent transparent transparent #e5eef8;
 }
 .neat-tree ul ul{
 	height: 0;

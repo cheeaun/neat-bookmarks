@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="neat.css">
-<script src="mootools.js"></script>
-<script src="neat.js"></script>
 <div id="search"><input id="search-input" type="search" autofocus></div>
 <div id="tree" tabindex="-1"></div>
 <div id="results" tabindex="-1" style="display: none;"></div>
@@ -29,3 +27,9 @@
 <button id="confirm-dialog-button-2" onclick="ConfirmDialog.fn2(); ConfirmDialog.close();"></button>
 </div>
 </div>
+<script>
+if (localStorage.popupHeight) document.body.style.height = localStorage.popupHeight + 'px';
+if (localStorage.popupWidth) document.body.style.width = localStorage.popupWidth + 'px';
+</script>
+<script src="mootools.js"></script>
+<script src="neat.js"></script>
