@@ -238,6 +238,10 @@ document.addEventListener('DOMContentLoaded', function(){
 		$(id).innerHTML = _m(msg);
 	});
 	
+	// RTL indicator
+	var rtl = (body.getComputedStyle('direction') == 'rtl');
+	if (rtl) body.addClass('rtl');
+	
 	// Bookmark processing
 	var processBookmarks = function(c){
 		var response = [];
@@ -576,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			var active = body.querySelector('.active');
 			if (active) Element.removeClass(active, 'active');
 			Element.addClass(el, 'active');
-			var pageX = Math.min(e.pageX, body.offsetWidth - bookmarkMenuWidth);
+			var pageX = rtl ? Math.max(0, e.pageX - bookmarkMenuWidth) : Math.min(e.pageX, body.offsetWidth - bookmarkMenuWidth);
 			var pageY = e.pageY;
 			if (pageY > (window.innerHeight - bookmarkMenuHeight)) pageY -= bookmarkMenuHeight;
 			$bookmarkContextMenu.style.left = pageX + 'px';
@@ -595,7 +599,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			}
 			var folderMenuWidth = $folderContextMenu.offsetWidth;
 			var folderMenuHeight = $folderContextMenu.offsetHeight;
-			var pageX = Math.min(e.pageX, body.offsetWidth - folderMenuWidth);
+			var pageX = rtl ? Math.max(0, e.pageX - folderMenuWidth) : Math.min(e.pageX, body.offsetWidth - folderMenuWidth);
 			var pageY = e.pageY;
 			if (pageY > (window.innerHeight - folderMenuHeight)) pageY -= folderMenuHeight;
 			$folderContextMenu.style.left = pageX + 'px';
@@ -708,17 +712,17 @@ document.addEventListener('DOMContentLoaded', function(){
 					}
 				}
 				break;
-			case 39: // right
+			case 39: // right (left for RTL)
 				e.preventDefault();
-				if (!li.hasClass('open')){
+				if ((!rtl && !li.hasClass('open')) || (rtl && li.hasClass('open'))){
 					var event = document.createEvent('MouseEvents');
 					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
 				}
 				break;
-			case 37: // left
+			case 37: // left (right for RTL)
 				e.preventDefault();
-				if (li.hasClass('open')){
+				if ((!rtl && li.hasClass('open')) || (rtl && !li.hasClass('open'))){
 					var event = document.createEvent('MouseEvents');
 					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
@@ -878,7 +882,8 @@ document.addEventListener('DOMContentLoaded', function(){
 	document.addEventListener('mousemove', function(e){
 		if (!resizerDown) return;
 		e.preventDefault();
-		var width = bodyWidth - (e.screenX - screenX);
+		var changedWidth = rtl ? (e.screenX - screenX) : (screenX - e.screenX);
+		var width = bodyWidth + changedWidth;
 		width = Math.min(640, Math.max(320, width));
 		document.body.style.width = width + 'px';
 		localStorage.popupWidth = width;

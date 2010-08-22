@@ -82,8 +82,14 @@ canvas{
 	-webkit-transition-property: -webkit-transform;
 	-webkit-transition-duration: .15s;
 }
+.rtl .neat-tree ul li span .twisty{
+	-webkit-transform: scaleX(-1);
+}
 .neat-tree ul li.open>span .twisty{
 	-webkit-transform: rotate(90deg);
+}
+.rtl .neat-tree ul li.open>span .twisty{
+	-webkit-transform: scaleX(-1) rotate(90deg);
 }
 #results ul li a img,
 #results ul li span img,
