@@ -295,12 +295,13 @@ document.addEventListener('DOMContentLoaded', function(){
 			var html = '<ul role="list">';
 			for (var i=0, l=results.length; i<l; i++){
 				var result = results[i];
+				var id = result.id;
 				var url = result.url;
 				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var title = ' title="' + u + '"';
 				var name = result.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
-				html += '<li data-parentid="' + result.parentId + '" role="listitem">';
+				html += '<li data-parentid="' + result.parentId + '" id="results-item-' + id + '" role="listitem">';
 				var fetched = false;
 				if (fetchURLIcons){
 					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
@@ -454,9 +455,11 @@ document.addEventListener('DOMContentLoaded', function(){
 		},
 		
 		deleteBookmark: function(id){
-			var li = $('neat-tree-item-' + id);
+			var li1 = $('neat-tree-item-' + id);
+			var li2 = $('results-item-' + id);
 			chrome.bookmarks.remove(id, function(){
-				Element.destroy(li);
+				if (li1) Element.destroy(li1);
+				if (li2) Element.destroy(li2);
 			});
 		},
 		
@@ -620,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				break;
 			case 'bookmark-delete':
 				var li = currentContext.parentNode;
-				var id = li.id.replace('neat-tree-item-', '');
+				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
 				actions.deleteBookmark(id);
 				break;
 		}
@@ -795,7 +798,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		switch (e.keyCode){
 			case 46: // delete
 				e.preventDefault();
-				var id = li.id.replace('neat-tree-item-', '');
+				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
 				if (li.hasClass('parent')){
 					chrome.bookmarks.getChildren(id, function(children){
 						var urlsLen = Array.clean(Array.map(children, function(c){
@@ -803,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function(){
 						})).length;
 						actions.deleteBookmarks(id, urlsLen, children.length-urlsLen);
 					});
-				} else if (li.hasClass('child')){
+				} else {
 					actions.deleteBookmark(id);
 				}
 				break;
