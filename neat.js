@@ -714,18 +714,26 @@ var ConfirmDialog = {
 				break;
 			case 39: // right (left for RTL)
 				e.preventDefault();
-				if ((!rtl && !li.hasClass('open')) || (rtl && li.hasClass('open'))){
+				if (li.hasClass('parent') && ((!rtl && !li.hasClass('open')) || (rtl && li.hasClass('open')))){
 					var event = document.createEvent('MouseEvents');
 					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
+				} else if (rtl){
+					var parentID = li.get('data-parentid');
+					if (parentID == '0') return;
+					$('neat-tree-item-' + parentID).querySelector('span').focus();
 				}
 				break;
 			case 37: // left (right for RTL)
 				e.preventDefault();
-				if ((!rtl && li.hasClass('open')) || (rtl && !li.hasClass('open'))){
+				if (li.hasClass('parent') && ((!rtl && li.hasClass('open')) || (rtl && !li.hasClass('open')))){
 					var event = document.createEvent('MouseEvents');
 					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
+				} else if (!rtl){
+					var parentID = li.get('data-parentid');
+					if (parentID == '0') return;
+					$('neat-tree-item-' + parentID).querySelector('span').focus();
 				}
 				break;
 			case 13: // enter
