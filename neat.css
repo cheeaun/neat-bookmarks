@@ -45,16 +45,16 @@ canvas{
 }
 #results ul,
 #results ul li,
-.neat-tree ul,
-.neat-tree ul li{
+#tree ul,
+#tree ul li{
 	list-style: none;
 	margin: 0;
 	padding: 0;
 	display: block;
 }
 #results ul li a,
-.neat-tree ul li a,
-.neat-tree ul li span{
+#tree ul li a,
+#tree ul li span{
 	display: block;
 	line-height: 20px;
 	padding: 0 4px;
@@ -66,11 +66,11 @@ canvas{
 	overflow: hidden;
 }
 #results ul li a *,
-.neat-tree ul li a *,
-.neat-tree ul li span *{
+#tree ul li a *,
+#tree ul li span *{
 	pointer-events: none;
 }
-.neat-tree ul li span .twisty{
+#tree ul li span .twisty{
 	display: inline-block;
 	position: relative;
 	width: 0;
@@ -82,39 +82,39 @@ canvas{
 	-webkit-transition-property: -webkit-transform;
 	-webkit-transition-duration: .15s;
 }
-.rtl .neat-tree ul li span .twisty{
+.rtl #tree ul li span .twisty{
 	-webkit-transform: scaleX(-1);
 }
-.neat-tree ul li.open>span .twisty{
+#tree ul li.open>span .twisty{
 	-webkit-transform: rotate(90deg);
 }
-.rtl .neat-tree ul li.open>span .twisty{
+.rtl #tree ul li.open>span .twisty{
 	-webkit-transform: scaleX(-1) rotate(90deg);
 }
 #results ul li a img,
 #results ul li span img,
-.neat-tree ul li a img,
-.neat-tree ul li span img{
+#tree ul li a img,
+#tree ul li span img{
 	vertical-align: text-top;
 	margin-__MSG_@@bidi_end_edge__: 4px;
 }
 #results ul li a i,
-.neat-tree ul li a i{
+#tree ul li a i{
 	font-style: normal;
 }
 #results ul li a:hover i,
-.neat-tree ul li a:hover i{
+#tree ul li a:hover i{
 	text-decoration: underline;
 }
 #results ul li a:active,
 #results ul li a.active,
 #results ul li a:focus,
-.neat-tree ul li a:active,
-.neat-tree ul li span:active,
-.neat-tree ul li a.active,
-.neat-tree ul li span.active,
-.neat-tree ul li a:focus,
-.neat-tree ul li span:focus,
+#tree ul li a:active,
+#tree ul li span:active,
+#tree ul li a.active,
+#tree ul li span.active,
+#tree ul li a:focus,
+#tree ul li span:focus,
 .context-menu li:not(.separator):focus{
 	color: #fff;
 	background-color: #4687cb;
@@ -122,16 +122,16 @@ canvas{
 	text-shadow: 0 0 rgba(255,255,255,.75), 0 1px rgba(0,0,0,.75);
 	outline: 0;
 }
-.neat-tree ul li span:active .twisty,
-.neat-tree ul li span.active .twisty,
-.neat-tree ul li span:focus .twisty{
+#tree ul li span:active .twisty,
+#tree ul li span.active .twisty,
+#tree ul li span:focus .twisty{
 	border-color: transparent transparent transparent #e5eef8;
 }
-.neat-tree ul ul{
+#tree ul ul{
 	height: 0;
 	overflow: hidden;
 }
-.neat-tree .open>ul{
+#tree .open>ul{
 	height: auto;
 }
 @-webkit-keyframes blueFade {
@@ -145,8 +145,8 @@ canvas{
 		background-color: transparent;
 	}
 }
-.neat-tree ul li a.focus,
-.neat-tree ul li span.focus{
+#tree ul li a.focus,
+#tree ul li span.focus{
 	-webkit-animation-name: blueFade;
 	-webkit-animation-duration: 3s;
 }

@@ -1,104 +1,75 @@
-var NeatTree = {
+var ConfirmDialog = {
 	
-	fetchURLIcons: (localStorage && localStorage.fetchIcons),
-	
-	ignoredIcons: [
-		'000000000000000000000000000000000000000000000000000000000000000000000000568514196170149291211271808211412417818998108169241839416125383941612539710716924111412217818911812718082617014929568514190000000000005685141965801533510811817413696106168214132139186236163174206255157169203255163174206255196204225255126133184236941041662141081161741366580153355685141900000000617014929108116174136981081702261411531942551741842132551851942192552352392472552242292412552552552552552302342452551851942192559410416622610611617413661701492900000000118127180829410416621419620422525517418421325517418421325517918921625517918921625522422924125525525525525525225325525519019922225519119922225592104166214118127180820000000011412217818912613318423625225325525517418421325517418421325517418421325517418421325524124425125525525525525524124425125517418421325520821423125512313118323611312217618900000000971071692411962042252552412442512551741842132551741842132551741842132552412442512552552552552552552552552552522532552552132192352551741842132551962042252559510516824100000000829316025321922423925525525525525518519421925521321923525524124425125525525525525525525525525525525525525525525525525519019922225517418421325521922423925581911592530000000082931602532302342452552552552552552412442512551851942192552352392472552552552552552552552552552552552552552552552552551901992222551791892162552192242392558091159253000000009610616824119620422525525525525525525525525525525525525525519620422525519620422525519620422525523023424525525525525525525525525525523523924725519620422525594104167241000000001141221781891271331842362552552552552552552552552552552552552412442512551741842132551741842132551741842132552012092292552552552552552552552552551181271802361111211761890000000011912917981941041662141962042252552552552552552552552552552412442512551741842132551741842132551741842132551741842132552522532552551962042252559210316621411912517981000000006170149291081161741369410416622619620422525525525525525525525525525521922423925517418421325517418421325521922423925519620422525592102166226106116174136617014929000000005685141965801533510611617413692104166214121129181236196204225255191199222255157169203255151163200255121129182236921031662141061161741366580153355685141900000000000056851419617014929119125179811131221761899510516824181921602538091159253941041672411131221771881211301818061701492956851419000000000000000000000000000000000000000000000000000000000000000000000000'
-	],
-
-	nonOpens: {},
-	
-	init: function(element, data){
-		NeatTree.element = document.id(element);
-		NeatTree.load(data);
-	},
-	
-	load: function(data){
-		var element = NeatTree.element;
-		NeatTree.data = data;
-		var dataURLs = NeatTree.dataURLs = (localStorage && localStorage.dataURLs) ? JSON.parse(localStorage.dataURLs) : {};
-		NeatTree.opens = (localStorage && localStorage.opens) ? JSON.parse(localStorage.opens) : [];
-		
-		var html = '<div class="neat-tree">' + NeatTree.generateHTML(data) + '</div>';
-		
-		element.set('html', html).addEventListener('click', function(e){
-			var el = e.target;
-			if (el.tagName != 'SPAN') return;
-			if (e.button != 0) return;
-			if (e.shiftKey) return;
-			var parent = el.parentNode;
-			Element.toggleClass(parent, 'open');
-			Element.setProperty(parent, 'aria-expanded', Element.hasClass(parent, 'open'));
-			var children = parent.querySelector('ul');
-			if (!children){
-				var id = parent.id.replace('neat-tree-item-', '');
-				var html = NeatTree.generateHTML(NeatTree.nonOpens[id], parseInt(parent.parentNode.get('data-level'))+1);
-				var div = new Element('div', {html: html});
-				var ul = div.querySelector('ul');
-				Element.inject(ul, parent);
-				div.destroy();
-				NeatTree.fetchIcons();
-			}
-			var opens = element.querySelectorAll('li.open');
-			opens = Array.map(opens, function(li){
-				return li.id.replace('neat-tree-item-', '');
-			});
-			if (localStorage) localStorage.opens = JSON.stringify(opens);
-		});
-		
-		if (localStorage){
-			element.addEventListener('scroll', function(){
-				localStorage.scrollTop = element.scrollTop;
-			});
-			
-			element.scrollTop = localStorage.scrollTop || 0;
-			
-			element.addEventListener('focus', function(e){
-				var el = e.target;
-				var tagName = el.tagName;
-				var focusEl = element.querySelector('.focus');
-				if (focusEl) focusEl.removeClass('focus');
-				if (tagName == 'A' || tagName == 'SPAN'){
-					var id = el.parentNode.id.replace('neat-tree-item-', '');
-					localStorage.focusID = id;
-				} else {
-					localStorage.focusID = null;
-				}
-			}, true);
-			// Force middle clicks to trigger the focus event
-			element.addEventListener('click', function(e){
-				if (e.button != 1) return;
-				var el = e.target;
-				var tagName = el.tagName;
-				if (tagName != 'A' && tagName != 'SPAN') return;
-				el.focus();
-			});
-			
-			var focusID = localStorage.focusID;
-			if (typeof focusID != 'undefined' && focusID != null){
-				var focusEl = $('neat-tree-item-' + focusID);
-				if (focusEl) focusEl = focusEl.firstChild;
-				if (focusEl) focusEl.addClass('focus');
-			}
-			
-			NeatTree.fetchIcons();
+	open: function(opts){
+		if (opts){
+			$('confirm-dialog-text').set('html', opts.dialog.replace(/\s([^\s]+)$/i, '&nbsp;$1'));
+			$('confirm-dialog-button-1').set('html', opts.button1);
+			$('confirm-dialog-button-2').set('html', opts.button2);
+			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
+			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
+			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
 		}
+		document.body.addClass('needConfirm');
 	},
 	
-	fetchIcons: function(element, dataURLs){
-		if (!NeatTree.fetchURLIcons) return;
-		if (!element) element = NeatTree.element;
-		if (!dataURLs) dataURLs = NeatTree.dataURLs;
+	close: function(){
+		document.body.removeClass('needConfirm');
+		$('search-input').focus(); // temporary solution
+	},
+	
+	fn1: function(){},
+	
+	fn2: function(){}
+	
+};
+
+(function(window, document){
+	try {
+	
+	var body = document.body;
+	
+	// Some i18n
+	var _m = chrome.i18n.getMessage;
+	$('search-input').placeholder = _m('searchBookmarks');
+	$each({
+		'bookmark-new-tab': 'openNewTab',
+		'bookmark-new-window': 'openNewWindow',
+		'bookmark-new-incognito-window': 'openIncognitoWindow',
+		'bookmark-delete': 'delete',
+		'folder-window': 'openBookmarks',
+		'folder-new-window': 'openBookmarksNewWindow',
+		'folder-new-incognito-window': 'openBookmarksIncognitoWindow',
+		'folder-delete': 'delete'
+	}, function(msg, id){
+		$(id).innerText = _m(msg);
+	});
+	
+	// RTL indicator
+	var rtl = (body.getComputedStyle('direction') == 'rtl');
+	if (rtl) body.addClass('rtl');
+	
+	// Init some variables
+	var fetchURLIcons = !!localStorage.fetchIcons;
+	var opens = localStorage.opens ? JSON.parse(localStorage.opens) : [];
+	var dataURLs = localStorage.dataURLs ? JSON.parse(localStorage.dataURLs) : {};
+	var nonOpens = {};
+	var a = new Element('a');
+	
+	var ignoredIcons = [
+		'000000000000000000000000000000000000000000000000000000000000000000000000568514196170149291211271808211412417818998108169241839416125383941612539710716924111412217818911812718082617014929568514190000000000005685141965801533510811817413696106168214132139186236163174206255157169203255163174206255196204225255126133184236941041662141081161741366580153355685141900000000617014929108116174136981081702261411531942551741842132551851942192552352392472552242292412552552552552552302342452551851942192559410416622610611617413661701492900000000118127180829410416621419620422525517418421325517418421325517918921625517918921625522422924125525525525525525225325525519019922225519119922225592104166214118127180820000000011412217818912613318423625225325525517418421325517418421325517418421325517418421325524124425125525525525525524124425125517418421325520821423125512313118323611312217618900000000971071692411962042252552412442512551741842132551741842132551741842132552412442512552552552552552552552552552522532552552132192352551741842132551962042252559510516824100000000829316025321922423925525525525525518519421925521321923525524124425125525525525525525525525525525525525525525525525525519019922225517418421325521922423925581911592530000000082931602532302342452552552552552552412442512551851942192552352392472552552552552552552552552552552552552552552552552551901992222551791892162552192242392558091159253000000009610616824119620422525525525525525525525525525525525525525519620422525519620422525519620422525523023424525525525525525525525525525523523924725519620422525594104167241000000001141221781891271331842362552552552552552552552552552552552552412442512551741842132551741842132551741842132552012092292552552552552552552552552551181271802361111211761890000000011912917981941041662141962042252552552552552552552552552552412442512551741842132551741842132551741842132551741842132552522532552551962042252559210316621411912517981000000006170149291081161741369410416622619620422525525525525525525525525525521922423925517418421325517418421325521922423925519620422525592102166226106116174136617014929000000005685141965801533510611617413692104166214121129181236196204225255191199222255157169203255151163200255121129182236921031662141061161741366580153355685141900000000000056851419617014929119125179811131221761899510516824181921602538091159253941041672411131221771881211301818061701492956851419000000000000000000000000000000000000000000000000000000000000000000000000'
+	];
+	
+	var fetchIcons = function(element, dataURLs){
+		if (!fetchURLIcons) return;
 		
 		var links = element.querySelectorAll('a:not(.fetched)[href^=http]');
 		if (!links.length) return;
 		
 		(function(){
-			var c = new Element('canvas').inject(document.body);
+			var c = new Element('canvas').inject(body);
 			var ctx = c.getContext('2d');
 			
 			var linksLen = links.length-1;
-			var ignoredIcons = NeatTree.ignoredIcons;
 			
 			Array.each(links, function(el, i){
 				var elImg = el.firstElementChild;
@@ -130,20 +101,14 @@ var NeatTree = {
 				img.src = url;
 			});
 		}).delay(100);
-	},
+	};
 	
-	_a: new Element('a'),
-	
-	generateHTML: function(data, level){
+	var generateHTML = function(data, level){
 		if (!level) level = 0;
-		var group = (level == 0) ? 'tree' : 'group';
 		var paddingStart = 14*level;
 		var aPaddingStart = paddingStart+16;
+		var group = (level == 0) ? 'tree' : 'group';
 		var html = '<ul role="' + group + '" data-level="' + level + '">';
-		var a = NeatTree._a;
-		var opens = NeatTree.opens;
-		var nonOpens = NeatTree.nonOpens;
-		var fetchURLIcons = NeatTree.fetchURLIcons;
 		
 		for (var i=0, l=data.length; i<l; i++){
 			var d = data[i];
@@ -157,9 +122,11 @@ var NeatTree = {
 				var isOpen = opens.contains(id);
 				var open = isOpen ? ' open' : '';
 				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '" data-parentid="' + parentID + '">'
-					+ '<span tabindex="0" style="-webkit-padding-start: ' + paddingStart + 'px"><i class="twisty"></i><img src="folder.png" width="16" height="16" alt="">' + d.name + '</span>';
+					+ '<span tabindex="0" style="-webkit-padding-start: ' + paddingStart + 'px"><i class="twisty"></i>'
+					+ '<img src="folder.png" width="16" height="16" alt="">' + d.title
+					+ '</span>';
 				if (isOpen && hasChildren){
-					html += NeatTree.generateHTML(children, level+1);
+					html += generateHTML(children, level+1);
 				} else {
 					nonOpens[id] = children;
 				}
@@ -167,111 +134,92 @@ var NeatTree = {
 				html += '<li class="child"' + idHTML + ' role="treeitem" data-parentid="' + parentID + '">';
 				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var title = ' title="' + u + '"';
-				var name = d.name.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+				var name = d.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
-				var fetched = false;
+				var fetched = '';
 				if (fetchURLIcons){
-					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
+					var dataURL = dataURLs[a.set('href', url).host];
 					if (dataURL){
-						fetched = true;
+						fetched = ' class="fetched"';
 						if (dataURL !== 1) favicon = dataURL;
 					}
 				}
-				var fetchedHTML = fetched ? ' class="fetched"' : '';
-				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
+				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px">'
+					+ '<img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i>'
+					+ '</a>';
 			}
 			html += '</li>';
 		}
 		html += '</ul>';
 		return html;
-	}
-	
-};
-
-var ConfirmDialog = {
-	
-	open: function(opts){
-		if (opts){
-			$('confirm-dialog-text').set('html', opts.dialog.replace(/\s([^\s]+)$/i, '&nbsp;$1'));
-			$('confirm-dialog-button-1').set('html', opts.button1);
-			$('confirm-dialog-button-2').set('html', opts.button2);
-			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
-			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
-			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
-		}
-		document.body.addClass('needConfirm');
-	},
-	
-	close: function(){
-		document.body.removeClass('needConfirm');
-		$('search-input').focus(); // temporary solution
-	},
-	
-	fn1: function(){},
-	
-	fn2: function(){}
-	
-};
-
-(function(){
-	try {
-	
-	var body = document.body;
-	
-	// Some i18n
-	var _m = chrome.i18n.getMessage;
-	$('search-input').placeholder = _m('searchBookmarks');
-	$each({
-		'bookmark-new-tab': 'openNewTab',
-		'bookmark-new-window': 'openNewWindow',
-		'bookmark-new-incognito-window': 'openIncognitoWindow',
-		'bookmark-delete': 'delete',
-		'folder-window': 'openBookmarks',
-		'folder-new-window': 'openBookmarksNewWindow',
-		'folder-new-incognito-window': 'openBookmarksIncognitoWindow',
-		'folder-delete': 'delete'
-	}, function(msg, id){
-		$(id).innerHTML = _m(msg);
-	});
-	
-	// RTL indicator
-	var rtl = (body.getComputedStyle('direction') == 'rtl');
-	if (rtl) body.addClass('rtl');
-	
-	// Bookmark processing
-	var processBookmarks = function(c){
-		var response = [];
-		for (var i=0, l=c.length; i<l; i++){
-			var item = c[i];
-			var o = {
-				name: item.title || _m('untitledBookmark')
-			};
-			if (item.url){
-				o.url = item.url;
-				o.icon = ''
-			}
-			if (item.id) o.id = item.id;
-			if (item.parentId) o.parentId = item.parentId;
-			var children = item.children;
-			if (children && children.length){
-				o.children = processBookmarks(children);
-			}
-			response.push(o);
-		}
-		return response;
 	};
 	
 	var $tree = $('tree');
 	chrome.bookmarks.getTree(function(tree){
-		var json = processBookmarks(tree[0].children);
-		NeatTree.init($tree, json);
+		var html = generateHTML(tree[0].children);
+		$tree.set('html', html);
+		
+		$tree.scrollTop = localStorage.scrollTop || 0;
+		
+		var focusID = localStorage.focusID;
+		if (typeof focusID != 'undefined' && focusID != null){
+			var focusEl = $('neat-tree-item-' + focusID);
+			if (focusEl) focusEl = focusEl.firstChild;
+			if (focusEl) focusEl.addClass('focus');
+		}
+		
+		fetchIcons();
+	});
+	
+	// Events for the tree
+	$tree.addEventListener('scroll', function(){
+		localStorage.scrollTop = $tree.scrollTop;
+	});
+	$tree.addEventListener('focus', function(e){
+		var el = e.target;
+		var tagName = el.tagName;
+		var focusEl = $tree.querySelector('.focus');
+		if (focusEl) focusEl.removeClass('focus');
+		if (tagName == 'A' || tagName == 'SPAN'){
+			var id = el.parentNode.id.replace('neat-tree-item-', '');
+			localStorage.focusID = id;
+		} else {
+			localStorage.focusID = null;
+		}
+	}, true);
+	$tree.addEventListener('click', function(e){
+		var el = e.target;
+		var tagName = el.tagName;
+		var button = e.button;
+		if (button == 0){
+			if (tagName != 'SPAN') return;
+			if (e.shiftKey) return;
+			var parent = el.parentNode;
+			Element.toggleClass(parent, 'open');
+			Element.setProperty(parent, 'aria-expanded', Element.hasClass(parent, 'open'));
+			var children = parent.querySelector('ul');
+			if (!children){
+				var id = parent.id.replace('neat-tree-item-', '');
+				var html = generateHTML(nonOpens[id], parseInt(parent.parentNode.get('data-level'))+1);
+				var div = new Element('div', {html: html});
+				var ul = div.querySelector('ul');
+				Element.inject(ul, parent);
+				div.destroy();
+				fetchIcons();
+			}
+			var opens = $tree.querySelectorAll('li.open');
+			opens = Array.map(opens, function(li){
+				return li.id.replace('neat-tree-item-', '');
+			});
+			localStorage.opens = JSON.stringify(opens);
+		} else if (e.button == 1){ // Force middle clicks to trigger the focus event
+			if (tagName != 'A' && tagName != 'SPAN') return;
+			el.focus();
+		}
 	});
 	
 	// Search
 	var $results = $('results');
-	var dataURLs = (localStorage && localStorage.dataURLs) ? JSON.parse(localStorage.dataURLs) : {};
-	var fetchURLIcons = NeatTree.fetchURLIcons;
-	var a = new Element('a');
 	
 	var searchMode = false;
 	var searchInput = $('search-input');
@@ -302,15 +250,14 @@ var ConfirmDialog = {
 				var name = result.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
 				html += '<li data-parentid="' + result.parentId + '" id="results-item-' + id + '" role="listitem">';
-				var fetched = false;
+				var fetched = '';
 				if (fetchURLIcons){
-					var dataURL = NeatTree.dataURLs[a.set('href', url).host];
+					var dataURL = dataURLs[a.set('href', url).host];
 					if (dataURL){
-						fetched = true;
+						fetched = ' class="fetched"';
 						if (dataURL !== 1) favicon = dataURL;
 					}
 				}
-				var fetchedHTML = fetched ? ' class="fetched"' : '';
 				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
 				html += '</li>';
 			}
@@ -318,7 +265,7 @@ var ConfirmDialog = {
 			$results.set('html', html).style.display = 'block';
 			$tree.style.display = 'none';
 			
-			NeatTree.fetchIcons($results, dataURLs);
+			fetchIcons($results, dataURLs);
 			
 			var lis = $results.querySelectorAll('li');
 			Array.each(lis, function(li){
@@ -916,4 +863,4 @@ var ConfirmDialog = {
 			}
 		});
 	}
-})();
+})(window, document);
