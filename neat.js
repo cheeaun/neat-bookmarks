@@ -52,6 +52,7 @@ var ConfirmDialog = {
 	var opens = localStorage.opens ? JSON.parse(localStorage.opens) : [];
 	var dataURLs = localStorage.dataURLs ? JSON.parse(localStorage.dataURLs) : {};
 	var nonOpens = {};
+	var rememberState = !localStorage.dontRememberState;
 	var a = new Element('a');
 	
 	var generateHTML = function(data, level){
@@ -72,8 +73,12 @@ var ConfirmDialog = {
 			var parentID = d.parentId;
 			var idHTML = id ? ' id="neat-tree-item-' + id + '"': '';
 			if (hasChildren || typeof url == 'undefined'){
-				var isOpen = opens.contains(id);
-				var open = isOpen ? ' open' : '';
+				var isOpen = false;
+				var open = '';
+				if (rememberState){
+					isOpen = opens.contains(id);
+					if (isOpen) open = ' open';
+				}
 				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '" data-parentid="' + parentID + '">'
 					+ '<span tabindex="0" style="-webkit-padding-start: ' + paddingStart + 'px"><i class="twisty"></i>'
 					+ '<img src="folder.png" width="16" height="16" alt="">' + (title || _m('noTitle'))
@@ -105,7 +110,7 @@ var ConfirmDialog = {
 		var html = generateHTML(tree[0].children);
 		$tree.set('html', html);
 		
-		$tree.scrollTop = localStorage.scrollTop || 0;
+		if (rememberState) $tree.scrollTop = localStorage.scrollTop || 0;
 		
 		var focusID = localStorage.focusID;
 		if (typeof focusID != 'undefined' && focusID != null){

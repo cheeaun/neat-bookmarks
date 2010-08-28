@@ -1,4 +1,3 @@
-
 html, body{
 	background-color: #eee;
 }
@@ -68,8 +67,7 @@ h1 img{
 	display: block;
 }
 .options-list li input[type=checkbox]{
-	margin: 0;
-	margin-__MSG_@@bidi_start_edge__: 20px;
+	margin: 0 5px;
 }
 #footer{
 	color: #999;
