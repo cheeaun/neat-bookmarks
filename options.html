@@ -8,7 +8,13 @@ var __m = function(){
 };
 document.addEventListener('DOMContentLoaded', function(){
 	document.title = _m('extName') + ' ' + _m('options');
-
+	
+	var openNewTabBg = $('open-new-tab-bg');
+	openNewTabBg.checked = !!localStorage.middleClickBgTab;
+	openNewTabBg.addEventListener('change', function(){
+		localStorage.middleClickBgTab = openNewTabBg.checked ? '1' : '';
+	});
+	
 	var popupStayOpen = $('popup-stay-open');
 	popupStayOpen.checked = !!localStorage.bookmarkClickStayOpen;
 	popupStayOpen.addEventListener('change', function(){
@@ -19,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <h1><img src="icon32.png" width="32" height="32" alt=""> <script>__m('extName')</script> <small><script>__m('options')</script></small></h1>
 <ul class="options-list">
 <li><label><script>__m('optionPopupStays')</script> <input type="checkbox" id="popup-stay-open"></label></li>
+<li><label><script>__m('optionOpenNewTab')</script> <input type="checkbox" id="open-new-tab-bg"></label></li>
 </ul>
 <div id="footer">
 <script>__m('optionsFooterText', '<a href="http://twitter.com/cheeaun">Lim Chee Aun</a>')</script>

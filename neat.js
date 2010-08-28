@@ -375,6 +375,7 @@ var ConfirmDialog = {
 		
 	};
 	
+	var middleClickBgTab = !!localStorage.middleClickBgTab;
 	var bookmarkHandler = function(e){
 		e.preventDefault();
 		var el = e.target;
@@ -383,14 +384,14 @@ var ConfirmDialog = {
 		var shift = e.shiftKey;
 		if (el.tagName == 'A'){
 			var url = el.get('href');
-			if (button == 0){
+			if (button == 0){ // click
 				if (shift){
 					actions.openBookmarkNewWindow(url);
 				} else {
 					actions.openBookmark(url);
 				}
-			} else if (button == 1){
-				actions.openBookmarkNewTab(url, !shift);
+			} else if (button == 1){ // middle-click
+				actions.openBookmarkNewTab(url, middleClickBgTab ? false : !shift);
 			}
 		} else if (el.tagName == 'SPAN'){
 			var li = el.parentNode;

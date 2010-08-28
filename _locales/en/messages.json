@@ -131,6 +131,9 @@
 	"options": {
 		"message": "Options"
 	},
+	"optionOpenNewTab": {
+		"message": "Middle-click or control-click opens bookmark in new background tab? (instead of foreground)"
+	},
 	"optionPopupStays": {
 		"message": "Popup stays open when opening (left-clicking) bookmarks?"
 	},
