@@ -9,43 +9,16 @@ var __m = function(){
 document.addEventListener('DOMContentLoaded', function(){
 	document.title = _m('extName') + ' ' + _m('options');
 
-	if (localStorage){
-		var fetchFavicons = $('fetch-favicons');
-		fetchFavicons.checked = !!localStorage.fetchIcons;
-		fetchFavicons.addEventListener('change', function(){
-			localStorage.fetchIcons = fetchFavicons.checked ? '1' : '';
-		});
-		
-		var checkClearFavicon;
-		var clearFavicon = $('clear-favicon');
-		clearFavicon.addEventListener('click', function(e){
-			e.preventDefault();
-			delete localStorage.dataURLs;
-			clearFavicon.setProperty('disabled', 'disabled');
-			checkClearFavicon = (function(){
-				if (localStorage.dataURLs && localStorage.dataURLs.length){
-					clearFavicon.removeProperty('disabled');
-					$clear(checkClearFavicon);
-				}
-			}).periodical(1000);
-		});
-		
-		var popupStayOpen = $('popup-stay-open');
-		popupStayOpen.checked = !!localStorage.bookmarkClickStayOpen;
-		popupStayOpen.addEventListener('change', function(){
-			localStorage.bookmarkClickStayOpen = popupStayOpen.checked ? '1' : '';
-		});
-	}
+	var popupStayOpen = $('popup-stay-open');
+	popupStayOpen.checked = !!localStorage.bookmarkClickStayOpen;
+	popupStayOpen.addEventListener('change', function(){
+		localStorage.bookmarkClickStayOpen = popupStayOpen.checked ? '1' : '';
+	});
 });
 </script>
 <h1><img src="icon32.png" width="32" height="32" alt=""> <script>__m('extName')</script> <small><script>__m('options')</script></small></h1>
 <ul class="options-list">
 <li><label><script>__m('optionPopupStays')</script> <input type="checkbox" id="popup-stay-open"></label></li>
-<li><label><script>__m('optionFetchFavicons')</script><small><script>__m('optionFetchFaviconsNote')</script></small><input type="checkbox" id="fetch-favicons"></label></label>
-<ul>
-	<li><script>__m('optionClearFaviconCache')</script> <small><script>__m('optionClearFaviconCacheNote')</script></small> <button id="clear-favicon"><script>__m('clear')</script></button></li>
-</ul>
-</li>
 </ul>
 <div id="footer">
 <script>__m('optionsFooterText', '<a href="http://twitter.com/cheeaun">Lim Chee Aun</a>')</script>

@@ -134,18 +134,6 @@
 	"optionPopupStays": {
 		"message": "Popup stays open when opening (left-clicking) bookmarks?"
 	},
-	"optionFetchFavicons": {
-		"message": "Fetch favicons, instead of using Chrome's internal favicons resource"
-	},
-	"optionFetchFaviconsNote": {
-		"message": "(not recommended)"
-	},
-	"optionClearFaviconCache": {
-		"message": "Clear favicon cache"
-	},
-	"optionClearFaviconCacheNote": {
-		"message": "(will re-fetch the next time opening Neat Bookmarks)"
-	},
 	"clear": {
 		"message": "Clear",
 		"description": "Action to clear bookmarks favion cache."

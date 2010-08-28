@@ -49,59 +49,10 @@ var ConfirmDialog = {
 	if (rtl) body.addClass('rtl');
 	
 	// Init some variables
-	var fetchURLIcons = !!localStorage.fetchIcons;
 	var opens = localStorage.opens ? JSON.parse(localStorage.opens) : [];
 	var dataURLs = localStorage.dataURLs ? JSON.parse(localStorage.dataURLs) : {};
 	var nonOpens = {};
 	var a = new Element('a');
-	
-	var ignoredIcons = [
-		'000000000000000000000000000000000000000000000000000000000000000000000000568514196170149291211271808211412417818998108169241839416125383941612539710716924111412217818911812718082617014929568514190000000000005685141965801533510811817413696106168214132139186236163174206255157169203255163174206255196204225255126133184236941041662141081161741366580153355685141900000000617014929108116174136981081702261411531942551741842132551851942192552352392472552242292412552552552552552302342452551851942192559410416622610611617413661701492900000000118127180829410416621419620422525517418421325517418421325517918921625517918921625522422924125525525525525525225325525519019922225519119922225592104166214118127180820000000011412217818912613318423625225325525517418421325517418421325517418421325517418421325524124425125525525525525524124425125517418421325520821423125512313118323611312217618900000000971071692411962042252552412442512551741842132551741842132551741842132552412442512552552552552552552552552552522532552552132192352551741842132551962042252559510516824100000000829316025321922423925525525525525518519421925521321923525524124425125525525525525525525525525525525525525525525525525519019922225517418421325521922423925581911592530000000082931602532302342452552552552552552412442512551851942192552352392472552552552552552552552552552552552552552552552552551901992222551791892162552192242392558091159253000000009610616824119620422525525525525525525525525525525525525525519620422525519620422525519620422525523023424525525525525525525525525525523523924725519620422525594104167241000000001141221781891271331842362552552552552552552552552552552552552412442512551741842132551741842132551741842132552012092292552552552552552552552552551181271802361111211761890000000011912917981941041662141962042252552552552552552552552552552412442512551741842132551741842132551741842132551741842132552522532552551962042252559210316621411912517981000000006170149291081161741369410416622619620422525525525525525525525525525521922423925517418421325517418421325521922423925519620422525592102166226106116174136617014929000000005685141965801533510611617413692104166214121129181236196204225255191199222255157169203255151163200255121129182236921031662141061161741366580153355685141900000000000056851419617014929119125179811131221761899510516824181921602538091159253941041672411131221771881211301818061701492956851419000000000000000000000000000000000000000000000000000000000000000000000000'
-	];
-	
-	var fetchIcons = function(element, dataURLs){
-		if (!fetchURLIcons) return;
-		
-		var links = element.querySelectorAll('a:not(.fetched)[href^=http]');
-		if (!links.length) return;
-		
-		(function(){
-			var c = new Element('canvas').inject(body);
-			var ctx = c.getContext('2d');
-			
-			var linksLen = links.length-1;
-			
-			Array.each(links, function(el, i){
-				var elImg = el.firstElementChild;
-				var img = new Image();
-				var domain = el.host;
-				var data = dataURLs[domain];
-				if (data){
-					if (data !== 1) el.src = data;
-					linksLen--;
-					return;
-				}
-				var url = 'http://www.google.com/s2/favicons?domain=' + domain;
-				img.onload = function(){
-					var w = img.width, h = img.height;
-					c.width = w;
-					c.height = w;
-					ctx.drawImage(img, 0, 0, w, h);
-					var data = c.toDataURL();
-					var d = Array.join(ctx.getImageData(0 ,0 , w, h).data, '');
-					if (ignoredIcons.contains(d)){
-						data = 1;
-					} else {
-						elImg.src = data;
-					}
-					dataURLs[domain] = data;
-					
-					if (i == linksLen) localStorage.dataURLs = JSON.stringify(dataURLs);
-				};
-				img.src = url;
-			});
-		}).delay(100);
-	};
 	
 	var generateHTML = function(data, level){
 		if (!level) level = 0;
@@ -136,15 +87,7 @@ var ConfirmDialog = {
 				var title = ' title="' + u + '"';
 				var name = d.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
-				var fetched = '';
-				if (fetchURLIcons){
-					var dataURL = dataURLs[a.set('href', url).host];
-					if (dataURL){
-						fetched = ' class="fetched"';
-						if (dataURL !== 1) favicon = dataURL;
-					}
-				}
-				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px">'
+				html += '<a href="' + u + '"' + title + ' tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px">'
 					+ '<img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i>'
 					+ '</a>';
 			}
@@ -167,8 +110,6 @@ var ConfirmDialog = {
 			if (focusEl) focusEl = focusEl.firstChild;
 			if (focusEl) focusEl.addClass('focus');
 		}
-		
-		fetchIcons();
 	});
 	
 	// Events for the tree
@@ -205,7 +146,6 @@ var ConfirmDialog = {
 				var ul = div.querySelector('ul');
 				Element.inject(ul, parent);
 				div.destroy();
-				fetchIcons();
 			}
 			var opens = $tree.querySelectorAll('li.open');
 			opens = Array.map(opens, function(li){
@@ -249,23 +189,13 @@ var ConfirmDialog = {
 				var title = ' title="' + u + '"';
 				var name = result.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
-				html += '<li data-parentid="' + result.parentId + '" id="results-item-' + id + '" role="listitem">';
-				var fetched = '';
-				if (fetchURLIcons){
-					var dataURL = dataURLs[a.set('href', url).host];
-					if (dataURL){
-						fetched = ' class="fetched"';
-						if (dataURL !== 1) favicon = dataURL;
-					}
-				}
-				html += '<a href="' + u + '"' + title + fetched + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>';
-				html += '</li>';
+				html += '<li data-parentid="' + result.parentId + '" id="results-item-' + id + '" role="listitem">'
+					+ '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>'
+					+ '</li>';
 			}
 			html += '</ul>';
 			$results.set('html', html).style.display = 'block';
 			$tree.style.display = 'none';
-			
-			fetchIcons($results, dataURLs);
 			
 			var lis = $results.querySelectorAll('li');
 			Array.each(lis, function(li){
