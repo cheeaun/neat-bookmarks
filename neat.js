@@ -61,10 +61,12 @@ var ConfirmDialog = {
 		var group = (level == 0) ? 'tree' : 'group';
 		var html = '<ul role="' + group + '" data-level="' + level + '">';
 		
+		var httpsPattern = /^https?:\/\//i;
 		for (var i=0, l=data.length; i<l; i++){
 			var d = data[i];
 			var children = d.children;
 			var hasChildren = !!children;
+			var title = d.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 			var url = d.url;
 			var id = d.id;
 			var parentID = d.parentId;
@@ -74,7 +76,7 @@ var ConfirmDialog = {
 				var open = isOpen ? ' open' : '';
 				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '" data-parentid="' + parentID + '">'
 					+ '<span tabindex="0" style="-webkit-padding-start: ' + paddingStart + 'px"><i class="twisty"></i>'
-					+ '<img src="folder.png" width="16" height="16" alt="">' + d.title
+					+ '<img src="folder.png" width="16" height="16" alt="">' + (title || _m('noTitle'))
 					+ '</span>';
 				if (isOpen && hasChildren){
 					html += generateHTML(children, level+1);
@@ -82,12 +84,13 @@ var ConfirmDialog = {
 					nonOpens[id] = children;
 				}
 			} else {
-				html += '<li class="child"' + idHTML + ' role="treeitem" data-parentid="' + parentID + '">';
+				var isBookmarklet = /^javascript:/i.test(url);
+				if (isBookmarklet && url.length > 140) url = url.slice(0, 140) + '...';
 				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-				var title = ' title="' + u + '"';
-				var name = d.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
-				html += '<a href="' + u + '"' + title + ' tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px">'
+				var name = title || (httpsPattern.test(u) ? u.replace(httpsPattern, '') : _m('noTitle'));
+				var favicon = isBookmarklet ? 'document-code.png' : ('chrome://favicon/' + url);
+				html += '<li class="child"' + idHTML + ' role="treeitem" data-parentid="' + parentID + '">'
+					+ '<a href="' + u + '"' + ' title="' + u + '" tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px">'
 					+ '<img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i>'
 					+ '</a>';
 			}

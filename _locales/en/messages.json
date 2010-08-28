@@ -32,9 +32,9 @@
 	"openBookmarksIncognitoWindow": {
 		"message": "Open all bookmarks in incognito window"
 	},
-	"untitledBookmark": {
-		"message": "(untitled)",
-		"description": "The title for untitled bookmarks."
+	"noTitle": {
+		"message": "(no title)",
+		"description": "The title for untitled bookmarks with no http(s) URL or untitled folders."
 	},
 	"parentFolder": {
 		"message": "Parent folder: \"$folderName$\"",
