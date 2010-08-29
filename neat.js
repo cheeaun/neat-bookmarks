@@ -343,8 +343,16 @@ var ConfirmDialog = {
 			var li1 = $('neat-tree-item-' + id);
 			var li2 = $('results-item-' + id);
 			chrome.bookmarks.remove(id, function(){
-				if (li1) Element.destroy(li1);
-				if (li2) Element.destroy(li2);
+				if (li1){
+					var nearLi1 = li1.getNext() || li1.getPrevious();
+					li1.destroy();
+					if (!searchMode && nearLi1) nearLi1.querySelector('a').focus();
+				}
+				if (li2){
+					var nearLi2 = li2.getNext() || li2.getPrevious();
+					li2.destroy();
+					if (searchMode && nearLi2) nearLi2.querySelector('a').focus();
+				}
 			});
 		},
 		
