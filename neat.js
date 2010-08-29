@@ -802,14 +802,13 @@ var ConfirmDialog = {
 	});
 	
 	} catch(e){
-		var status = 'd cheeaun Neat Bookmarks: ' + e + ' ' + navigator.platform + ' ' + navigator.userAgent.match(/Chrome\/[^\s]*/);
 		ConfirmDialog.open({
-			dialog: '<strong>' + _m('errorOccured') + '</strong><br>' + _m('errorOccuredAction'),
+			dialog: '<strong>' + _m('errorOccured') + '</strong><pre>' + e + '</pre>',
 			button1: '<strong>' + _m('reportError') + '</strong>',
 			button2: _m('ignore'),
 			fn1: function(){
 				chrome.tabs.create({
-					url: 'http://twitter.com/home?status=' + encodeURIComponent(status)
+					url: 'https://chrome.google.com/extensions/detail/nnancliccjabjjmipbpjkfbijifaainp'
 				});
 			}
 		});

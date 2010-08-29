@@ -119,9 +119,6 @@
 	"errorOccured": {
 		"message": "Oops, an error occured."
 	},
-	"errorOccuredAction": {
-		"message": "It would be great if you could report this error to the author via Twitter direct message (if you have an account there)."
-	},
 	"reportError": {
 		"message": "Report this error"
 	},

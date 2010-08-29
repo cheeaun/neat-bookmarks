@@ -242,6 +242,17 @@ canvas{
 	padding: .3em 1.5em;
 }
 
+#confirm-dialog pre{
+	white-space: pre-line;
+	margin: 0;
+	padding: 5px;
+	line-height: 1.1em;
+	-webkit-user-select: text;
+	cursor: text;
+	background-color: #fafafa;
+	text-shadow: none;
+}
+
 .needConfirm #confirm-dialog{
 	top: 0;
 	opacity: 1;
