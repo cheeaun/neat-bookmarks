@@ -1,6 +1,7 @@
 body{
 	direction: __MSG_@@bidi_dir__;
 	font: menu;
+	font-size: 12px;
 	color: #000;
 	background-color: #fff;
 	margin: 0;
