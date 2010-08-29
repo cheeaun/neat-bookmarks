@@ -89,13 +89,17 @@ var ConfirmDialog = {
 					nonOpens[id] = children;
 				}
 			} else {
-				var isBookmarklet = /^javascript:/i.test(url);
-				if (isBookmarklet && url.length > 140) url = url.slice(0, 140) + '...';
-				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-				var name = title || (httpsPattern.test(u) ? u.replace(httpsPattern, '') : _m('noTitle'));
-				var favicon = isBookmarklet ? 'document-code.png' : ('chrome://favicon/' + url);
+				var u = url;
+				url = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+				var favicon = 'chrome://favicon/' + url;
+				if (/^javascript:/i.test(url)){
+					if (u.length > 140) u = u.slice(0, 140) + '...';
+					u = u.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+					favicon = 'document-code.png';
+				}
+				var name = title || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
 				html += '<li class="child"' + idHTML + ' role="treeitem" data-parentid="' + parentID + '">'
-					+ '<a href="' + u + '"' + ' title="' + u + '" tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px">'
+					+ '<a href="' + url + '"' + ' title="' + u + '" tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px">'
 					+ '<img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i>'
 					+ '</a>';
 			}
