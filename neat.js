@@ -350,12 +350,12 @@ var ConfirmDialog = {
 				if (li1){
 					var nearLi1 = li1.getNext() || li1.getPrevious();
 					li1.destroy();
-					if (!searchMode && nearLi1) nearLi1.querySelector('a').focus();
+					if (!searchMode && nearLi1) nearLi1.querySelector('a, span').focus();
 				}
 				if (li2){
 					var nearLi2 = li2.getNext() || li2.getPrevious();
 					li2.destroy();
-					if (searchMode && nearLi2) nearLi2.querySelector('a').focus();
+					if (searchMode && nearLi2) nearLi2.querySelector('a, span').focus();
 				}
 			});
 		},
