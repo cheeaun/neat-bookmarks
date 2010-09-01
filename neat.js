@@ -250,7 +250,7 @@ var ConfirmDialog = {
 	});
 	
 	// Saved search query
-	if (localStorage.searchQuery){
+	if (rememberState && localStorage.searchQuery){
 		searchInput.set('value', localStorage.searchQuery);
 		searchInput.click();
 	}
