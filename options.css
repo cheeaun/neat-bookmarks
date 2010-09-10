@@ -41,7 +41,6 @@ h1 small{
 	padding: 0;
 	list-style: none;
 	border-radius: 5px;
-	-webkit-border-radius: 5px;
 	background-color: rgba(255,255,255,.5);
 }
 .options-list li ul{
@@ -57,15 +56,11 @@ h1 small{
 .options-list>li:first-child{
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
 }
 .options-list>li:last-child{
 	border-bottom: 1px solid #ccc;
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-webkit-border-bottom-right-radius: 5px;
 }
 .options-list>li small{
 	opacity: .5;
@@ -97,22 +92,25 @@ fieldset legend{
 	padding: 0 5px;
 	-webkit-box-shadow: 0 0 20px 10px #eee;
 }
+fieldset p{
+	margin-top: 0;
+}
 #custom-icon-preview{
-	vertical-align: middle;
 	background: #fff;
-	padding: 5px;
+	padding: 20px;
 	border-radius: 3px;
+	line-height: 0;
+	float: left;
+	margin: 0 1em .5em 0;
+	-webkit-box-shadow: inset 0 1px 5px rgba(0,0,0,.1);
+	border: 1px solid #aaa;
 }
 .CodeMirror-wrapping{
 	-webkit-box-shadow: inset 0 1px 5px rgba(0,0,0,.1);
 	border: 1px solid #aaa;
 	background: #fff;
 	display: inline-block;
-}
-.CodeMirror-wrapping + .sidenote{
-	margin-left: 1em;
-	display: inline-block;
-	vertical-align: top;
+	border-radius: 3px;
 }
 #footer{
 	color: #999;

@@ -10,7 +10,7 @@ var __m = function(){
 document.addEventListener('DOMContentLoaded', function(){
 	document.title = _m('extName') + ' ' + _m('advancedOptions');
 	
-	var customIconPreview = $('custom-icon-preview');
+	var customIconPreview = $('custom-icon-preview').firstElementChild;
 	var canvas = new Element('canvas');
 	canvas.width = canvas.height = 19;
 	var ctx = canvas.getContext('2d');
@@ -55,49 +55,33 @@ document.addEventListener('DOMContentLoaded', function(){
 		customIconPreview.src = 'icon.png';
 	});
 	
-	var textareaUserscript = $('userscript');
-	if (localStorage.userscript) textareaUserscript.value = localStorage.userscript;
-	
 	var textareaUserstyle = $('userstyle');
 	if (localStorage.userstyle) textareaUserstyle.value = localStorage.userstyle;
 	
-	var codeArea1 = CodeMirror.fromTextArea('userscript', {
+	var codeArea = CodeMirror.fromTextArea('userstyle', {
 		basefiles: 'codemirror-base.js',
 		stylesheet: 'codemirror.css',
 		width: '40em'
 	});
-	codeArea1.frame.contentWindow.onblur = function(){
-		var code = codeArea1.editor.getCode();
-		localStorage.userscript = code;
-	};
-	
-	var codeArea2 = CodeMirror.fromTextArea('userstyle', {
-		basefiles: 'codemirror-base.js',
-		stylesheet: 'codemirror.css',
-		width: '40em'
-	});
-	codeArea2.frame.contentWindow.onblur = function(){
-		var code = codeArea2.editor.getCode();
+	codeArea.frame.contentWindow.onblur = function(){
+		var code = codeArea.editor.getCode();
 		localStorage.userstyle = code;
 	};
 });
 </script>
 <h1><img src="icon32.png" width="32" height="32" alt=""> <script>__m('extName')</script> <small><script>__m('advancedOptions')</script></small></h1>
 <fieldset>
-<legend>Custom icon (19x19)</legend>
+<legend>Custom icon</legend>
+<div id="custom-icon-preview"><img src="icon.png" width="19" height="19" alt=""></div>
+<p>The icon has to be in 19x19 pixel dimension. Else it'll be resized to this dimension.</p>
 <div>
-<img id="custom-icon-preview" src="icon.png" width="19" height="19" alt=""> <input type="file" id="custom-icon-file"> <button id="default-icon-button">Use Default</button>
+<button id="default-icon-button">Use Default</button> or <input type="file" id="custom-icon-file">
 </div>
 </fieldset>
 <fieldset>
-<legend>UserScript</legend>
-<textarea id="userscript"></textarea>
-<div class="sidenote">Note: This thing requires (mad) JavaScript skillz.</div>
-</fieldset>
-<fieldset>
-<legend>UserStyle</legend>
+<legend>Custom styles</legend>
+<p>This requires some CSS skillz. Hack at your own risk. Code sharing would be wise made on <a href="http://gist.github.com/">GitHub Gist</a>.</p>
 <textarea id="userstyle"></textarea>
-<div class="sidenote">Note: This thing requires (not so mad) CSS skillz.</div>
 </fieldset>
 <div id="footer">
 <script>__m('optionsFooterText', '<a href="http://twitter.com/cheeaun">Lim Chee Aun</a>')</script>
