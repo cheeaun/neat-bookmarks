@@ -273,6 +273,8 @@ var ConfirmDialog = {
 	$tree.addEventListener('keyup', resetHeight);
 	
 	// Bookmark handling
+	var dontConfirmOpenFolder = !!localStorage.dontConfirmOpenFolder;
+	var bookmarkClickStayOpen = !!localStorage.bookmarkClickStayOpen;
 	var openBookmarksLimit = 10;
 	var actions = {
 		
@@ -281,7 +283,7 @@ var ConfirmDialog = {
 				chrome.tabs.update(tab.id, {
 					url: url
 				});
-				if (!localStorage.bookmarkClickStayOpen) window.close.delay(200);
+				if (!bookmarkClickStayOpen) window.close.delay(200);
 			});
 		},
 		
@@ -309,7 +311,7 @@ var ConfirmDialog = {
 					});
 				}
 			};
-			if (urlsLen > openBookmarksLimit){
+			if (!dontConfirmOpenFolder && urlsLen > openBookmarksLimit){
 				ConfirmDialog.open({
 					dialog: _m('confirmOpenBookmarks', ''+urlsLen),
 					button1: '<strong>' + _m('open') + '</strong>',
@@ -330,7 +332,7 @@ var ConfirmDialog = {
 					incognito: incognito
 				});
 			};
-			if (urlsLen > openBookmarksLimit){
+			if (!dontConfirmOpenFolder && urlsLen > openBookmarksLimit){
 				var dialog = incognito ? _m('confirmOpenBookmarksNewIncognitoWindow', ''+urlsLen) : _m('confirmOpenBookmarksNewWindow', ''+urlsLen);
 				ConfirmDialog.open({
 					dialog: dialog,

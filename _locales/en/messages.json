@@ -137,6 +137,9 @@
 	"optionPopupStays": {
 		"message": "Popup stays open when opening (left-clicking) bookmarks."
 	},
+	"optionConfirmOpenFolder": {
+		"message": "Display confirmation when opening a lot of bookmarks from a folder."
+	},
 	"optionRememberPrevState": {
 		"message": "Remember previous state (scroll position and opened folders)."
 	},
