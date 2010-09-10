@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="options.css">
+<script src="mootools.js"></script>
+<script src="codemirror.js"></script>
+<script>
+var _m = chrome.i18n.getMessage;
+var __m = function(){
+	document.write(_m.run(arguments));
+};
+document.addEventListener('DOMContentLoaded', function(){
+	document.title = _m('extName') + ' ' + _m('advancedOptions');
+	
+	var customIconPreview = $('custom-icon-preview');
+	var canvas = new Element('canvas');
+	canvas.width = canvas.height = 19;
+	var ctx = canvas.getContext('2d');
+	setTimeout(function(){
+		customIconPreview.onload = function(){
+			ctx.drawImage(customIconPreview, 0, 0, 19, 19);
+			var imageData = ctx.getImageData(0, 0, 19, 19);
+			chrome.browserAction.setIcon({imageData: imageData});
+			localStorage.customIcon = JSON.stringify(imageData.data);
+		};
+	}, 10);
+	if (localStorage.customIcon){
+		var customIcon = JSON.parse(localStorage.customIcon);
+		var imageData = ctx.getImageData(0, 0, 19, 19);
+		for (var key in customIcon) imageData.data[key] = customIcon[key];
+		ctx.putImageData(imageData, 0, 0);
+		customIconPreview.src = canvas.toDataURL();
+	}
+	
+	var customIconFile = $('custom-icon-file');
+	customIconFile.addEventListener('change', function(){
+		var files = this.files;
+		if (files && files.length){
+			var file = files[0];
+			if (/image\/[a-z]+/i.test(file.type)){
+				reader = new FileReader();
+				reader.onload = function(e){
+					var result = e.target.result;
+					customIconPreview.src = result;
+				};
+				reader.readAsDataURL(files[0]);
+			} else {
+				alert('Not an image. Try another one.');
+			}
+		}
+	});
+	
+	var defaultIconButton = $('default-icon-button');
+	defaultIconButton.addEventListener('click', function(){
+		delete localStorage.customIcon;
+		chrome.browserAction.setIcon({path: 'icon.png'});
+		customIconPreview.src = 'icon.png';
+	});
+	
+	var textareaUserscript = $('userscript');
+	if (localStorage.userscript) textareaUserscript.value = localStorage.userscript;
+	
+	var textareaUserstyle = $('userstyle');
+	if (localStorage.userstyle) textareaUserstyle.value = localStorage.userstyle;
+	
+	var codeArea1 = CodeMirror.fromTextArea('userscript', {
+		basefiles: 'codemirror-base.js',
+		stylesheet: 'codemirror.css',
+		width: '40em'
+	});
+	codeArea1.frame.contentWindow.onblur = function(){
+		var code = codeArea1.editor.getCode();
+		localStorage.userscript = code;
+	};
+	
+	var codeArea2 = CodeMirror.fromTextArea('userstyle', {
+		basefiles: 'codemirror-base.js',
+		stylesheet: 'codemirror.css',
+		width: '40em'
+	});
+	codeArea2.frame.contentWindow.onblur = function(){
+		var code = codeArea2.editor.getCode();
+		localStorage.userstyle = code;
+	};
+});
+</script>
+<h1><img src="icon32.png" width="32" height="32" alt=""> <script>__m('extName')</script> <small><script>__m('advancedOptions')</script></small></h1>
+<fieldset>
+<legend>Custom icon (19x19)</legend>
+<div>
+<img id="custom-icon-preview" src="icon.png" width="19" height="19" alt=""> <input type="file" id="custom-icon-file"> <button id="default-icon-button">Use Default</button>
+</div>
+</fieldset>
+<fieldset>
+<legend>UserScript</legend>
+<textarea id="userscript"></textarea>
+<div class="sidenote">Note: This thing requires (mad) JavaScript skillz.</div>
+</fieldset>
+<fieldset>
+<legend>UserStyle</legend>
+<textarea id="userstyle"></textarea>
+<div class="sidenote">Note: This thing requires (not so mad) CSS skillz.</div>
+</fieldset>
+<div id="footer">
+<script>__m('optionsFooterText', '<a href="http://twitter.com/cheeaun">Lim Chee Aun</a>')</script>
+</div>

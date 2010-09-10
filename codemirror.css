@@ -1,0 +1,95 @@
+html {
+  cursor: text;
+}
+
+.editbox {
+  margin: .4em;
+  padding: 0;
+  font-family: Monaco, Consolas, Courier New, Courier, monospace;
+  font-size: 10pt;
+  color: black;
+}
+
+pre.code, .editbox {
+  color: #666;
+}
+
+.editbox p {
+  margin: 0;
+}
+
+span.css-at {
+  color: #708;
+}
+
+span.css-unit {
+  color: #281;
+}
+
+span.css-value {
+  color: #708;
+}
+
+span.css-identifier {
+  color: black;
+}
+
+span.css-selector {
+  color: #11B;
+}
+
+span.css-important {
+  color: #00F;
+}
+
+span.css-colorcode {
+  color: #299;
+}
+
+span.css-comment {
+  color: #A70;
+}
+
+span.css-string {
+  color: #A22;
+}
+
+span.js-punctuation {
+  color: #666;
+}
+
+span.js-operator {
+  color: #666;
+}
+
+span.js-keyword {
+  color: #770088;
+}
+
+span.js-atom {
+  color: #228811;
+}
+
+span.js-variable {
+  color: #000;
+}
+
+span.js-variabledef {
+  color: #00F;
+}
+
+span.js-localvariable {
+  color: #049;
+}
+
+span.js-property {
+  color: #000;
+}
+
+span.js-comment {
+  color: #AA7700;
+}
+
+span.js-string {
+  color: #A22;
+}

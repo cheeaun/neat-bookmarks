@@ -13,9 +13,7 @@ body{
 	font-size: 14px;
 	margin: 0;
 	padding: 2em;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,.03)), to(rgba(0,0,0,0)));
-	-webkit-background-size: 100% 3px;
-	background-repeat: no-repeat;
+	-webkit-box-shadow: inset 0 1px 5px rgba(0,0,0,.1);
 }
 h1{
 	margin: 0;
@@ -23,6 +21,20 @@ h1{
 }
 h1 img{
 	vertical-align: text-bottom;
+}
+h1 small{
+	color: #666;
+}
+.options-nav{
+	float: right;
+	font-size: 13px;
+}
+.options-nav a{
+	text-decoration: none;
+	color: #aaa;
+}
+.options-nav a:hover{
+	color: #000;
 }
 .options-list{
 	margin: 10px 0;
@@ -36,9 +48,11 @@ h1 img{
 	list-style-type: disc;
 }
 .options-list>li{
-	border-bottom: 1px solid #fff;
-	padding: .5em 1em;
+	border: 1px solid #ccc;
+	border-bottom: 0;
+	padding: .5em .7em;
 	line-height: 30px;
+	-webkit-box-shadow: 1px 1px #fff, inset 0 -20px 60px -20px #ddd, inset 1px 1px #fff;
 }
 .options-list>li:first-child{
 	border-top-left-radius: 5px;
@@ -47,6 +61,7 @@ h1 img{
 	-webkit-border-top-right-radius: 5px;
 }
 .options-list>li:last-child{
+	border-bottom: 1px solid #ccc;
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 	-webkit-border-bottom-left-radius: 5px;
@@ -69,15 +84,40 @@ h1 img{
 .options-list li input[type=checkbox]{
 	margin: 0 5px;
 }
+fieldset{
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	margin: 2em 0 0;
+	padding: 1em;
+	-webkit-box-shadow: 1px 1px #fff, inset 0 -20px 60px -20px #ddd, inset 1px 1px #fff;
+}
+fieldset legend{
+	font-weight: bold;
+	background: #eee;
+	padding: 0 5px;
+	-webkit-box-shadow: 0 0 20px 10px #eee;
+}
+#custom-icon-preview{
+	vertical-align: middle;
+	background: #fff;
+	padding: 5px;
+	border-radius: 3px;
+}
+.CodeMirror-wrapping{
+	-webkit-box-shadow: inset 0 1px 5px rgba(0,0,0,.1);
+	border: 1px solid #aaa;
+	background: #fff;
+	display: inline-block;
+}
+.CodeMirror-wrapping + .sidenote{
+	margin-left: 1em;
+	display: inline-block;
+	vertical-align: top;
+}
 #footer{
 	color: #999;
-	border-top: 1px solid rgba(0,0,0,.1);
+	border-top: 1px solid #fff;
+	-webkit-box-shadow: 0 -1px rgba(0,0,0,.1);
 	margin-top: 40px;
 	line-height: 2em;
-}
-#footer:before{
-	content: '.';
-	height: 1px;
-	display: block;
-	background-color: #fff;
 }

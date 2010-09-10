@@ -813,4 +813,11 @@ var ConfirmDialog = {
 			}
 		});
 	}
+	
+	if (localStorage.userscript) eval(localStorage.userscript);
+	if (localStorage.userstyle){
+		new Element('style', {
+			text: localStorage.userstyle
+		}).inject(document.body);
+	}
 })(window, document);

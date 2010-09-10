@@ -128,6 +128,9 @@
 	"options": {
 		"message": "Options"
 	},
+	"advancedOptions": {
+		"message": "Advanced Options"
+	},
 	"optionOpenNewTab": {
 		"message": "Middle-click or control-click opens bookmark in new background tab (instead of foreground)."
 	},
