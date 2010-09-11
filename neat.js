@@ -565,6 +565,7 @@ var ConfirmDialog = {
 	});
 	
 	// Keyboard navigation
+	var keyBuffer = '', keyBufferTimer;
 	var treeKeyDown = function(e){
 		var item = document.activeElement;
 		if (!/^(a|span)$/i.test(item.tagName)) item = $tree.querySelector('.focus') || $tree.querySelector('li:first-child>span');
@@ -698,6 +699,46 @@ var ConfirmDialog = {
 					}, 0);
 				}
 				break;
+			default:
+				var key = String.fromCharCode(keyCode).trim();
+				if (!key) return;
+				if (key != keyBuffer) keyBuffer += key;
+				$clear(keyBufferTimer);
+				keyBufferTimer = setTimeout(function(){ keyBuffer = ''; }, 500);
+				var lis = this.querySelectorAll('ul>li');
+				var items = [];
+				for (var i=0, l=lis.length; i<l; i++){
+					var li = lis[i];
+					if (li.parentNode.offsetHeight) items.push(li.firstElementChild);
+				}
+				var pattern = new RegExp('^'+keyBuffer, 'i');
+				var batch = [];
+				var startFind = false;
+				var found = false;
+				var activeElement = document.activeElement;
+				for (var i=0, l=items.length; i<l; i++){
+					var item = items[i];
+					if (item == activeElement){
+						startFind = true;
+					} else if (startFind){
+						if (pattern.test(item.innerText.trim())){
+							found = true;
+							item.focus();
+							break;
+						}
+					} else {
+						batch.push(item);
+					}
+				}
+				if (!found){
+					for (var i=0, l=batch.length; i<l; i++){
+						var item = batch[i];
+						if (pattern.test(item.innerText.trim())){
+							item.focus();
+							break;
+						}
+					}
+				}
 		}
 	};
 	$tree.addEventListener('keydown', treeKeyDown);
