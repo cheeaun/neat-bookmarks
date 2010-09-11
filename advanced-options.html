@@ -14,14 +14,18 @@ document.addEventListener('DOMContentLoaded', function(){
 	var canvas = new Element('canvas');
 	canvas.width = canvas.height = 19;
 	var ctx = canvas.getContext('2d');
-	setTimeout(function(){
-		customIconPreview.onload = function(){
-			ctx.drawImage(customIconPreview, 0, 0, 19, 19);
-			var imageData = ctx.getImageData(0, 0, 19, 19);
-			chrome.browserAction.setIcon({imageData: imageData});
-			localStorage.customIcon = JSON.stringify(imageData.data);
-		};
-	}, 10);
+	var dontLoad = true;
+	customIconPreview.onload = function(){
+		if (dontLoad){
+			dontLoad = false;
+			return;
+		}
+		ctx.clearRect(0, 0, 19, 19);
+		ctx.drawImage(customIconPreview, 0, 0, 19, 19);
+		var imageData = ctx.getImageData(0, 0, 19, 19);
+		chrome.browserAction.setIcon({imageData: imageData});
+		localStorage.customIcon = JSON.stringify(imageData.data);
+	};
 	if (localStorage.customIcon){
 		var customIcon = JSON.parse(localStorage.customIcon);
 		var imageData = ctx.getImageData(0, 0, 19, 19);
@@ -52,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	defaultIconButton.addEventListener('click', function(){
 		delete localStorage.customIcon;
 		chrome.browserAction.setIcon({path: 'icon.png'});
+		dontLoad = true;
 		customIconPreview.src = 'icon.png';
 	});
 	
@@ -75,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <div id="custom-icon-preview"><img src="icon.png" width="19" height="19" alt=""></div>
 <p>The icon has to be in 19&times;19 pixel dimension. Else it'll be resized to this dimension.</p>
 <div>
-<button id="default-icon-button">Use Default</button> or <input type="file" id="custom-icon-file">
+<button id="default-icon-button">Use default</button> or <input type="file" id="custom-icon-file">
 </div>
 </fieldset>
 <fieldset>
