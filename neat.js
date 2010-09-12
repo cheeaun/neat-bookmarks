@@ -227,10 +227,10 @@ var EditDialog = {
 	
 	// Search
 	var $results = $('results');
-	
 	var searchMode = false;
 	var searchInput = $('search-input');
 	var prevValue = '';
+	
 	var search = function(){
 		var value = searchInput.value.trim();
 		localStorage.searchQuery = value;
@@ -269,6 +269,9 @@ var EditDialog = {
 			});
 		});
 	};
+	searchInput.addEventListener('keyup', search);
+	searchInput.addEventListener('click', search);
+	
 	searchInput.addEventListener('keydown', function(e){
 		var key = e.keyCode;
 		var focusID = localStorage.focusID;
@@ -294,8 +297,13 @@ var EditDialog = {
 			}
 		}
 	});
-	searchInput.addEventListener('keyup', search);
-	searchInput.addEventListener('click', search);
+	
+	searchInput.addEventListener('focus', function(){
+		body.addClass('searchFocus');
+	});
+	searchInput.addEventListener('blur', function(){
+		body.removeClass('searchFocus');
+	});
 	
 	// Pressing esc shouldn't close the popup when search field has value
 	searchInput.addEventListener('keydown', function(e){

@@ -124,6 +124,9 @@ input{
 	text-shadow: 0 0 rgba(255,255,255,.75), 0 1px rgba(0,0,0,.75);
 	outline: 0;
 }
+.searchFocus #results ul>li:first-child a{
+	background-color: rgba(43,93,205,.2);
+}
 #tree ul li span:active .twisty,
 #tree ul li span.active .twisty,
 #tree ul li span:focus .twisty{
