@@ -175,8 +175,7 @@ var EditDialog = {
 		var focusID = localStorage.focusID;
 		if (typeof focusID != 'undefined' && focusID != null){
 			var focusEl = $('neat-tree-item-' + focusID);
-			if (focusEl) focusEl = focusEl.firstChild;
-			if (focusEl) focusEl.addClass('focus');
+			if (focusEl) focusEl.firstElementChild.addClass('focus');
 		}
 	});
 	
@@ -272,6 +271,7 @@ var EditDialog = {
 	};
 	searchInput.addEventListener('keydown', function(e){
 		var key = e.keyCode;
+		var focusID = localStorage.focusID;
 		if (key == 40 && searchInput.value.length == searchInput.selectionEnd){ // down
 			if (searchMode){
 				$results.querySelector('ul>li:first-child a').focus();
@@ -286,6 +286,12 @@ var EditDialog = {
 				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 				item.dispatchEvent(event);
 			}, 100);
+		} else if (key == 9 && !searchMode && typeof focusID != 'undefined' && focusID != null){
+			var focusEl = $('neat-tree-item-' + focusID);
+			if (focusEl){
+				e.preventDefault();
+				focusEl.firstElementChild.focus();
+			}
 		}
 	});
 	searchInput.addEventListener('keyup', search);
