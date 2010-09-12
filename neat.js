@@ -972,9 +972,9 @@ var EditDialog = {
 		resizerDown = false;
 	});
 	
-	// Dialogs
+	// Closing dialogs on escape
 	document.addEventListener('keydown', function(e){
-		if (e.keyCode == 27){
+		if (e.keyCode == 27){ // esc
 			e.preventDefault();
 			if (body.hasClass('needConfirm')) ConfirmDialog.close();
 			if (body.hasClass('needEdit')) EditDialog.close();
