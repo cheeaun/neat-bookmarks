@@ -89,7 +89,7 @@ var EditDialog = {
 		'folder-new-window': 'openBookmarksNewWindow',
 		'folder-new-incognito-window': 'openBookmarksIncognitoWindow',
 		'folder-edit': 'edit',
-		'folder-delete': 'delete',
+		'folder-delete': 'deleteEllipsis',
 		'edit-dialog-button': 'save'
 	}, function(msg, id){
 		$(id).innerText = _m(msg);

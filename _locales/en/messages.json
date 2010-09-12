@@ -26,6 +26,9 @@
 	"delete": {
 		"message": "Delete"
 	},
+	"deleteEllipsis": {
+		"message": "Delete..."
+	},
 	"openBookmarks": {
 		"message": "Open all bookmarks"
 	},
