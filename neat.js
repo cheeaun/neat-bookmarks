@@ -73,6 +73,7 @@ var EditDialog = {
 	try {
 	
 	var body = document.body;
+	var os = Browser.Platform.name;
 	
 	// Some i18n
 	var _m = chrome.i18n.getMessage;
@@ -753,6 +754,8 @@ var EditDialog = {
 					$('neat-tree-item-' + parentID).querySelector('span').focus();
 				}
 				break;
+			case 32: // space
+				if (os != 'mac') break
 			case 13: // enter
 				e.preventDefault();
 				var event = document.createEvent('MouseEvents');
@@ -815,7 +818,8 @@ var EditDialog = {
 					}, 0);
 				}
 				break;
-			case 113: // F2
+			case 113: // F2, not for Mac
+				if (os == 'mac') break;
 				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
 				actions.editBookmarkFolder(id);
 				break;
@@ -871,6 +875,8 @@ var EditDialog = {
 		if (!/^(a|span)$/i.test(item.tagName)) item = $tree.querySelector('.focus') || $tree.querySelector('li:first-child>span');
 		var li = item.parentNode;
 		switch (e.keyCode){
+			case 8: // backspace
+				if (!e.metaKey) break; // cmd + backspace also deletes on Mac
 			case 46: // delete
 				e.preventDefault();
 				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
