@@ -41,6 +41,7 @@ var EditDialog = {
 		name.value = opts.name;
 		name.focus();
 		name.select();
+		name.scrollLeft = 0; // very delicate, show first few words instead of last
 		var url = $('edit-dialog-url');
 		if (type == 'bookmark'){
 			url.style.display = '';
@@ -68,7 +69,7 @@ var EditDialog = {
 	
 };
 
-(function(window, document){
+(function(window, document, chrome){
 	try {
 	
 	var body = document.body;
@@ -804,6 +805,8 @@ var EditDialog = {
 				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
 				actions.editBookmarkFolder(id);
 				break;
+			case 46: // delete
+				break; // don't run 'default'
 			default:
 				var key = String.fromCharCode(keyCode).trim();
 				if (!key) return;
@@ -981,4 +984,4 @@ var EditDialog = {
 			text: localStorage.userstyle
 		}).inject(document.body);
 	}
-})(window, document);
+})(window, document, chrome);

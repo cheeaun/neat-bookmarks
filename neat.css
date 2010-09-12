@@ -261,6 +261,7 @@ input{
 #edit-dialog input{
 	width: 100%;
 	padding: 2px;
+	font-size: 12px;
 }
 #edit-dialog input:invalid{
 	outline-color: red;
