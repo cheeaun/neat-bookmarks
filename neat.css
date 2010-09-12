@@ -120,7 +120,8 @@ input{
 .context-menu li:not(.separator):focus{
 	color: #fff;
 	background-color: #4687cb;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#5594d2), color-stop(.05, #6fa6de), to(#1e6cbb));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#6fa6de), to(#1e6cbb));
+	-webkit-box-shadow: 0 -1px #5594d2;
 	text-shadow: 0 0 rgba(255,255,255,.75), 0 1px rgba(0,0,0,.75);
 	outline: 0;
 }
