@@ -5,27 +5,39 @@
 <div id="tree" tabindex="-1"></div>
 <div id="results" tabindex="-1" style="display: none;"></div>
 <ul id="bookmark-context-menu" class="context-menu" role="menu" tabindex="-1">
-<li id="bookmark-new-tab" role="menuitem" tabindex="-1"></li>
-<li id="bookmark-new-window" role="menuitem" tabindex="-1"></li>
-<li id="bookmark-new-incognito-window" role="menuitem" tabindex="-1"></li>
-<li class="separator" role="separator"></li>
-<li id="bookmark-delete" role="menuitem" tabindex="-1"></li>
+	<li id="bookmark-new-tab" role="menuitem" tabindex="-1"></li>
+	<li id="bookmark-new-window" role="menuitem" tabindex="-1"></li>
+	<li id="bookmark-new-incognito-window" role="menuitem" tabindex="-1"></li>
+	<li class="separator" role="separator"></li>
+	<li id="bookmark-edit" role="menuitem" tabindex="-1"></li>
+	<li id="bookmark-delete" role="menuitem" tabindex="-1"></li>
 </ul>
 <ul id="folder-context-menu" class="context-menu" role="menu" tabindex="-1">
-<li id="folder-window" role="menuitem" tabindex="-1"></li>
-<li id="folder-new-window" role="menuitem" tabindex="-1"></li>
-<li id="folder-new-incognito-window" role="menuitem" tabindex="-1"></li>
-<li class="separator" role="separator"></li>
-<li id="folder-delete" role="menuitem" tabindex="-1"></li>
+	<li id="folder-window" role="menuitem" tabindex="-1"></li>
+	<li id="folder-new-window" role="menuitem" tabindex="-1"></li>
+	<li id="folder-new-incognito-window" role="menuitem" tabindex="-1"></li>
+	<li class="separator" role="separator"></li>
+	<li id="folder-edit" role="menuitem" tabindex="-1"></li>
+	<li id="folder-delete" role="menuitem" tabindex="-1"></li>
 </ul>
 <div id="resizer"></div>
 <div id="cover"></div>
-<div id="confirm-dialog" role="dialog">
-<p id="confirm-dialog-text"></p>
-<div class="buttons">
-<button id="confirm-dialog-button-1" onclick="ConfirmDialog.fn1(); ConfirmDialog.close();"></button>
-<button id="confirm-dialog-button-2" onclick="ConfirmDialog.fn2(); ConfirmDialog.close();"></button>
+<div id="confirm-dialog" class="dialog" role="dialog">
+	<p id="confirm-dialog-text" class="dialog-text"></p>
+	<div class="buttons">
+	<button id="confirm-dialog-button-1" onclick="ConfirmDialog.fn1(); ConfirmDialog.close();"></button>
+	<button id="confirm-dialog-button-2" onclick="ConfirmDialog.fn2(); ConfirmDialog.close();"></button>
+	</div>
 </div>
+<div id="edit-dialog" class="dialog" role="dialog">
+	<form onsubmit="EditDialog.close(); return false;">
+	<p id="edit-dialog-text" class="dialog-text"></p>
+	<input id="edit-dialog-name">
+	<input type="url" id="edit-dialog-url" required>
+	<div class="buttons">
+	<button id="edit-dialog-button" type="submit"></button>
+	</div>
+	</form>
 </div>
 <script>
 if (localStorage.popupHeight) document.body.style.height = localStorage.popupHeight + 'px';

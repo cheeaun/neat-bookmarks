@@ -14,13 +14,18 @@ body{
 	width: 320px;
 	height: 530px;
 }
+body.transitional{
+	-webkit-transition-property: height;
+}
+input{
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
 #search{
 	height: 30px;
 	padding: 0 2px;
 }
 #search input{
-	box-sizing: border-box;
-	-webkit-box-sizing: border-box;
 	width: 100%;
 	margin: 2px 0;
 	padding: 2px;
@@ -95,8 +100,8 @@ body{
 	vertical-align: text-top;
 	margin-__MSG_@@bidi_end_edge__: 4px;
 }
-#results ul li a i,
-#tree ul li a i{
+#results ul li i,
+#tree ul li i{
 	font-style: normal;
 }
 #results ul li a:hover i,
@@ -177,6 +182,7 @@ body{
 }
 
 .context-menu.hide-editables li.separator,
+.context-menu.hide-editables li#folder-edit,
 .context-menu.hide-editables li#folder-delete{
 	display: none;
 }
@@ -198,16 +204,18 @@ body{
 	width: 100%;
 	opacity: 0;
 	background-color: rgba(255,255,255,.5);
+}
+.transitional #cover{
 	-webkit-transition-property: opacity;
 	-webkit-transition-duration: .3s;
 }
-
-.needConfirm #cover{
+.needConfirm #cover,
+.needEdit #cover{
 	left: 0;
 	opacity: 1;
 }
 
-#confirm-dialog{
+.dialog{
 	position: absolute;
 	top: -150px;
 	left: 0;
@@ -215,29 +223,27 @@ body{
 	opacity: 0;
 	background-color: #fff;
 	padding: 1em;
-	-webkit-transition-property: opacity, top;
-	-webkit-transition-duration: .3s;
 	-webkit-box-shadow: 0 0 100px rgba(0,0,0,.1);
 	box-shadow: 0 0 100px rgba(0,0,0,.1);
 	font: message-box;
 }
-
-#confirm-dialog-text{
+.transitional .dialog{
+	-webkit-transition-property: opacity, top;
+	-webkit-transition-duration: .3s;
+}
+.dialog-text{
 	padding: 0;
 	margin: 0 0 1em;
 	font-size: 13px;
 	line-height: 1.4em;
 }
-
-#confirm-dialog .buttons{
+.dialog .buttons{
 	text-align: __MSG_@@bidi_end_edge__;
 }
-
-#confirm-dialog .buttons button{
+.dialog .buttons button{
 	padding: .3em 1.5em;
 }
-
-#confirm-dialog pre{
+.dialog pre{
 	white-space: pre-line;
 	margin: 0;
 	padding: 5px;
@@ -248,7 +254,23 @@ body{
 	text-shadow: none;
 }
 
-.needConfirm #confirm-dialog{
+#edit-dialog .dialog-text{
+	margin: 0;
+	font-weight: bold;
+}
+#edit-dialog input{
+	width: 100%;
+	padding: 2px;
+}
+#edit-dialog input:invalid{
+	outline-color: red;
+}
+#edit-dialog .buttons button{
+	font-weight: bold;
+}
+
+.needConfirm #confirm-dialog,
+.needEdit #edit-dialog{
 	top: 0;
 	opacity: 1;
 }

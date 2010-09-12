@@ -1,25 +1,70 @@
+String.implement({
+	htmlspecialchars: function(){
+		return this.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+	},
+	widont: function(){
+		return this.replace(/\s([^\s]+)$/i, '&nbsp;$1');
+	}
+});
+
 var ConfirmDialog = {
 	
 	open: function(opts){
-		if (opts){
-			$('confirm-dialog-text').set('html', opts.dialog.replace(/\s([^\s]+)$/i, '&nbsp;$1'));
-			$('confirm-dialog-button-1').set('html', opts.button1);
-			$('confirm-dialog-button-2').set('html', opts.button2);
-			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
-			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
-			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
-		}
+		if (!opts) return;
+		$('confirm-dialog-text').set('html', opts.dialog.widont());
+		$('confirm-dialog-button-1').set('html', opts.button1);
+		$('confirm-dialog-button-2').set('html', opts.button2);
+		if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
+		if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
+		$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
 		document.body.addClass('needConfirm');
 	},
 	
 	close: function(){
 		document.body.removeClass('needConfirm');
-		$('search-input').focus(); // temporary solution
 	},
 	
 	fn1: function(){},
 	
 	fn2: function(){}
+	
+};
+
+var EditDialog = {
+	
+	open: function(opts){
+		if (!opts) return;
+		$('edit-dialog-text').set('html', opts.dialog.widont());
+		if (opts.fn) EditDialog.fn = opts.fn;
+		var type = opts.type || 'bookmark';
+		var name = $('edit-dialog-name');
+		name.value = opts.name;
+		name.focus();
+		name.select();
+		var url = $('edit-dialog-url');
+		if (type == 'bookmark'){
+			url.style.display = '';
+			url.value = opts.url;
+		} else {
+			url.style.display = 'none';
+			url.value = '';
+		}
+		document.body.addClass('needEdit');
+	},
+	
+	close: function(){
+		var urlInput = $('edit-dialog-url');
+		var url = urlInput.value;
+		if (!urlInput.validity.valid){
+			urlInput.value = 'http://' + url;
+			if (!urlInput.validity.valid) url = ''; // if still invalid, fuck it.
+			url = 'http://' + url;
+		}
+		EditDialog.fn($('edit-dialog-name').value, url);
+		document.body.removeClass('needEdit');
+	},
+	
+	fn: function(){}
 	
 };
 
@@ -31,15 +76,20 @@ var ConfirmDialog = {
 	// Some i18n
 	var _m = chrome.i18n.getMessage;
 	$('search-input').placeholder = _m('searchBookmarks');
+	$('edit-dialog-name').placeholder = _m('name');
+	$('edit-dialog-url').placeholder = _m('url');
 	$each({
 		'bookmark-new-tab': 'openNewTab',
 		'bookmark-new-window': 'openNewWindow',
 		'bookmark-new-incognito-window': 'openIncognitoWindow',
+		'bookmark-edit': 'edit',
 		'bookmark-delete': 'delete',
 		'folder-window': 'openBookmarks',
 		'folder-new-window': 'openBookmarksNewWindow',
 		'folder-new-incognito-window': 'openBookmarksIncognitoWindow',
-		'folder-delete': 'delete'
+		'folder-edit': 'edit',
+		'folder-delete': 'delete',
+		'edit-dialog-button': 'save'
 	}, function(msg, id){
 		$(id).innerText = _m(msg);
 	});
@@ -54,6 +104,23 @@ var ConfirmDialog = {
 	var nonOpens = {};
 	var rememberState = !localStorage.dontRememberState;
 	var a = new Element('a');
+	var httpsPattern = /^https?:\/\//i;
+		
+	var generateBookmarkHTML = function(title, url, extras){
+		if (!extras) extras = '';
+		var u = url;
+		url = url.htmlspecialchars();
+		var favicon = 'chrome://favicon/' + url;
+		if (/^javascript:/i.test(url)){
+			if (u.length > 140) u = u.slice(0, 140) + '...';
+			u = u.htmlspecialchars();
+			favicon = 'document-code.png';
+		}
+		var name = title || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
+		return '<a href="' + url + '"' + ' title="' + u + '" tabindex="0" ' + extras + '>'
+			+ '<img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i>'
+			+ '</a>';
+	};
 	
 	var generateHTML = function(data, level){
 		if (!level) level = 0;
@@ -62,12 +129,11 @@ var ConfirmDialog = {
 		var group = (level == 0) ? 'tree' : 'group';
 		var html = '<ul role="' + group + '" data-level="' + level + '">';
 		
-		var httpsPattern = /^https?:\/\//i;
 		for (var i=0, l=data.length; i<l; i++){
 			var d = data[i];
 			var children = d.children;
 			var hasChildren = !!children;
-			var title = d.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+			var title = d.title.htmlspecialchars();
 			var url = d.url;
 			var id = d.id;
 			var parentID = d.parentId;
@@ -80,8 +146,8 @@ var ConfirmDialog = {
 					if (isOpen) open = ' open';
 				}
 				html += '<li class="parent' + open + '"' + idHTML + ' role="treeitem" aria-expanded="' + isOpen + '" data-parentid="' + parentID + '">'
-					+ '<span tabindex="0" style="-webkit-padding-start: ' + paddingStart + 'px"><i class="twisty"></i>'
-					+ '<img src="folder.png" width="16" height="16" alt="">' + (title || _m('noTitle'))
+					+ '<span tabindex="0" style="-webkit-padding-start: ' + paddingStart + 'px"><b class="twisty"></b>'
+					+ '<img src="folder.png" width="16" height="16" alt=""><i>' + (title || _m('noTitle')) + '</i>'
 					+ '</span>';
 				if (isOpen && hasChildren){
 					html += generateHTML(children, level+1);
@@ -89,19 +155,8 @@ var ConfirmDialog = {
 					nonOpens[id] = children;
 				}
 			} else {
-				var u = url;
-				url = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-				var favicon = 'chrome://favicon/' + url;
-				if (/^javascript:/i.test(url)){
-					if (u.length > 140) u = u.slice(0, 140) + '...';
-					u = u.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-					favicon = 'document-code.png';
-				}
-				var name = title || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
 				html += '<li class="child"' + idHTML + ' role="treeitem" data-parentid="' + parentID + '">'
-					+ '<a href="' + url + '"' + ' title="' + u + '" tabindex="0" style="-webkit-padding-start: ' + aPaddingStart + 'px">'
-					+ '<img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i>'
-					+ '</a>';
+					+ generateBookmarkHTML(title, url, 'style="-webkit-padding-start: ' + aPaddingStart + 'px"');
 			}
 			html += '</li>';
 		}
@@ -196,14 +251,8 @@ var ConfirmDialog = {
 			for (var i=0, l=results.length; i<l; i++){
 				var result = results[i];
 				var id = result.id;
-				var url = result.url;
-				var u = url.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-				var title = ' title="' + u + '"';
-				var name = result.title.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-				var favicon = /^javascript:/i.test(u) ? 'document-code.png' : ('chrome://favicon/' + url);
 				html += '<li data-parentid="' + result.parentId + '" id="results-item-' + id + '" role="listitem">'
-					+ '<a href="' + u + '"' + title + ' tabindex="0"><img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i></a>'
-					+ '</li>';
+					+ generateBookmarkHTML(result.title, result.url);
 			}
 			html += '</ul>';
 			$results.set('html', html).style.display = 'block';
@@ -258,9 +307,9 @@ var ConfirmDialog = {
 	// Popup auto-height
 	var resetHeight = function(){
 		setTimeout(function(){
-			if (!body.style.webkitTransitionProperty) body.style.webkitTransitionProperty = 'height';
 			var neatTree = $tree.firstElementChild;
 			var fullHeight = neatTree.offsetHeight + $tree.offsetTop + 16;
+			// Slide up faster than down
 			body.style.webkitTransitionDuration = (fullHeight < window.innerHeight) ? '.3s' : '.1s';
 			var maxHeight = screen.height - window.screenY - 50;
 			var height = Math.max(200, Math.min(fullHeight, maxHeight));
@@ -345,6 +394,46 @@ var ConfirmDialog = {
 			}
 		},
 		
+		editBookmarkFolder: function(id){
+			chrome.bookmarks.get(id, function(nodeList){
+				if (!nodeList.length) return;
+				var node = nodeList[0];
+				var url = node.url;
+				var isBookmark = !!url;
+				var type = isBookmark ? 'bookmark' : 'folder';
+				var dialog = isBookmark ? _m('editBookmark') : _m('editFolder');
+				EditDialog.open({
+					dialog: dialog,
+					type: type,
+					name: node.title,
+					url: decodeURIComponent(url),
+					fn: function(name, url){
+						chrome.bookmarks.update(id, {
+							title: name,
+							url: isBookmark ? url : ''
+						}, function(n){
+							var title = n.title;
+							var url = n.url;
+							var li = $('neat-tree-item-' + id);
+							if (isBookmark){
+								var css = li.querySelector('a').style.cssText;
+								li.set('html', generateBookmarkHTML(title, url, 'style="' + css + '"'));
+							} else {
+								var i = li.querySelector('i');
+								var name = title || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
+								i.innerText = name;
+							}
+							if (searchMode){
+								li = $('results-item-' + id);
+								li.set('html', generateBookmarkHTML(title, url));
+							}
+							li.firstElementChild.focus();
+						});
+					}
+				});
+			});
+		},
+		
 		deleteBookmark: function(id){
 			var li1 = $('neat-tree-item-' + id);
 			var li2 = $('results-item-' + id);
@@ -383,12 +472,16 @@ var ConfirmDialog = {
 						chrome.bookmarks.removeTree(id, function(){
 							li.destroy();
 						});
+						var nearLi = li.getNext() || li.getPrevious();
+						if (nearLi) nearLi.querySelector('a, span').focus();
 					}
 				});
 			} else {
 				chrome.bookmarks.removeTree(id, function(){
 					li.destroy();
 				});
+				var nearLi = li.getNext() || li.getPrevious();
+				if (nearLi) nearLi.querySelector('a, span').focus();
 			}
 		}
 		
@@ -521,6 +614,11 @@ var ConfirmDialog = {
 			case 'bookmark-new-incognito-window':
 				actions.openBookmarkNewWindow(url, true);
 				break;
+			case 'bookmark-edit':
+				var li = currentContext.parentNode;
+				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
+				actions.editBookmarkFolder(id);
+				break;
 			case 'bookmark-delete':
 				var li = currentContext.parentNode;
 				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
@@ -555,6 +653,9 @@ var ConfirmDialog = {
 				case 'folder-new-incognito-window':
 					if (noURLS) return;
 					actions.openBookmarksNewWindow(urls, true);
+					break;
+				case 'folder-edit':
+					actions.editBookmarkFolder(id);
 					break;
 				case 'folder-delete':
 					actions.deleteBookmarks(id, urlsLen, children.length-urlsLen);
@@ -698,6 +799,10 @@ var ConfirmDialog = {
 						getFirstItem().focus();
 					}, 0);
 				}
+				break;
+			case 113: // F2
+				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
+				actions.editBookmarkFolder(id);
 				break;
 			default:
 				var key = String.fromCharCode(keyCode).trim();
@@ -843,6 +948,20 @@ var ConfirmDialog = {
 		e.preventDefault();
 		resizerDown = false;
 	});
+	
+	// Dialogs
+	document.addEventListener('keydown', function(e){
+		if (e.keyCode == 27){
+			e.preventDefault();
+			if (body.hasClass('needConfirm')) ConfirmDialog.close();
+			if (body.hasClass('needEdit')) EditDialog.close();
+		}
+	});
+	
+	// Make webkit transitions work only after elements are settled down
+	setTimeout(function(){
+		body.addClass('transitional');
+	}, 10);
 	
 	} catch(e){
 		ConfirmDialog.open({

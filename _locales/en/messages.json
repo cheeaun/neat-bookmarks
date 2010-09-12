@@ -20,6 +20,9 @@
 	"openIncognitoWindow": {
 		"message": "Open in incognito window"
 	},
+	"edit": {
+		"message": "Edit"
+	},
 	"delete": {
 		"message": "Delete"
 	},
@@ -115,6 +118,22 @@
 	},
 	"nope": {
 		"message": "Nope"
+	},
+	"editBookmark": {
+		"message": "Edit bookmark"
+	},
+	"editFolder": {
+		"message": "Edit folder"
+	},
+	"save": {
+		"message": "Save"
+	},
+	"name": {
+		"message": "Name",
+		"description": "Name of bookmark or folder."
+	},
+	"url": {
+		"message": "URL"
 	},
 	"errorOccured": {
 		"message": "Oops, an error occured."
