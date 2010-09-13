@@ -202,7 +202,7 @@ var EditDialog = {
 		var button = e.button;
 		if (button == 0){
 			if (tagName != 'SPAN') return;
-			if (e.shiftKey) return;
+			if (e.shiftKey || e.ctrlKey) return;
 			var parent = el.parentNode;
 			Element.toggleClass(parent, 'open');
 			Element.setProperty(parent, 'aria-expanded', Element.hasClass(parent, 'open'));
