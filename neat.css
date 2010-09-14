@@ -227,6 +227,7 @@ input{
 	opacity: 0;
 	background-color: #fff;
 	padding: 1em;
+	border-bottom: 1px solid #e0e0e0;
 	-webkit-box-shadow: 0 0 100px rgba(0,0,0,.1);
 	box-shadow: 0 0 100px rgba(0,0,0,.1);
 	font: message-box;
