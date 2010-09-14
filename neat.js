@@ -490,6 +490,9 @@ var EditDialog = {
 						});
 						var nearLi = li.getNext() || li.getPrevious();
 						if (nearLi) nearLi.querySelector('a, span').focus();
+					},
+					fn2: function(){
+						li.querySelector('a, span').focus();
 					}
 				});
 			} else {
@@ -976,7 +979,7 @@ var EditDialog = {
 	document.addEventListener('keydown', function(e){
 		if (e.keyCode == 27){ // esc
 			e.preventDefault();
-			if (body.hasClass('needConfirm')) ConfirmDialog.close();
+			if (body.hasClass('needConfirm')) ConfirmDialog.fn2(); ConfirmDialog.close();
 			if (body.hasClass('needEdit')) EditDialog.close();
 		}
 	});
