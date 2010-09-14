@@ -976,13 +976,17 @@ var EditDialog = {
 	});
 	
 	// Closing dialogs on escape
+	var closeDialogs = function(){
+			if (body.hasClass('needConfirm')) ConfirmDialog.fn2(); ConfirmDialog.close();
+			if (body.hasClass('needEdit')) EditDialog.close();
+	};
 	document.addEventListener('keydown', function(e){
 		if (e.keyCode == 27){ // esc
 			e.preventDefault();
-			if (body.hasClass('needConfirm')) ConfirmDialog.fn2(); ConfirmDialog.close();
-			if (body.hasClass('needEdit')) EditDialog.close();
+			closeDialogs();
 		}
 	});
+	$('cover').addEventListener('click', closeDialogs);
 	
 	// Make webkit transitions work only after elements are settled down
 	setTimeout(function(){
