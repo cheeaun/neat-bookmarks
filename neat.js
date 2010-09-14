@@ -876,7 +876,7 @@ var EditDialog = {
 		var li = item.parentNode;
 		switch (e.keyCode){
 			case 8: // backspace
-				if (!e.metaKey) break; // cmd + backspace also deletes on Mac
+				if (os != 'mac') break; // somehow delete button on mac gives backspace
 			case 46: // delete
 				e.preventDefault();
 				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
