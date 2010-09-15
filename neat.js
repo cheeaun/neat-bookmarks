@@ -900,28 +900,48 @@ var EditDialog = {
 	$results.addEventListener('keyup', treeKeyUp);
 	
 	var contextKeyDown = function(e){
+		var menu = this;
 		var item = document.activeElement;
+		var metaKey = e.metaKey;
 		switch (e.keyCode){
 			case 40: // down
 				e.preventDefault();
-				if (item.tagName == 'LI'){
-					var nextItem = item.getNext();
-					if (nextItem.hasClass('separator')) nextItem = nextItem.getNext();
-					if (nextItem) nextItem.focus();
+				if (metaKey){ // cmd + down (Mac)
+					menu.lastElementChild.focus();
 				} else {
-					item.firstElementChild.focus();
+					if (item.tagName == 'LI'){
+						var nextItem = item.getNext();
+						if (nextItem && nextItem.hasClass('separator')) nextItem = nextItem.getNext();
+						if (nextItem){
+							nextItem.focus();
+						} else if (os != 'mac'){
+							menu.firstElementChild.focus();
+						}
+					} else {
+						item.firstElementChild.focus();
+					}
 				}
 				break;
 			case 38: // up
 				e.preventDefault();
-				if (item.tagName == 'LI'){
-					var prevItem = item.getPrevious();
-					if (prevItem.hasClass('separator')) prevItem = prevItem.getPrevious();
-					if (prevItem) prevItem.focus();
+				if (metaKey){ // cmd + up (Mac)
+					menu.firstElementChild.focus();
 				} else {
-					item.lastElementChild.focus();
+					if (item.tagName == 'LI'){
+						var prevItem = item.getPrevious();
+						if (prevItem && prevItem.hasClass('separator')) prevItem = prevItem.getPrevious();
+						if (prevItem){
+							prevItem.focus();
+						} else if (os != 'mac'){
+							menu.lastElementChild.focus();
+						}
+					} else {
+						item.lastElementChild.focus();
+					}
 				}
 				break;
+			case 32: // space
+				if (os != 'mac') break;
 			case 13: // enter
 				e.preventDefault();
 				var event = document.createEvent('MouseEvents');
