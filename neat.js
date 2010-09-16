@@ -617,7 +617,7 @@ var EditDialog = {
 		}
 	});
 	
-	$bookmarkContextMenu.addEventListener('click', function(e){
+	var bookmarkContextHandler = function(e){
 		e.stopPropagation();
 		if (!currentContext) return;
 		var el = e.target;
@@ -645,10 +645,17 @@ var EditDialog = {
 				break;
 		}
 		clearMenu();
+	};
+	$bookmarkContextMenu.addEventListener('click', function(e){
+		e.stopPropagation();
+		if (e.button == 0) bookmarkContextHandler(e);
+	});
+	$bookmarkContextMenu.addEventListener('contextmenu', function(e){
+		e.stopPropagation();
+		bookmarkContextHandler(e);
 	});
 	
-	$folderContextMenu.addEventListener('click', function(e){
-		e.stopPropagation();
+	var folderContextHandler = function(e){
 		if (!currentContext) return;
 		var el = e.target;
 		if (el.tagName != 'LI') return;
@@ -682,6 +689,14 @@ var EditDialog = {
 			}
 		});
 		clearMenu();
+	};
+	$folderContextMenu.addEventListener('click', function(e){
+		e.stopPropagation();
+		if (e.button == 0) folderContextHandler(e);
+	});
+	$folderContextMenu.addEventListener('contextmenu', function(e){
+		e.stopPropagation();
+		folderContextHandler(e);
 	});
 	
 	// Keyboard navigation
