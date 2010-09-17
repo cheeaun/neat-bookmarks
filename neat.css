@@ -117,7 +117,7 @@ input{
 #tree ul li span.active,
 #tree ul li a:focus,
 #tree ul li span:focus,
-.context-menu li:not(.separator):focus{
+.context-menu li:focus{
 	color: #fff;
 	background-color: #4687cb;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#6fa6de), to(#1e6cbb));
