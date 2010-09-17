@@ -196,6 +196,7 @@ var EditDialog = {
 			localStorage.focusID = null;
 		}
 	}, true);
+	var closeUnusedFolders = localStorage.closeUnusedFolders;
 	$tree.addEventListener('click', function(e){
 		var el = e.target;
 		var tagName = el.tagName;
@@ -205,7 +206,8 @@ var EditDialog = {
 			if (e.shiftKey || e.ctrlKey) return;
 			var parent = el.parentNode;
 			Element.toggleClass(parent, 'open');
-			Element.setProperty(parent, 'aria-expanded', Element.hasClass(parent, 'open'));
+			var expanded = Element.hasClass(parent, 'open');
+			Element.setProperty(parent, 'aria-expanded', expanded);
 			var children = parent.querySelector('ul');
 			if (!children){
 				var id = parent.id.replace('neat-tree-item-', '');
@@ -214,6 +216,15 @@ var EditDialog = {
 				var ul = div.querySelector('ul');
 				Element.inject(ul, parent);
 				div.destroy();
+			}
+			if (closeUnusedFolders && expanded){
+				var siblings = parent.getSiblings('li');
+				for (var i=0, l=siblings.length; i<l; i++){
+					var li = siblings[i];
+					if (li.hasClass('parent')){
+						li.removeClass('open').setProperty('aria-expanded', false);
+					}
+				}
 			}
 			var opens = $tree.querySelectorAll('li.open');
 			opens = Array.map(opens, function(li){
