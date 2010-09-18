@@ -197,7 +197,7 @@ var EditDialog = {
 		}
 	}, true);
 	var closeUnusedFolders = localStorage.closeUnusedFolders;
-	$tree.addEventListener('click', function(e){
+	$tree.addEventListener('mouseup', function(e){
 		var el = e.target;
 		var tagName = el.tagName;
 		var button = e.button;
@@ -552,8 +552,8 @@ var EditDialog = {
 			});
 		}
 	};
-	$tree.addEventListener('click', bookmarkHandler);
-	$results.addEventListener('click', bookmarkHandler);
+	$tree.addEventListener('mouseup', bookmarkHandler);
+	$results.addEventListener('mouseup', bookmarkHandler);
 	
 	// Disable Chrome auto-scroll feature
 	window.addEventListener('mousedown', function(e){
