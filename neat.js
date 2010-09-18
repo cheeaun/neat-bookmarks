@@ -763,7 +763,7 @@ var EditDialog = {
 				e.preventDefault();
 				if (li.hasClass('parent') && ((!rtl && !li.hasClass('open')) || (rtl && li.hasClass('open')))){
 					var event = document.createEvent('MouseEvents');
-					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+					event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
 				} else if (rtl){
 					var parentID = li.get('data-parentid');
@@ -775,7 +775,7 @@ var EditDialog = {
 				e.preventDefault();
 				if (li.hasClass('parent') && ((!rtl && li.hasClass('open')) || (rtl && !li.hasClass('open')))){
 					var event = document.createEvent('MouseEvents');
-					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+					event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
 				} else if (!rtl){
 					var parentID = li.get('data-parentid');
@@ -788,7 +788,7 @@ var EditDialog = {
 			case 13: // enter
 				e.preventDefault();
 				var event = document.createEvent('MouseEvents');
-				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, 0, null);
+				event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, 0, null);
 				li.firstElementChild.dispatchEvent(event);
 				break;
 			case 35: // end
