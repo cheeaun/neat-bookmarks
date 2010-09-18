@@ -657,13 +657,10 @@ var EditDialog = {
 		}
 		clearMenu();
 	};
-	$bookmarkContextMenu.addEventListener('click', function(e){
+	$bookmarkContextMenu.addEventListener('mouseup', function(e){
 		e.stopPropagation();
-		if (e.button == 0) bookmarkContextHandler(e);
-	});
-	$bookmarkContextMenu.addEventListener('contextmenu', function(e){
-		e.stopPropagation();
-		bookmarkContextHandler(e);
+		// On Mac, all three mouse clicks work; on Windows, middle-click doesn't work
+		if (os == 'mac' || e.button != 1) bookmarkContextHandler(e);
 	});
 	
 	var folderContextHandler = function(e){
@@ -701,13 +698,9 @@ var EditDialog = {
 		});
 		clearMenu();
 	};
-	$folderContextMenu.addEventListener('click', function(e){
+	$folderContextMenu.addEventListener('mouseup', function(e){
 		e.stopPropagation();
-		if (e.button == 0) folderContextHandler(e);
-	});
-	$folderContextMenu.addEventListener('contextmenu', function(e){
-		e.stopPropagation();
-		folderContextHandler(e);
+		if (os == 'mac' || e.button != 1) folderContextHandler(e);
 	});
 	
 	// Keyboard navigation
@@ -971,7 +964,7 @@ var EditDialog = {
 			case 13: // enter
 				e.preventDefault();
 				var event = document.createEvent('MouseEvents');
-				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 				item.dispatchEvent(event);
 			case 27: // esc
 				e.preventDefault();
