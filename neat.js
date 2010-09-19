@@ -716,8 +716,9 @@ var EditDialog = {
 		switch (keyCode){
 			case 40: // down
 				e.preventDefault();
-				if (li.hasClass('open')){
-					li.querySelector('ul>li:first-child').querySelector('a, span').focus();
+				var liChild = li.querySelector('ul>li:first-child');
+				if (li.hasClass('open') && liChild){
+					liChild.querySelector('a, span').focus();
 				} else {
 					var nextLi = li.getNext();
 					if (nextLi){
@@ -736,7 +737,7 @@ var EditDialog = {
 				e.preventDefault();
 				var prevLi = li.getPrevious();
 				if (prevLi){
-					while (prevLi.hasClass('open')){
+					while (prevLi.hasClass('open') && prevLi.querySelector('ul>li:last-child')){
 						var lis = prevLi.querySelectorAll('ul>li:last-child');
 						prevLi = Array.filter(lis, function(li){
 							return !!li.parentNode.offsetHeight;
