@@ -590,9 +590,10 @@ var EditDialog = {
 	$results.addEventListener('focus', clearMenu, true);
 	
 	var currentContext = null;
-	body.addEventListener('contextmenu', function(e){
-		clearMenu();
+	body.addEventListener('mouseup', function(e){
 		e.preventDefault();
+		if (e.button != 2) return; // middle-click
+		clearMenu();
 		var el = e.target;
 		if (el.tagName == 'A'){
 			currentContext = el;
