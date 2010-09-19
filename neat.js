@@ -298,9 +298,9 @@ var EditDialog = {
 			item.focus();
 			setTimeout(function(){
 				var event = document.createEvent('MouseEvents');
-				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 				item.dispatchEvent(event);
-			}, 100);
+			}, 30);
 		} else if (key == 9 && !searchMode && typeof focusID != 'undefined' && focusID != null){
 			var focusEl = $('neat-tree-item-' + focusID);
 			if (focusEl){
