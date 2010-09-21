@@ -533,7 +533,7 @@ var EditDialog = {
 					actions.openBookmark(url);
 				}
 			} else if (button == 1){ // middle-click
-				actions.openBookmarkNewTab(url, middleClickBgTab ? false : !shift);
+				actions.openBookmarkNewTab(url, middleClickBgTab ? shift : !shift);
 			}
 		} else if (el.tagName == 'SPAN'){
 			var li = el.parentNode;
