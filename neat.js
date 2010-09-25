@@ -107,7 +107,7 @@ var EditDialog = {
 	var rememberState = !localStorage.dontRememberState;
 	var a = new Element('a');
 	var httpsPattern = /^https?:\/\//i;
-		
+	
 	var generateBookmarkHTML = function(title, url, extras){
 		if (!extras) extras = '';
 		var u = url;
@@ -197,7 +197,7 @@ var EditDialog = {
 		}
 	}, true);
 	var closeUnusedFolders = localStorage.closeUnusedFolders;
-	$tree.addEventListener('mouseup', function(e){
+	$tree.addEventListener('click', function(e){
 		var el = e.target;
 		var tagName = el.tagName;
 		var button = e.button;
@@ -298,7 +298,7 @@ var EditDialog = {
 			item.focus();
 			setTimeout(function(){
 				var event = document.createEvent('MouseEvents');
-				event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 				item.dispatchEvent(event);
 			}, 30);
 		} else if (key == 9 && !searchMode && typeof focusID != 'undefined' && focusID != null){
@@ -552,12 +552,22 @@ var EditDialog = {
 			});
 		}
 	};
-	$tree.addEventListener('mouseup', bookmarkHandler);
-	$results.addEventListener('mouseup', bookmarkHandler);
+	$tree.addEventListener('click', bookmarkHandler);
+	$results.addEventListener('click', bookmarkHandler);
 	
 	// Disable Chrome auto-scroll feature
 	window.addEventListener('mousedown', function(e){
 		if (e.button == 1) e.preventDefault();
+	});
+	
+	// Fixes Chrome behaviour for not firing 'click' events for middle-clicks
+	window.addEventListener('mouseup', function(e){
+		if (e.button == 1){
+			e.preventDefault(); // middle-clicking hyperlinks actually work if not preventDefault-ed
+			var event = document.createEvent('MouseEvents');
+			event.initMouseEvent('click', e.bubbles, e.cancelable, e.view, e.detail, e.screeX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, 1, e.relatedTarget);
+			e.target.dispatchEvent(event);
+		}
 	});
 	
 	// Context menu
@@ -590,9 +600,8 @@ var EditDialog = {
 	$results.addEventListener('focus', clearMenu, true);
 	
 	var currentContext = null;
-	body.addEventListener('mouseup', function(e){
+	body.addEventListener('contextmenu', function(e){
 		e.preventDefault();
-		if (e.button != 2) return; // middle-click
 		clearMenu();
 		var el = e.target;
 		if (el.tagName == 'A'){
@@ -663,11 +672,12 @@ var EditDialog = {
 		}
 		clearMenu();
 	};
+	// On Mac, all three mouse clicks work; on Windows, middle-click doesn't work
 	$bookmarkContextMenu.addEventListener('mouseup', function(e){
 		e.stopPropagation();
-		// On Mac, all three mouse clicks work; on Windows, middle-click doesn't work
-		if (os == 'mac' || e.button != 1) bookmarkContextHandler(e);
+		if (e.button == 0 || (os == 'mac' && e.button == 1)) bookmarkContextHandler(e);
 	});
+	$bookmarkContextMenu.addEventListener('contextmenu', bookmarkContextHandler);
 	
 	var folderContextHandler = function(e){
 		if (!currentContext) return;
@@ -706,8 +716,9 @@ var EditDialog = {
 	};
 	$folderContextMenu.addEventListener('mouseup', function(e){
 		e.stopPropagation();
-		if (os == 'mac' || e.button != 1) folderContextHandler(e);
+		if (e.button == 0 || (os == 'mac' && e.button == 1)) folderContextHandler(e);
 	});
+	$folderContextMenu.addEventListener('contextmenu', folderContextHandler);
 	
 	// Keyboard navigation
 	var keyBuffer = '', keyBufferTimer;
@@ -763,7 +774,7 @@ var EditDialog = {
 				e.preventDefault();
 				if (li.hasClass('parent') && ((!rtl && !li.hasClass('open')) || (rtl && li.hasClass('open')))){
 					var event = document.createEvent('MouseEvents');
-					event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
 				} else if (rtl){
 					var parentID = li.get('data-parentid');
@@ -775,7 +786,7 @@ var EditDialog = {
 				e.preventDefault();
 				if (li.hasClass('parent') && ((!rtl && li.hasClass('open')) || (rtl && !li.hasClass('open')))){
 					var event = document.createEvent('MouseEvents');
-					event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
 				} else if (!rtl){
 					var parentID = li.get('data-parentid');
@@ -788,7 +799,7 @@ var EditDialog = {
 			case 13: // enter
 				e.preventDefault();
 				var event = document.createEvent('MouseEvents');
-				event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, 0, null);
+				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, 0, null);
 				li.firstElementChild.dispatchEvent(event);
 				break;
 			case 35: // end
