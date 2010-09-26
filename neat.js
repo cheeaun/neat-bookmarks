@@ -604,9 +604,14 @@ var EditDialog = {
 	$results.addEventListener('focus', clearMenu, true);
 	
 	var currentContext = null;
+	var macCloseContextMenu = false;
 	body.addEventListener('contextmenu', function(e){
 		e.preventDefault();
 		clearMenu();
+		if (os == 'mac'){
+			macCloseContextMenu = false;
+			setTimeout(function(){ macCloseContextMenu = true; }, 500);
+		}
 		var el = e.target;
 		if (el.tagName == 'A'){
 			currentContext = el;
@@ -644,6 +649,14 @@ var EditDialog = {
 			$folderContextMenu.style.top = pageY + 'px';
 			$folderContextMenu.style.opacity = 1;
 			$folderContextMenu.focus();
+		}
+	});
+	// on Mac, holding down right-click for a period of time closes the context menu
+	// Not a complete implementation, but it works :)
+	if (os == 'mac') body.addEventListener('mouseup', function(e){
+		if (e.button == 2 && macCloseContextMenu){
+			macCloseContextMenu = false;
+			clearMenu();
 		}
 	});
 	
