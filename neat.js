@@ -887,7 +887,7 @@ var EditDialog = {
 					var li = lis[i];
 					if (li.parentNode.offsetHeight) items.push(li.firstElementChild);
 				}
-				var pattern = new RegExp('^'+keyBuffer, 'i');
+				var pattern = new RegExp('^'+keyBuffer.escapeRegExp(), 'i');
 				var batch = [];
 				var startFind = false;
 				var found = false;
