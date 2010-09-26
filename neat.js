@@ -74,6 +74,10 @@ var EditDialog = {
 	
 	var body = document.body;
 	var os = Browser.Platform.name;
+	var chromeVersion = (function(){
+		var matches = navigator.userAgent.match(/chrome\/(\d)/i);
+		return (matches && matches[1]) ? parseInt(matches[1]) : 0;
+	})();
 	
 	// Some i18n
 	var _m = chrome.i18n.getMessage;
@@ -561,7 +565,7 @@ var EditDialog = {
 	});
 	
 	// Fixes Chrome behaviour for not firing 'click' events for middle-clicks
-	window.addEventListener('mouseup', function(e){
+	if (chromeVersion > 6) window.addEventListener('mouseup', function(e){
 		if (e.button == 1){
 			e.preventDefault(); // middle-clicking hyperlinks actually work if not preventDefault-ed
 			var event = document.createEvent('MouseEvents');
@@ -678,6 +682,9 @@ var EditDialog = {
 		if (e.button == 0 || (os == 'mac' && e.button == 1)) bookmarkContextHandler(e);
 	});
 	$bookmarkContextMenu.addEventListener('contextmenu', bookmarkContextHandler);
+	$bookmarkContextMenu.addEventListener('click', function(e){
+		e.stopPropagation();
+	});
 	
 	var folderContextHandler = function(e){
 		if (!currentContext) return;
@@ -719,6 +726,9 @@ var EditDialog = {
 		if (e.button == 0 || (os == 'mac' && e.button == 1)) folderContextHandler(e);
 	});
 	$folderContextMenu.addEventListener('contextmenu', folderContextHandler);
+	$folderContextMenu.addEventListener('click', function(e){
+		e.stopPropagation();
+	});
 	
 	// Keyboard navigation
 	var keyBuffer = '', keyBufferTimer;
