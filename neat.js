@@ -1,76 +1,14 @@
-String.implement({
-	htmlspecialchars: function(){
-		return this.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-	},
-	widont: function(){
-		return this.replace(/\s([^\s]+)$/i, '&nbsp;$1');
-	}
-});
-
-var ConfirmDialog = {
-	
-	open: function(opts){
-		if (!opts) return;
-		$('confirm-dialog-text').set('html', opts.dialog.widont());
-		$('confirm-dialog-button-1').set('html', opts.button1);
-		$('confirm-dialog-button-2').set('html', opts.button2);
-		if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
-		if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
-		$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
-		document.body.addClass('needConfirm');
-	},
-	
-	close: function(){
-		document.body.removeClass('needConfirm');
-	},
-	
-	fn1: function(){},
-	
-	fn2: function(){}
-	
-};
-
-var EditDialog = {
-	
-	open: function(opts){
-		if (!opts) return;
-		$('edit-dialog-text').set('html', opts.dialog.widont());
-		if (opts.fn) EditDialog.fn = opts.fn;
-		var type = opts.type || 'bookmark';
-		var name = $('edit-dialog-name');
-		name.value = opts.name;
-		name.focus();
-		name.select();
-		name.scrollLeft = 0; // very delicate, show first few words instead of last
-		var url = $('edit-dialog-url');
-		if (type == 'bookmark'){
-			url.style.display = '';
-			url.value = opts.url;
-		} else {
-			url.style.display = 'none';
-			url.value = '';
-		}
-		document.body.addClass('needEdit');
-	},
-	
-	close: function(){
-		var urlInput = $('edit-dialog-url');
-		var url = urlInput.value;
-		if (!urlInput.validity.valid){
-			urlInput.value = 'http://' + url;
-			if (!urlInput.validity.valid) url = ''; // if still invalid, fuck it.
-			url = 'http://' + url;
-		}
-		EditDialog.fn($('edit-dialog-name').value, url);
-		document.body.removeClass('needEdit');
-	},
-	
-	fn: function(){}
-	
-};
-
 (function(window, document, chrome){
 	try {
+	
+	String.implement({
+		htmlspecialchars: function(){
+			return this.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+		},
+		widont: function(){
+			return this.replace(/\s([^\s]+)$/i, '&nbsp;$1');
+		}
+	});
 	
 	var body = document.body;
 	var os = Browser.Platform.name;
@@ -351,6 +289,69 @@ var EditDialog = {
 	if (!searchMode) resetHeight();
 	$tree.addEventListener('click', resetHeight);
 	$tree.addEventListener('keyup', resetHeight);
+	
+	// Dialogs
+	var ConfirmDialog = window.ConfirmDialog = {
+		
+		open: function(opts){
+			if (!opts) return;
+			$('confirm-dialog-text').set('html', opts.dialog.widont());
+			$('confirm-dialog-button-1').set('html', opts.button1);
+			$('confirm-dialog-button-2').set('html', opts.button2);
+			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
+			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
+			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
+			body.addClass('needConfirm');
+		},
+		
+		close: function(){
+			body.removeClass('needConfirm');
+		},
+		
+		fn1: function(){},
+		
+		fn2: function(){}
+		
+	};
+
+	var EditDialog = window.EditDialog = {
+		
+		open: function(opts){
+			if (!opts) return;
+			$('edit-dialog-text').set('html', opts.dialog.widont());
+			if (opts.fn) EditDialog.fn = opts.fn;
+			var type = opts.type || 'bookmark';
+			var name = $('edit-dialog-name');
+			name.value = opts.name;
+			name.focus();
+			name.select();
+			name.scrollLeft = 0; // very delicate, show first few words instead of last
+			var url = $('edit-dialog-url');
+			if (type == 'bookmark'){
+				url.style.display = '';
+				url.value = opts.url;
+			} else {
+				url.style.display = 'none';
+				url.value = '';
+			}
+			body.addClass('needEdit');
+		},
+		
+		close: function(){
+			var urlInput = $('edit-dialog-url');
+			var url = urlInput.value;
+			if (!urlInput.validity.valid){
+				urlInput.value = 'http://' + url;
+				if (!urlInput.validity.valid) url = ''; // if still invalid, fuck it.
+				url = 'http://' + url;
+			}
+			EditDialog.fn($('edit-dialog-name').value, url);
+			body.removeClass('needEdit');
+		},
+		
+		fn: function(){}
+		
+	};
 	
 	// Bookmark handling
 	var dontConfirmOpenFolder = !!localStorage.dontConfirmOpenFolder;
