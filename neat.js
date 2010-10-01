@@ -12,10 +12,16 @@
 	
 	var body = document.body;
 	var os = Browser.Platform.name;
-	var chromeVersion = (function(){
-		var matches = navigator.userAgent.match(/chrome\/(\d)/i);
-		return (matches && matches[1]) ? parseInt(matches[1]) : 0;
+	var version = (function(){
+		var matches = navigator.userAgent.match(/chrome\/([\d\.]+)/i);
+		if (matches && matches[1]){
+			return matches[1].split('.').map(function(s){
+				return s.toInt();
+			});
+		}
+		return null;
 	})();
+	var chromeVersion = version ? version[0] : 0;
 	
 	// Some i18n
 	var _m = chrome.i18n.getMessage;
@@ -1073,6 +1079,9 @@
 	setTimeout(function(){
 		body.addClass('transitional');
 	}, 10);
+	
+	// Fix stupid Chrome 7.0.536.2 dev bug
+	if (version[2] && version[2] >= 536) body.addClass('chrome-70536');
 	
 	} catch(e){
 		ConfirmDialog.open({
