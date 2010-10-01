@@ -1,6 +1,6 @@
 {
 	"name": "__MSG_extName__",
-	"version": "0.7.1",
+	"version": "0.7.2",
 	"description": "__MSG_extDesc__",
 	"icons": {
 		"16": "icon16.png",
@@ -16,6 +16,6 @@
 	"permissions": [
 		"http://*/*", "https://*/*", "chrome://favicon/", "bookmarks", "tabs"
 	],
-	"minimum_chrome_version": "5",
+	"minimum_chrome_version": "6",
 	"default_locale": "en"
 }
