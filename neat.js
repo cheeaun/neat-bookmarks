@@ -1016,6 +1016,8 @@
 				item.dispatchEvent(event);
 			case 27: // esc
 				e.preventDefault();
+				var active = body.querySelector('.active');
+				if (active) active.removeClass('active').focus();
 				clearMenu();
 		}
 	};
@@ -1029,7 +1031,7 @@
 	$folderContextMenu.addEventListener('mousemove', contextMouseMove);
 	
 	var contextMouseOut = function(){
-		this.focus();
+		if (this.style.opacity.toInt()) this.focus();
 	};
 	$bookmarkContextMenu.addEventListener('mouseout', contextMouseOut);
 	$folderContextMenu.addEventListener('mouseout', contextMouseOut);
