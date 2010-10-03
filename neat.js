@@ -249,7 +249,7 @@
 				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 				item.dispatchEvent(event);
 			}, 30);
-		} else if (key == 9 && !searchMode && typeof focusID != 'undefined' && focusID != null){
+		} else if (key == 9 && !searchMode && typeof focusID != 'undefined' && focusID != null){ // tab
 			var focusEl = $('neat-tree-item-' + focusID);
 			if (focusEl){
 				e.preventDefault();
