@@ -1083,7 +1083,7 @@
 	}, 10);
 	
 	// Fix stupid Chrome 7.0.536.2 dev bug
-	if (version[2] && version[2] >= 536) body.addClass('chrome-70536');
+	if (chromeVersion == 7 && version[2] && version[2] >= 536) body.addClass('chrome-70536');
 	
 	} catch(e){
 		ConfirmDialog.open({
