@@ -146,43 +146,46 @@
 	}, true);
 	var closeUnusedFolders = localStorage.closeUnusedFolders;
 	$tree.addEventListener('click', function(e){
+		if (e.button != 0) return;
 		var el = e.target;
 		var tagName = el.tagName;
-		var button = e.button;
-		if (button == 0){
-			if (tagName != 'SPAN') return;
-			if (e.shiftKey || e.ctrlKey) return;
-			var parent = el.parentNode;
-			Element.toggleClass(parent, 'open');
-			var expanded = Element.hasClass(parent, 'open');
-			Element.setProperty(parent, 'aria-expanded', expanded);
-			var children = parent.querySelector('ul');
-			if (!children){
-				var id = parent.id.replace('neat-tree-item-', '');
-				var html = generateHTML(nonOpens[id], parseInt(parent.parentNode.get('data-level'))+1);
-				var div = new Element('div', {html: html});
-				var ul = div.querySelector('ul');
-				Element.inject(ul, parent);
-				div.destroy();
-			}
-			if (closeUnusedFolders && expanded){
-				var siblings = parent.getSiblings('li');
-				for (var i=0, l=siblings.length; i<l; i++){
-					var li = siblings[i];
-					if (li.hasClass('parent')){
-						li.removeClass('open').setProperty('aria-expanded', false);
-					}
+		if (tagName != 'SPAN') return;
+		if (e.shiftKey || e.ctrlKey) return;
+		var parent = el.parentNode;
+		Element.toggleClass(parent, 'open');
+		var expanded = Element.hasClass(parent, 'open');
+		Element.setProperty(parent, 'aria-expanded', expanded);
+		var children = parent.querySelector('ul');
+		if (!children){
+			var id = parent.id.replace('neat-tree-item-', '');
+			var html = generateHTML(nonOpens[id], parseInt(parent.parentNode.get('data-level'))+1);
+			var div = new Element('div', {html: html});
+			var ul = div.querySelector('ul');
+			Element.inject(ul, parent);
+			div.destroy();
+		}
+		if (closeUnusedFolders && expanded){
+			var siblings = parent.getSiblings('li');
+			for (var i=0, l=siblings.length; i<l; i++){
+				var li = siblings[i];
+				if (li.hasClass('parent')){
+					li.removeClass('open').setProperty('aria-expanded', false);
 				}
 			}
-			var opens = $tree.querySelectorAll('li.open');
-			opens = Array.map(opens, function(li){
-				return li.id.replace('neat-tree-item-', '');
-			});
-			localStorage.opens = JSON.stringify(opens);
-		} else if (e.button == 1){ // Force middle clicks to trigger the focus event
-			if (tagName != 'A' && tagName != 'SPAN') return;
-			el.focus();
 		}
+		var opens = $tree.querySelectorAll('li.open');
+		opens = Array.map(opens, function(li){
+			return li.id.replace('neat-tree-item-', '');
+		});
+		localStorage.opens = JSON.stringify(opens);
+	});
+	// Force middle clicks to trigger the focus event
+	$tree.addEventListener('mouseup', function(e){
+		if (e.button != 1) return;
+		var el = e.target;
+		var tagName = el.tagName;
+		if (tagName != 'A' && tagName != 'SPAN') return;
+		el.focus();
 	});
 	
 	// Search
@@ -531,54 +534,52 @@
 	var middleClickBgTab = !!localStorage.middleClickBgTab;
 	var bookmarkHandler = function(e){
 		e.preventDefault();
+		if (e.button != 0) return; // force left-click
 		var el = e.target;
-		var button = e.button;
-		if (e.ctrlKey || e.metaKey) button = 1;
+		var ctrlMeta = (e.ctrlKey || e.metaKey);
 		var shift = e.shiftKey;
 		if (el.tagName == 'A'){
 			var url = el.get('href');
-			if (button == 0){ // click
+			if (ctrlMeta){ // ctrl/meta click
+				actions.openBookmarkNewTab(url, middleClickBgTab ? shift : !shift);
+			} else { // click
 				if (shift){
 					actions.openBookmarkNewWindow(url);
 				} else {
 					actions.openBookmark(url);
 				}
-			} else if (button == 1){ // middle-click
-				actions.openBookmarkNewTab(url, middleClickBgTab ? shift : !shift);
 			}
 		} else if (el.tagName == 'SPAN'){
 			var li = el.parentNode;
 			var id = li.id.replace('neat-tree-item-', '');
 			chrome.bookmarks.getChildren(id, function(children){
-				var urls = Array.clean(Array.map(children, function(c){
+				var urls = Array.map(children, function(c){
 					return c.url;
-				}));
+				}).clean();
 				var urlsLen = urls.length;
 				if (!urlsLen) return;
-				if (button == 0 && shift){ // shift click
-					actions.openBookmarksNewWindow(urls);
-				} else if (button == 1){ // middle-click
+				if (ctrlMeta){ // ctrl/meta click
 					actions.openBookmarks(urls, !shift);
+				} else if (shift){ // shift click
+					actions.openBookmarksNewWindow(urls);
 				}
 			});
 		}
 	};
 	$tree.addEventListener('click', bookmarkHandler);
 	$results.addEventListener('click', bookmarkHandler);
+	var bookmarkHandlerMiddle = function(e){
+		if (e.button != 1) return; // force middle-click
+		var event = document.createEvent('MouseEvents');
+		event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, true, false, e.shiftKey, true, 0, null);
+		e.target.dispatchEvent(event);
+	};
+	$tree.addEventListener('mouseup', bookmarkHandlerMiddle);
+	$results.addEventListener('mouseup', bookmarkHandlerMiddle);
 	
 	// Disable Chrome auto-scroll feature
 	window.addEventListener('mousedown', function(e){
 		if (e.button == 1) e.preventDefault();
-	});
-	
-	// Fixes Chrome behaviour for not firing 'click' events for middle-clicks
-	if (chromeVersion > 6) window.addEventListener('mouseup', function(e){
-		if (e.button == 1){
-			e.preventDefault(); // middle-clicking hyperlinks actually work if not preventDefault-ed
-			var event = document.createEvent('MouseEvents');
-			event.initMouseEvent('click', e.bubbles, e.cancelable, e.view, e.detail, e.screeX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, 1, e.relatedTarget);
-			e.target.dispatchEvent(event);
-		}
 	});
 	
 	// Context menu
@@ -713,9 +714,9 @@
 		var li = currentContext.parentNode;
 		var id = li.id.replace('neat-tree-item-', '');
 		chrome.bookmarks.getChildren(id, function(children){
-			var urls = Array.clean(Array.map(children, function(c){
+			var urls = Array.map(children, function(c){
 				return c.url;
-			}));
+			}).clean();
 			var urlsLen = urls.length;
 			var noURLS = !urlsLen;
 			switch (el.id){
@@ -829,7 +830,7 @@
 			case 13: // enter
 				e.preventDefault();
 				var event = document.createEvent('MouseEvents');
-				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, 0, null);
+				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, e.ctrlKey, false, e.shiftKey, e.metaKey, 0, null);
 				li.firstElementChild.dispatchEvent(event);
 				break;
 			case 35: // end
@@ -952,9 +953,9 @@
 				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
 				if (li.hasClass('parent')){
 					chrome.bookmarks.getChildren(id, function(children){
-						var urlsLen = Array.clean(Array.map(children, function(c){
+						var urlsLen = Array.map(children, function(c){
 							return c.url;
-						})).length;
+						}).clean().length;
 						actions.deleteBookmarks(id, urlsLen, children.length-urlsLen);
 					});
 				} else {
