@@ -168,10 +168,6 @@
 	"optionRememberPrevState": {
 		"message": "Remember previous state (scroll position and opened folders)."
 	},
-	"clear": {
-		"message": "Clear",
-		"description": "Action to clear bookmarks favion cache."
-	},
 	"optionsFooterText": {
 		"message": "Handcrafted by $authorName$.",
 		"description": "Footer text for the Options page",
