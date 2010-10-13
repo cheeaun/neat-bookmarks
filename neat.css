@@ -84,7 +84,7 @@ input{
 	-webkit-transition-property: -webkit-transform;
 	-webkit-transition-duration: .15s;
 }
-.chrome-70536 #tree ul li span .twisty{ /* Chrome 7.0.536.2 dev bug */
+.chrome-536 #tree ul li span .twisty{ /* Chrome build 536 dev bug */
 	-webkit-transition-duration: 0s;
 }
 .rtl #tree ul li span .twisty{

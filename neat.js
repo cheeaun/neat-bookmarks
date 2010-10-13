@@ -15,13 +15,18 @@
 	var version = (function(){
 		var matches = navigator.userAgent.match(/chrome\/([\d\.]+)/i);
 		if (matches && matches[1]){
-			return matches[1].split('.').map(function(s){
+			var v = matches[1].split('.').map(function(s){
 				return s.toInt();
 			});
+			return {
+				major: v[0],
+				minor: v[1],
+				build: v[2],
+				patch: v[3]
+			};
 		}
 		return null;
 	})();
-	var chromeVersion = version ? version[0] : 0;
 	
 	// Some i18n
 	var _m = chrome.i18n.getMessage;
@@ -1083,8 +1088,8 @@
 		body.addClass('transitional');
 	}, 10);
 	
-	// Fix stupid Chrome 7.0.536.2 dev bug
-	if (chromeVersion == 7 && version[2] && version[2] >= 536) body.addClass('chrome-70536');
+	// Fix stupid Chrome build 536 bug
+	if (version.build >= 536) body.addClass('chrome-536');
 	
 	} catch(e){
 		ConfirmDialog.open({
