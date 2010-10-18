@@ -71,7 +71,7 @@
 			u = u.htmlspecialchars();
 			favicon = 'document-code.png';
 		}
-		var name = title || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
+		var name = title.htmlspecialchars() || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
 		return '<a href="' + url + '"' + ' title="' + u + '" tabindex="0" ' + extras + '>'
 			+ '<img src="' + favicon + '" width="16" height="16" alt=""><i>' + name + '</i>'
 			+ '</a>';
