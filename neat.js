@@ -113,12 +113,12 @@
 		for (var i=0, l=data.length; i<l; i++){
 			var d = data[i];
 			var children = d.children;
-			var isFolder = !!d.dateGroupModified;
 			var title = d.title.htmlspecialchars();
 			var url = d.url;
 			var id = d.id;
 			var parentID = d.parentId;
 			var idHTML = id ? ' id="neat-tree-item-' + id + '"': '';
+			var isFolder = d.dateGroupModified || children || typeof url == 'undefined';
 			if (isFolder){
 				var isOpen = false;
 				var open = '';
