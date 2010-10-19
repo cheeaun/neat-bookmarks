@@ -192,9 +192,9 @@
 		if (tagName != 'SPAN') return;
 		if (e.shiftKey || e.ctrlKey) return;
 		var parent = el.parentNode;
-		Element.toggleClass(parent, 'open');
-		var expanded = Element.hasClass(parent, 'open');
-		Element.setProperty(parent, 'aria-expanded', expanded);
+		parent.toggleClass('open');
+		var expanded = parent.hasClass('open');
+		parent.setProperty('aria-expanded', expanded);
 		var children = parent.querySelector('ul');
 		if (!children){
 			var id = parent.id.replace('neat-tree-item-', '');
@@ -202,7 +202,7 @@
 				var html = generateHTML(children, parseInt(parent.parentNode.get('data-level'))+1);
 				var div = new Element('div', {html: html});
 				var ul = div.querySelector('ul');
-				Element.inject(ul, parent);
+				ul.inject(parent);
 				div.destroy();
 			});
 		}
@@ -613,7 +613,7 @@
 		currentContext = null;
 		var active = body.querySelector('.active');
 		if (active){
-			Element.removeClass(active, 'active');
+			active.removeClass('active');
 			// This is kinda hacky. Oh well.
 			if (e){
 				var el = e.target;
@@ -645,8 +645,8 @@
 		if (el.tagName == 'A'){
 			currentContext = el;
 			var active = body.querySelector('.active');
-			if (active) Element.removeClass(active, 'active');
-			Element.addClass(el, 'active');
+			if (active) active.removeClass('active');
+			el.addClass('active');
 			var pageX = rtl ? Math.max(0, e.pageX - bookmarkMenuWidth) : Math.min(e.pageX, body.offsetWidth - bookmarkMenuWidth);
 			var pageY = e.pageY;
 			var boundY = window.innerHeight - bookmarkMenuHeight;
@@ -660,8 +660,8 @@
 		} else if (el.tagName == 'SPAN'){
 			currentContext = el;
 			var active = body.querySelector('.active');
-			if (active) Element.removeClass(active, 'active');
-			Element.addClass(el, 'active');
+			if (active) active.removeClass('active');
+			el.addClass('active');
 			if (el.parentNode.get('data-parentid') == '0'){
 				$folderContextMenu.addClass('hide-editables');
 			} else {
