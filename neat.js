@@ -834,7 +834,6 @@
 				}
 				break;
 			case 32: // space
-				if (os != 'mac') break;
 			case 13: // enter
 				e.preventDefault();
 				var event = document.createEvent('MouseEvents');
