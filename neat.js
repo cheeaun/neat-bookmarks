@@ -38,6 +38,8 @@
 	try {
 	
 	var os = Browser.Platform.name;
+	body.addClass(os);
+	
 	var version = (function(){
 		var matches = navigator.userAgent.match(/chrome\/([\d\.]+)/i);
 		if (matches && matches[1]){

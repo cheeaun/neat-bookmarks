@@ -1,7 +1,6 @@
 body{
 	direction: __MSG_@@bidi_dir__;
 	font: menu;
-	font-size: 12px;
 	color: #000;
 	background-color: #fff;
 	margin: 0;
@@ -14,12 +13,19 @@ body{
 	width: 320px;
 	height: 530px;
 }
+body.linux{
+	font-size: 12px;
+}
 body.transitional{
 	-webkit-transition-property: height;
 }
 input{
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
+	font: menu;
+}
+body.linux input{
+	font-size: 12px;
 }
 #search{
 	height: 30px;
@@ -29,8 +35,6 @@ input{
 	width: 100%;
 	margin: 2px 0;
 	padding: 2px;
-	font: menu;
-	font-size: 12px;
 }
 #results,
 #tree{
@@ -233,7 +237,6 @@ input{
 	border-bottom: 1px solid #e0e0e0;
 	-webkit-box-shadow: 0 0 100px rgba(0,0,0,.1);
 	box-shadow: 0 0 100px rgba(0,0,0,.1);
-	font: message-box;
 }
 .transitional .dialog{
 	-webkit-transition-property: opacity, top;
@@ -242,8 +245,8 @@ input{
 .dialog-text{
 	padding: 0;
 	margin: 0 0 1em;
-	font-size: 13px;
 	line-height: 1.4em;
+	font-size: 110%;
 }
 .dialog .buttons{
 	text-align: __MSG_@@bidi_end_edge__;
@@ -269,7 +272,6 @@ input{
 #edit-dialog input{
 	width: 100%;
 	padding: 2px;
-	font-size: 12px;
 }
 #edit-dialog input:invalid{
 	outline-color: red;
