@@ -82,7 +82,6 @@
 	// Init some variables
 	var opens = localStorage.opens ? JSON.parse(localStorage.opens) : [];
 	var dataURLs = localStorage.dataURLs ? JSON.parse(localStorage.dataURLs) : {};
-	var nonOpens = {};
 	var rememberState = !localStorage.dontRememberState;
 	var a = new Element('a');
 	var httpsPattern = /^https?:\/\//i;
@@ -113,13 +112,13 @@
 		for (var i=0, l=data.length; i<l; i++){
 			var d = data[i];
 			var children = d.children;
-			var hasChildren = !!children;
+			var isFolder = !!d.dateGroupModified;
 			var title = d.title.htmlspecialchars();
 			var url = d.url;
 			var id = d.id;
 			var parentID = d.parentId;
 			var idHTML = id ? ' id="neat-tree-item-' + id + '"': '';
-			if (hasChildren || typeof url == 'undefined'){
+			if (isFolder){
 				var isOpen = false;
 				var open = '';
 				if (rememberState){
@@ -130,10 +129,20 @@
 					+ '<span tabindex="0" style="-webkit-padding-start: ' + paddingStart + 'px"><b class="twisty"></b>'
 					+ '<img src="folder.png" width="16" height="16" alt=""><i>' + (title || _m('noTitle')) + '</i>'
 					+ '</span>';
-				if (isOpen && hasChildren){
-					html += generateHTML(children, level+1);
-				} else {
-					nonOpens[id] = children;
+				if (isOpen){
+					if (children){
+						html += generateHTML(children, level+1);
+					} else {
+						(function(_id){
+							chrome.bookmarks.getChildren(_id, function(children){
+								var html = generateHTML(children, level+1);
+								var div = new Element('div', {html: html});
+								var ul = div.querySelector('ul');
+								ul.inject('neat-tree-item-' + _id);
+								div.destroy();
+							});
+						})(id);
+					}
 				}
 			} else {
 				html += '<li class="child"' + idHTML + ' role="treeitem" data-parentid="' + parentID + '">'
@@ -189,11 +198,13 @@
 		var children = parent.querySelector('ul');
 		if (!children){
 			var id = parent.id.replace('neat-tree-item-', '');
-			var html = generateHTML(nonOpens[id], parseInt(parent.parentNode.get('data-level'))+1);
-			var div = new Element('div', {html: html});
-			var ul = div.querySelector('ul');
-			Element.inject(ul, parent);
-			div.destroy();
+			chrome.bookmarks.getChildren(id, function(children){
+				var html = generateHTML(children, parseInt(parent.parentNode.get('data-level'))+1);
+				var div = new Element('div', {html: html});
+				var ul = div.querySelector('ul');
+				Element.inject(ul, parent);
+				div.destroy();
+			});
 		}
 		if (closeUnusedFolders && expanded){
 			var siblings = parent.getSiblings('li');
@@ -464,13 +475,15 @@
 							var title = n.title;
 							var url = n.url;
 							var li = $('neat-tree-item-' + id);
-							if (isBookmark){
-								var css = li.querySelector('a').style.cssText;
-								li.set('html', generateBookmarkHTML(title, url, 'style="' + css + '"'));
-							} else {
-								var i = li.querySelector('i');
-								var name = title || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
-								i.innerText = name;
+							if (li){
+								if (isBookmark){
+									var css = li.querySelector('a').style.cssText;
+									li.set('html', generateBookmarkHTML(title, url, 'style="' + css + '"'));
+								} else {
+									var i = li.querySelector('i');
+									var name = title || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
+									i.innerText = name;
+								}
 							}
 							if (searchMode){
 								li = $('results-item-' + id);
