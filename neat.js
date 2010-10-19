@@ -1,4 +1,31 @@
 (function(window, document, chrome){
+	
+	var body = document.body;
+	
+	// Confirm dialog
+	var ConfirmDialog = window.ConfirmDialog = {
+		
+		open: function(opts){
+			if (!opts) return;
+			$('confirm-dialog-text').set('html', opts.dialog.widont());
+			$('confirm-dialog-button-1').set('html', opts.button1);
+			$('confirm-dialog-button-2').set('html', opts.button2);
+			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
+			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
+			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
+			body.addClass('needConfirm');
+		},
+		
+		close: function(){
+			body.removeClass('needConfirm');
+		},
+		
+		fn1: function(){},
+		
+		fn2: function(){}
+		
+	};
+	
 	try {
 	
 	String.implement({
@@ -10,7 +37,6 @@
 		}
 	});
 	
-	var body = document.body;
 	var os = Browser.Platform.name;
 	var version = (function(){
 		var matches = navigator.userAgent.match(/chrome\/([\d\.]+)/i);
@@ -33,7 +59,7 @@
 	$('search-input').placeholder = _m('searchBookmarks');
 	$('edit-dialog-name').placeholder = _m('name');
 	$('edit-dialog-url').placeholder = _m('url');
-	$each({
+	Object.each({
 		'bookmark-new-tab': 'openNewTab',
 		'bookmark-new-window': 'openNewWindow',
 		'bookmark-new-incognito-window': 'openIncognitoWindow',
@@ -50,7 +76,7 @@
 	});
 	
 	// RTL indicator
-	var rtl = (body.getComputedStyle('direction') == 'rtl');
+	var rtl = (window.getComputedStyle(body, null).direction == 'rtl');
 	if (rtl) body.addClass('rtl');
 	
 	// Init some variables
@@ -304,30 +330,7 @@
 	$tree.addEventListener('click', resetHeight);
 	$tree.addEventListener('keyup', resetHeight);
 	
-	// Dialogs
-	var ConfirmDialog = window.ConfirmDialog = {
-		
-		open: function(opts){
-			if (!opts) return;
-			$('confirm-dialog-text').set('html', opts.dialog.widont());
-			$('confirm-dialog-button-1').set('html', opts.button1);
-			$('confirm-dialog-button-2').set('html', opts.button2);
-			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
-			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
-			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
-			body.addClass('needConfirm');
-		},
-		
-		close: function(){
-			body.removeClass('needConfirm');
-		},
-		
-		fn1: function(){},
-		
-		fn2: function(){}
-		
-	};
-
+	// Edit dialog
 	var EditDialog = window.EditDialog = {
 		
 		open: function(opts){
