@@ -1,5 +1,14 @@
 (function(window, document, chrome){
 	
+	String.implement({
+		htmlspecialchars: function(){
+			return this.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+		},
+		widont: function(){
+			return this.replace(/\s([^\s]+)$/i, '&nbsp;$1');
+		}
+	});
+	
 	var body = document.body;
 	
 	// Confirm dialog
@@ -27,15 +36,6 @@
 	};
 	
 	try {
-	
-	String.implement({
-		htmlspecialchars: function(){
-			return this.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-		},
-		widont: function(){
-			return this.replace(/\s([^\s]+)$/i, '&nbsp;$1');
-		}
-	});
 	
 	var os = Browser.Platform.name;
 	var version = (function(){
