@@ -908,7 +908,7 @@
 				var key = String.fromCharCode(keyCode).trim();
 				if (!key) return;
 				if (key != keyBuffer) keyBuffer += key;
-				$clear(keyBufferTimer);
+				clearTimeout(keyBufferTimer);
 				keyBufferTimer = setTimeout(function(){ keyBuffer = ''; }, 500);
 				var lis = this.querySelectorAll('ul>li');
 				var items = [];
