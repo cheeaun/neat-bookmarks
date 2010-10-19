@@ -5,7 +5,7 @@
 <script>
 var _m = chrome.i18n.getMessage;
 var __m = function(){
-	document.write(_m.run(arguments));
+	document.write(_m.apply(this, arguments));
 };
 document.addEventListener('DOMContentLoaded', function(){
 	document.title = _m('extName') + ' ' + _m('advancedOptions');
