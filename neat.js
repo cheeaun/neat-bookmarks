@@ -81,7 +81,6 @@
 	
 	// Init some variables
 	var opens = localStorage.opens ? JSON.parse(localStorage.opens) : [];
-	var dataURLs = localStorage.dataURLs ? JSON.parse(localStorage.dataURLs) : {};
 	var rememberState = !localStorage.dontRememberState;
 	var a = new Element('a');
 	var httpsPattern = /^https?:\/\//i;
