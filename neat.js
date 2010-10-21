@@ -323,6 +323,8 @@
 	if (rememberState && localStorage.searchQuery){
 		searchInput.set('value', localStorage.searchQuery);
 		searchInput.click();
+		searchInput.select();
+		searchInput.scrollLeft = 0;
 	}
 	
 	// Popup auto-height
