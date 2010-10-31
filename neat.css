@@ -205,7 +205,7 @@ body.linux input{
 	height: 100%;
 	__MSG_@@bidi_start_edge__: 0;
 	top: 0;
-	cursor: w-resize;
+	cursor: col-resize;
 }
 
 #cover{
