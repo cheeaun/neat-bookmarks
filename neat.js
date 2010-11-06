@@ -1094,7 +1094,7 @@
 			if (body.hasClass('needEdit')) EditDialog.close();
 	};
 	document.addEventListener('keydown', function(e){
-		if (e.keyCode == 27){ // esc
+		if (e.keyCode == 27 && (body.hasClass('needConfirm') || body.hasClass('needEdit'))){ // esc
 			e.preventDefault();
 			closeDialogs();
 		}
