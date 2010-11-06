@@ -241,6 +241,7 @@
 		var value = searchInput.value.trim();
 		localStorage.searchQuery = value;
 		if (value == ''){
+			prevValue = '';
 			searchMode = false;
 			$results.style.display = 'none';
 			$tree.style.display = 'block';
@@ -275,8 +276,7 @@
 			});
 		});
 	};
-	searchInput.addEventListener('keyup', search);
-	searchInput.addEventListener('click', search);
+	searchInput.addEventListener('input', search);
 	
 	searchInput.addEventListener('keydown', function(e){
 		var key = e.keyCode;
