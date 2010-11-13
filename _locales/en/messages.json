@@ -169,7 +169,7 @@
 		"message": "Remember previous state (scroll position and opened folders)."
 	},
 	"optionsFooterText": {
-		"message": "Handcrafted by $authorName$.",
+		"message": "Built by $authorName$.",
 		"description": "Footer text for the Options page",
 		"placeholders": {
 			"authorName": {
