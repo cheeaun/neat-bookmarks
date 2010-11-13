@@ -87,6 +87,27 @@
 	var a = new Element('a');
 	var httpsPattern = /^https?:\/\//i;
 	
+	// Adaptive bookmark tooltips
+	var adaptBookmarkTooltips = function(){
+		var bookmarks = document.querySelectorAll('li.child a');
+		for (var i=0, l=bookmarks.length; i<l; i++){
+			var bookmark = bookmarks[i];
+			if (bookmark.hasClass('titled')){
+				if (bookmark.scrollWidth <= bookmark.offsetWidth){
+					bookmark.title = bookmark.href;
+					bookmark.removeClass('titled');
+				}
+			} else if (bookmark.scrollWidth > bookmark.offsetWidth){
+				var text = bookmark.querySelector('i').innerText;
+				var title = bookmark.title;
+				if (text != title){
+					bookmark.title = text + '\n' + title;
+					bookmark.addClass('titled');
+				}
+			}
+		}
+	};
+	
 	var generateBookmarkHTML = function(title, url, extras){
 		if (!extras) extras = '';
 		var u = url.htmlspecialchars();
@@ -167,6 +188,8 @@
 			var focusEl = $('neat-tree-item-' + focusID);
 			if (focusEl) focusEl.firstElementChild.addClass('focus');
 		}
+		
+		adaptBookmarkTooltips.delay(100);
 	});
 	
 	// Events for the tree
@@ -205,6 +228,7 @@
 				var ul = div.querySelector('ul');
 				ul.inject(parent);
 				div.destroy();
+				adaptBookmarkTooltips.delay(100);
 			});
 		}
 		if (closeUnusedFolders && expanded){
@@ -1086,6 +1110,7 @@
 		if (!resizerDown) return;
 		e.preventDefault();
 		resizerDown = false;
+		adaptBookmarkTooltips();
 	});
 	
 	// Closing dialogs on escape
