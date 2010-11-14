@@ -125,7 +125,7 @@ body.linux input{
 #tree ul li span.active,
 #tree ul li a:focus,
 #tree ul li span:focus,
-.context-menu li:focus{
+menu[type=context] command:focus{
 	color: #fff;
 	background-color: #4687cb;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#6fa6de), to(#1e6cbb));
@@ -164,7 +164,7 @@ body.linux input{
 	-webkit-animation-name: blueFade;
 	-webkit-animation-duration: 3s;
 }
-.context-menu{
+menu[type=context]{
 	-webkit-transition-property: opacity;
 	-webkit-transition-duration: .3s;
 	opacity: 0;
@@ -180,12 +180,14 @@ body.linux input{
 	-webkit-box-shadow: 0 2px 6px rgba(0,0,0,.2);
 	outline: 0;
 }
-.context-menu li{
+menu[type=context] command{
+	display: block;
 	padding: 0 10px;
 	line-height: 20px;
 	text-shadow: none;
 }
-.context-menu li.separator{
+menu[type=context] hr{
+	border: 0;
 	padding: 0;
 	height: 1px;
 	margin: 2px 0;
@@ -193,9 +195,9 @@ body.linux input{
 	pointer-events: none;
 }
 
-.context-menu.hide-editables li.separator,
-.context-menu.hide-editables li#folder-edit,
-.context-menu.hide-editables li#folder-delete{
+menu[type=context].hide-editables hr,
+menu[type=context].hide-editables #folder-edit,
+menu[type=context].hide-editables #folder-delete{
 	display: none;
 }
 

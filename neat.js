@@ -74,7 +74,9 @@
 		'folder-delete': 'deleteEllipsis',
 		'edit-dialog-button': 'save'
 	}, function(msg, id){
-		$(id).innerText = _m(msg);
+		var el = $(id), m = _m(msg);
+		if (el.tagName == 'COMMAND') el.label = m;
+		el.innerText = m;
 	});
 	
 	// RTL indicator
@@ -720,7 +722,7 @@
 		e.stopPropagation();
 		if (!currentContext) return;
 		var el = e.target;
-		if (el.tagName != 'LI') return;
+		if (el.tagName != 'COMMAND') return;
 		var url = currentContext.href;
 		switch (el.id){
 			case 'bookmark-new-tab':
@@ -758,7 +760,7 @@
 	var folderContextHandler = function(e){
 		if (!currentContext) return;
 		var el = e.target;
-		if (el.tagName != 'LI') return;
+		if (el.tagName != 'COMMAND') return;
 		var li = currentContext.parentNode;
 		var id = li.id.replace('neat-tree-item-', '');
 		chrome.bookmarks.getChildren(id, function(children){
