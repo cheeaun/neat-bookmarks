@@ -345,8 +345,8 @@
 	
 	// Saved search query
 	if (rememberState && localStorage.searchQuery){
-		searchInput.set('value', localStorage.searchQuery);
-		searchInput.click();
+		searchInput.value = localStorage.searchQuery;
+		search();
 		searchInput.select();
 		searchInput.scrollLeft = 0;
 	}
