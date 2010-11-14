@@ -153,14 +153,17 @@
 	"advancedOptions": {
 		"message": "Advanced Options"
 	},
+	"optionClickNewTab": {
+		"message": "Left-click opens bookmark in new tab."
+	},
 	"optionOpenNewTab": {
 		"message": "Middle-click or control-click opens bookmark in new background tab (instead of foreground)."
 	},
-	"optionPopupStays": {
-		"message": "Popup stays open when opening (left-clicking) bookmarks."
-	},
 	"optionCloseUnusedFolders": {
 		"message": "Close unused folders when opening a folder."
+	},
+	"optionPopupStays": {
+		"message": "Popup stays open when opening (left-clicking) bookmarks."
 	},
 	"optionConfirmOpenFolder": {
 		"message": "Display confirmation when opening a lot of bookmarks from a folder."

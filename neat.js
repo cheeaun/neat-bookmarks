@@ -425,11 +425,27 @@
 			});
 		},
 		
-		openBookmarkNewTab: function(url, selected){
-			chrome.tabs.create({
-				url: url,
-				selected: selected
-			});
+		openBookmarkNewTab: function(url, selected, blankTabCheck){
+			var open = function(){
+				chrome.tabs.create({
+					url: url,
+					selected: selected
+				});
+			};
+			if (blankTabCheck){
+				chrome.tabs.getSelected(null, function(tab){
+					if (tab.url.test(/^chrome:\/\/newtab/i)){
+						chrome.tabs.update(tab.id, {
+							url: url
+						});
+						if (!bookmarkClickStayOpen) window.close.delay(200);
+					} else {
+						open();
+					}
+				});
+			} else {
+				open();
+			}
 		},
 		
 		openBookmarkNewWindow: function(url, incognito){
@@ -582,6 +598,7 @@
 	};
 	
 	var middleClickBgTab = !!localStorage.middleClickBgTab;
+	var leftClickNewTab = !!localStorage.leftClickNewTab;
 	var bookmarkHandler = function(e){
 		e.preventDefault();
 		if (e.button != 0) return; // force left-click
@@ -596,7 +613,7 @@
 				if (shift){
 					actions.openBookmarkNewWindow(url);
 				} else {
-					actions.openBookmark(url);
+					leftClickNewTab ? actions.openBookmarkNewTab(url, true, true) : actions.openBookmark(url);
 				}
 			}
 		} else if (el.tagName == 'SPAN'){
