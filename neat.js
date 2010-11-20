@@ -277,9 +277,25 @@
 		prevValue = value;
 		searchMode = true;
 		chrome.bookmarks.search(value, function(results){
+			var v = value.toLowerCase();
+			var vPattern = new RegExp('^' + value.escapeRegExp().replace(/\s+/g, '.*'), 'ig');
 			results.sort(function(a, b){
+				var aTitle = a.title;
+				var bTitle = b.title;
+				var aIndexTitle = aTitle.toLowerCase().indexOf(v);
+				var bIndexTitle = bTitle.toLowerCase().indexOf(v);
+				if (aIndexTitle >= 0 || bIndexTitle >= 0){
+					if (aIndexTitle < 0) aIndexTitle = Infinity;
+					if (bIndexTitle < 0) bIndexTitle = Infinity;
+					return aIndexTitle - bIndexTitle;
+				}
+				var aTestTitle = aTitle.test(vPattern);
+				var bTestTitle = bTitle.test(vPattern);
+				if (aTestTitle && !bTestTitle) return -1;
+				if (!aTestTitle && bTestTitle) return 1;
 				return b.dateAdded - a.dateAdded;
 			});
+			results = results.slice(0, 100); // 100 is enough
 			var html = '<ul role="list">';
 			for (var i=0, l=results.length; i<l; i++){
 				var result = results[i];
