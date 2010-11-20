@@ -324,6 +324,7 @@
 		var key = e.keyCode;
 		var focusID = localStorage.focusID;
 		if (key == 40 && searchInput.value.length == searchInput.selectionEnd){ // down
+			e.preventDefault();
 			if (searchMode){
 				$results.querySelector('ul>li:first-child a').focus();
 			} else {
