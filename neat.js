@@ -270,7 +270,6 @@
 			prevValue = '';
 			searchMode = false;
 			$results.style.display = 'none';
-			$tree.style.display = 'block';
 			return;
 		}
 		if (value == prevValue) return;
@@ -305,7 +304,6 @@
 			}
 			html += '</ul>';
 			$results.set('html', html).style.display = 'block';
-			$tree.style.display = 'none';
 			
 			var lis = $results.querySelectorAll('li');
 			Array.each(lis, function(li){
