@@ -1230,11 +1230,11 @@
 	document.addEventListener('mouseup', function(e){
 		if (e.button != 0) return;
 		if (!draggedBookmark) return;
+		stopScrollTree();
 		if (!canDrop){
 			onDrop();
 			return;
 		};
-		stopScrollTree();
 		var el = e.target;
 		var elParent = el.parentNode;
 		var id = elParent.id.replace('neat-tree-item-', '');
