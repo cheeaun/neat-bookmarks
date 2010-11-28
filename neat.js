@@ -129,7 +129,6 @@
 	var generateHTML = function(data, level){
 		if (!level) level = 0;
 		var paddingStart = 14*level;
-		var aPaddingStart = paddingStart+16;
 		var group = (level == 0) ? 'tree' : 'group';
 		var html = '<ul role="' + group + '" data-level="' + level + '">';
 		
@@ -170,7 +169,7 @@
 				}
 			} else {
 				html += '<li class="child"' + idHTML + ' role="treeitem" data-parentid="' + parentID + '">'
-					+ generateBookmarkHTML(title, url, 'style="-webkit-padding-start: ' + aPaddingStart + 'px"');
+					+ generateBookmarkHTML(title, url, 'style="-webkit-padding-start: ' + paddingStart + 'px"');
 			}
 			html += '</li>';
 		}
@@ -1117,6 +1116,199 @@
 	};
 	$bookmarkContextMenu.addEventListener('mouseout', contextMouseOut);
 	$folderContextMenu.addEventListener('mouseout', contextMouseOut);
+	
+	// Drag and drop, baby
+	var draggedBookmark = null;
+	var canDrop = false;
+	var bookmarkClone = $('bookmark-clone');
+	var dropOverlay = $('drop-overlay');
+	$tree.addEventListener('mousedown', function(e){
+		if (e.button != 0) return;
+		var el = e.target;
+		var elParent = el.parentNode;
+		// can move any bookmarks/folders except the default root folders
+		if ((el.tagName == 'A' && elParent.hasClass('child')) || (el.tagName == 'SPAN' && elParent.hasClass('parent') && elParent.get('data-parentid') != '0')){
+			e.preventDefault();
+			draggedBookmark = el;
+			bookmarkClone.innerHTML = el.innerHTML;
+			el.focus();
+		}
+	});
+	var scrollTree, scrollTreeInterval = 100, scrollTreeSpot = 10;
+	var stopScrollTree = function(){
+		clearInterval(scrollTree);
+		scrollTree = null;
+	};
+	document.addEventListener('mousemove', function(e){
+		if (e.button != 0) return;
+		if (!draggedBookmark) return;
+		var el = e.target;
+		var clientX = e.clientX;
+		var clientY = e.clientY;
+		// if hovering over the dragged element itself or cursor move outside the tree
+		var treeTop = $tree.offsetTop, treeBottom = window.innerHeight;
+		if (el == draggedBookmark || clientX < 0 || clientY < treeTop || clientX > $tree.offsetWidth || clientY > treeBottom){
+			bookmarkClone.style.left = '-999px';
+			dropOverlay.style.left = '-999px';
+			canDrop = false;
+			return;
+		}
+		e.preventDefault();
+		// if hovering over the top or bottom edges of the tree, scroll the tree
+		var treeScrollHeight = $tree.scrollHeight, treeOffsetHeight = $tree.offsetHeight;
+		if (treeScrollHeight > treeOffsetHeight){ // only scroll when it's scrollable
+			var treeScrollTop = $tree.scrollTop;
+			if (treeScrollTop == 0 || treeScrollTop == (treeScrollHeight - treeOffsetHeight)){
+				stopScrollTree();
+			} else if (clientY <= treeTop+scrollTreeSpot){
+				if (!scrollTree) scrollTree = setInterval(function(){
+					$tree.scrollByLines(-1);
+					dropOverlay.style.left = '-999px';
+				}, scrollTreeInterval);
+			} else if (clientY >= treeBottom-scrollTreeSpot){
+				if (!scrollTree) scrollTree = setInterval(function(){
+					$tree.scrollByLines(1);
+					dropOverlay.style.left = '-999px';
+				}, scrollTreeInterval);
+			} else {
+				stopScrollTree();
+			}
+		}
+		// collapse the folder before moving it
+		if (draggedBookmark.tagName == 'SPAN'){
+			draggedBookmark.parentNode.removeClass('open');
+		}
+		if (el.tagName == 'A'){
+			canDrop = true;
+			var draggedBookmarkParent = draggedBookmark.parentNode;
+			bookmarkClone.style.top = clientY + 'px';
+			bookmarkClone.style.left = clientX + 'px';
+			var elRect = el.getBoundingClientRect();
+			var top = (clientY >= elRect.top+elRect.height/2) ? elRect.bottom : elRect.top;
+			dropOverlay.className = 'bookmark';
+			dropOverlay.style.top = top + 'px';
+			dropOverlay.style.left = el.style.webkitPaddingStart.toInt() + 16 + 'px';
+			dropOverlay.style.width = window.getComputedStyle(el, null).width.toInt() - 12 + 'px';
+			dropOverlay.style.height = null;
+		} else if (el.tagName == 'SPAN'){
+			canDrop = true;
+			bookmarkClone.style.top = clientY + 'px';
+			bookmarkClone.style.left = clientX + 'px';
+			var elRect = el.getBoundingClientRect();
+			var top = null;
+			var elRectTop = elRect.top, elRectHeight = elRect.height;
+			var elParent = el.parentNode;
+			if (elParent.get('data-parentid') != '0'){
+				if (clientY < elRectTop+elRectHeight*.3){
+					top = elRect.top;
+				} else if (clientY > elRectTop+elRectHeight*.7 && !elParent.hasClass('open')){
+					top = elRect.bottom;
+				}
+			}
+			if (top == null){
+				dropOverlay.className = 'folder';
+				dropOverlay.style.top = elRect.top + 'px';
+				dropOverlay.style.left = '0px';
+				dropOverlay.style.width = elRect.width + 'px';
+				dropOverlay.style.height = elRect.height + 'px';
+			} else {
+				dropOverlay.className = 'bookmark';
+				dropOverlay.style.top = top + 'px';
+				dropOverlay.style.left = el.style.webkitPaddingStart.toInt() + 16 + 'px';
+				dropOverlay.style.width = window.getComputedStyle(el, null).width.toInt() - 12 + 'px';
+				dropOverlay.style.height = null;
+			}
+		}
+	});
+	var onDrop = function(){
+		draggedBookmark = null;
+		bookmarkClone.style.left = '-999px';
+		dropOverlay.style.left = '-999px';
+		canDrop = false;
+	};
+	document.addEventListener('mouseup', function(e){
+		if (e.button != 0) return;
+		if (!draggedBookmark) return;
+		if (!canDrop){
+			onDrop();
+			return;
+		};
+		stopScrollTree();
+		var el = e.target;
+		var elParent = el.parentNode;
+		var id = elParent.id.replace('neat-tree-item-', '');
+		if (!id){
+			onDrop();
+			return;
+		}
+		var draggedBookmarkParent = draggedBookmark.parentNode;
+		var draggedID = draggedBookmarkParent.id.replace('neat-tree-item-', '');
+		var clientY = e.clientY;
+		if (el.tagName == 'A'){
+			var elRect = el.getBoundingClientRect();
+			var moveBottom = (clientY >= elRect.top+elRect.height/2);
+			chrome.bookmarks.get(id, function(node){
+				if (!node || !node.length) return;
+				node = node[0];
+				var index = node.index;
+				var parentId = node.parentId;
+				chrome.bookmarks.move(draggedID, {
+					parentId: parentId,
+					index: moveBottom ? ++index : index
+				}, function(){
+					draggedBookmarkParent.inject(elParent, moveBottom ? 'after' : 'before');
+					draggedBookmark.style.webkitPaddingStart = el.style.webkitPaddingStart;
+					draggedBookmark.focus();
+					onDrop();
+				});
+			});
+		} else if (el.tagName == 'SPAN'){
+			var elRect = el.getBoundingClientRect();
+			var move = 0; // 0 = middle, 1 = top, 2 = bottom
+			var elRectTop = elRect.top, elRectHeight = elRect.height;
+			var elParent = el.parentNode;
+			if (elParent.get('data-parentid') != '0'){
+				if (clientY < elRectTop+elRectHeight*.3){
+					move = 1;
+				} else if (clientY > elRectTop+elRectHeight*.7 && !elParent.hasClass('open')){
+					move = 2;
+				}
+			}
+			if (move > 0){
+				var moveBottom = (move == 2);
+				chrome.bookmarks.get(id, function(node){
+					if (!node || !node.length) return;
+					node = node[0];
+					var index = node.index;
+					var parentId = node.parentId;
+					chrome.bookmarks.move(draggedID, {
+						parentId: parentId,
+						index: moveBottom ? ++index : index
+					}, function(){
+						draggedBookmarkParent.inject(elParent, moveBottom ? 'after' : 'before');
+						draggedBookmark.style.webkitPaddingStart = el.style.webkitPaddingStart;
+						draggedBookmark.focus();
+						onDrop();
+					});
+				});
+			} else {
+				chrome.bookmarks.move(draggedID, {
+					parentId: id
+				}, function(){
+					var ul = elParent.querySelector('ul');
+					var level = parseInt(elParent.parentNode.get('data-level'))+1;
+					draggedBookmark.style.webkitPaddingStart = (14*level) + 'px';
+					if (ul){
+						draggedBookmarkParent.inject(ul);
+						el.focus();
+						onDrop();
+					}
+				});
+			}
+		} else {
+			onDrop();
+		}
+	});
 	
 	// Resizer
 	var $resizer = $('resizer');
