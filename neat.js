@@ -1142,6 +1142,7 @@
 	document.addEventListener('mousemove', function(e){
 		if (e.button != 0) return;
 		if (!draggedBookmark) return;
+		e.preventDefault();
 		var el = e.target;
 		var clientX = e.clientX;
 		var clientY = e.clientY;
@@ -1151,22 +1152,22 @@
 			bookmarkClone.style.left = '-999px';
 			dropOverlay.style.left = '-999px';
 			canDrop = false;
-			return;
 		}
-		e.preventDefault();
 		// if hovering over the top or bottom edges of the tree, scroll the tree
 		var treeScrollHeight = $tree.scrollHeight, treeOffsetHeight = $tree.offsetHeight;
 		if (treeScrollHeight > treeOffsetHeight){ // only scroll when it's scrollable
 			var treeScrollTop = $tree.scrollTop;
-			if (treeScrollTop == 0 || treeScrollTop == (treeScrollHeight - treeOffsetHeight)){
-				stopScrollTree();
-			} else if (clientY <= treeTop+scrollTreeSpot){
-				if (!scrollTree) scrollTree = setInterval(function(){
+			if (clientY <= treeTop+scrollTreeSpot){
+				if (treeScrollTop == 0){
+					stopScrollTree();
+				} else if (!scrollTree) scrollTree = setInterval(function(){
 					$tree.scrollByLines(-1);
 					dropOverlay.style.left = '-999px';
 				}, scrollTreeInterval);
 			} else if (clientY >= treeBottom-scrollTreeSpot){
-				if (!scrollTree) scrollTree = setInterval(function(){
+				if (treeScrollTop == (treeScrollHeight - treeOffsetHeight)){
+					stopScrollTree();
+				} else if (!scrollTree) scrollTree = setInterval(function(){
 					$tree.scrollByLines(1);
 					dropOverlay.style.left = '-999px';
 				}, scrollTreeInterval);
