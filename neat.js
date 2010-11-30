@@ -1146,9 +1146,15 @@
 		var el = e.target;
 		var clientX = e.clientX;
 		var clientY = e.clientY;
+		if (el == draggedBookmark){
+			bookmarkClone.style.left = '-999px';
+			dropOverlay.style.left = '-999px';
+			canDrop = false;
+			return;
+		}
 		// if hovering over the dragged element itself or cursor move outside the tree
 		var treeTop = $tree.offsetTop, treeBottom = window.innerHeight;
-		if (el == draggedBookmark || clientX < 0 || clientY < treeTop || clientX > $tree.offsetWidth || clientY > treeBottom){
+		if (clientX < 0 || clientY < treeTop || clientX > $tree.offsetWidth || clientY > treeBottom){
 			bookmarkClone.style.left = '-999px';
 			dropOverlay.style.left = '-999px';
 			canDrop = false;
