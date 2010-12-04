@@ -1319,8 +1319,7 @@
 	// Resizer
 	var $resizer = $('resizer');
 	var resizerDown = false;
-	var bodyWidth;
-	var screenX;
+	var bodyWidth, screenX;
 	$resizer.addEventListener('mousedown', function(e){
 		e.preventDefault();
 		e.stopPropagation();
@@ -1334,7 +1333,7 @@
 		var changedWidth = rtl ? (e.screenX - screenX) : (screenX - e.screenX);
 		var width = bodyWidth + changedWidth;
 		width = Math.min(640, Math.max(320, width));
-		document.body.style.width = width + 'px';
+		body.style.width = width + 'px';
 		localStorage.popupWidth = width;
 		clearMenu(); // messes the context menu
 	});
@@ -1343,6 +1342,13 @@
 		e.preventDefault();
 		resizerDown = false;
 		adaptBookmarkTooltips();
+	});
+	window.addEventListener('resize', function(){ // in case there's a resizer *outside* the popup page
+		if (resizerDown) return;
+		var width = window.innerWidth;
+		body.style.width = width + 'px';
+		localStorage.popupWidth = width;
+		clearMenu();
 	});
 	
 	// Closing dialogs on escape
