@@ -268,6 +268,7 @@
 		if (value == ''){
 			prevValue = '';
 			searchMode = false;
+			$tree.style.display = 'block';
 			$results.style.display = 'none';
 			return;
 		}
@@ -302,6 +303,7 @@
 					+ generateBookmarkHTML(result.title, result.url);
 			}
 			html += '</ul>';
+			$tree.style.display = 'none';
 			$results.set('html', html).style.display = 'block';
 			
 			var lis = $results.querySelectorAll('li');
@@ -341,6 +343,11 @@
 				e.preventDefault();
 				focusEl.firstElementChild.focus();
 			}
+		// Pressing esc shouldn't close the popup when search field has value
+		} else if (e.keyCode == 27 && searchInput.value){ // esc
+			e.preventDefault();
+			searchInput.value = '';
+			search();
 		}
 	});
 	
@@ -349,14 +356,6 @@
 	});
 	searchInput.addEventListener('blur', function(){
 		body.removeClass('searchFocus');
-	});
-	
-	// Pressing esc shouldn't close the popup when search field has value
-	searchInput.addEventListener('keydown', function(e){
-		if (e.keyCode == 27 && searchInput.value){ // esc
-			e.preventDefault();
-			searchInput.value = '';
-		}
 	});
 	
 	// Saved search query

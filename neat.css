@@ -20,16 +20,26 @@ body.transitional{
 	-webkit-transition-property: height;
 }
 input{
-	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
 	font: menu;
 }
 body.linux input{
 	font-size: 12px;
 }
+#container{
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	display: box;
+	box-orient: vertical;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
 #search{
-	height: 30px;
-	padding: 0 2px;
+	padding: 0 2px 2px;
 }
 #search input{
 	width: 100%;
@@ -38,16 +48,13 @@ body.linux input{
 }
 #results,
 #tree{
-	position: absolute;
-	left: 0;
-	top: 30px;
-	bottom: 0;
 	background-color: #eee;
-	width: 100%;
 	overflow: auto;
 	outline: 0;
 	padding: 3px 0;
 	-webkit-box-shadow: inset 0 4px 4px -4px rgba(0,0,0,.1);
+	-webkit-box-flex: 1;
+	box-flex: 1;
 }
 #results ul,
 #results ul li,
