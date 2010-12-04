@@ -16,6 +16,6 @@
 	"permissions": [
 		"http://*/*", "https://*/*", "chrome://favicon/", "bookmarks", "tabs"
 	],
-	"minimum_chrome_version": "6",
+	"minimum_chrome_version": "7",
 	"default_locale": "en"
 }
