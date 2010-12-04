@@ -19,6 +19,26 @@ body.linux{
 body.transitional{
 	-webkit-transition-property: height;
 }
+body[data-zoom='110']>*:not(menu),
+body[data-zoom='110'] menu[type=context] command{
+	zoom: 1.1;
+}
+body[data-zoom='120']>*:not(menu),
+body[data-zoom='120'] menu[type=context] command{
+	zoom: 1.2;
+}
+body[data-zoom='130']>*:not(menu),
+body[data-zoom='130'] menu[type=context] command{
+	zoom: 1.3;
+}
+body[data-zoom='140']>*:not(menu),
+body[data-zoom='140'] menu[type=context] command{
+	zoom: 1.4;
+}
+body[data-zoom='150']>*:not(menu),
+body[data-zoom='150'] menu[type=context] command{
+	zoom: 1.5;
+}
 input{
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -231,12 +251,16 @@ menu[type=context]{
 	box-shadow: 0 2px 6px rgba(0,0,0,.2);
 	-webkit-box-shadow: 0 2px 6px rgba(0,0,0,.2);
 	outline: 0;
+	max-width: 100%;
 }
 menu[type=context] command{
 	display: block;
 	padding: 0 10px;
 	line-height: 20px;
 	text-shadow: none;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 menu[type=context] hr{
 	border: 0;

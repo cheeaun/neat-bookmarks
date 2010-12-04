@@ -665,8 +665,6 @@
 	// Context menu
 	var $bookmarkContextMenu = $('bookmark-context-menu');
 	var $folderContextMenu = $('folder-context-menu');
-	var bookmarkMenuWidth = $bookmarkContextMenu.offsetWidth;
-	var bookmarkMenuHeight = $bookmarkContextMenu.offsetHeight;
 	
 	var clearMenu = function(e){
 		currentContext = null;
@@ -706,6 +704,8 @@
 			var active = body.querySelector('.active');
 			if (active) active.removeClass('active');
 			el.addClass('active');
+			var bookmarkMenuWidth = $bookmarkContextMenu.offsetWidth;
+			var bookmarkMenuHeight = $bookmarkContextMenu.offsetHeight;
 			var pageX = rtl ? Math.max(0, e.pageX - bookmarkMenuWidth) : Math.min(e.pageX, body.offsetWidth - bookmarkMenuWidth);
 			var pageY = e.pageY;
 			var boundY = window.innerHeight - bookmarkMenuHeight;
@@ -1362,6 +1362,46 @@
 	setTimeout(function(){
 		body.addClass('transitional');
 	}, 10);
+	
+	// Zoom
+	if (localStorage.zoom){
+		body.set('data-zoom', localStorage.zoom);
+	}
+	var zoom = function(val){
+		var currentZoom = (body.get('data-zoom') || 100).toInt();
+		if (val == 0){
+			body.removeAttribute('data-zoom');
+			localStorage.removeItem('zoom');
+		} else {
+			var z = (val>0) ? currentZoom+10 : currentZoom-10;
+			z = Math.min(150, Math.max(100, z));
+			body.set('data-zoom', z);
+			localStorage.zoom = z;
+		}
+		body.addClass('dummy').removeClass('dummy'); // force redraw
+	};
+	document.addEventListener('mousewheel', function(e){
+		if (!e.metaKey && !e.ctrlKey) return;
+		e.preventDefault();
+		zoom(e.wheelDelta);
+	});
+	document.addEventListener('keydown', function(e){
+		if (!e.metaKey && !e.ctrlKey) return;
+		switch (e.keyCode){
+			case 187: // + (plus)
+				e.preventDefault();
+				zoom(1);
+				break;
+			case 189: // - (minus)
+				e.preventDefault();
+				zoom(-1);
+				break;
+			case 48: // 0 (zero)
+				e.preventDefault();
+				zoom(0);
+				break;
+		}
+	});
 	
 	// Fix stupid Chrome build 536 bug
 	if (version.build >= 536) body.addClass('chrome-536');

@@ -153,6 +153,12 @@
 	"advancedOptions": {
 		"message": "Advanced Options"
 	},
+	"general": {
+		"message": "General"
+	},
+	"accessibility": {
+		"message": "Accessibility"
+	},
 	"optionClickNewTab": {
 		"message": "Left-click opens bookmark in new tab."
 	},
@@ -170,6 +176,9 @@
 	},
 	"optionRememberPrevState": {
 		"message": "Remember previous state (scroll position and opened folders)."
+	},
+	"optionZoom": {
+		"message": "Zoom"
 	},
 	"optionsFooterText": {
 		"message": "Built by $authorName$.",
