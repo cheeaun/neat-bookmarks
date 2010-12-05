@@ -1056,9 +1056,9 @@
 				if (metaKey){ // cmd + down (Mac)
 					menu.lastElementChild.focus();
 				} else {
-					if (item.tagName == 'LI'){
+					if (item.tagName == 'COMMAND'){
 						var nextItem = item.getNext();
-						if (nextItem && nextItem.hasClass('separator')) nextItem = nextItem.getNext();
+						if (nextItem && nextItem.tagName == 'HR') nextItem = nextItem.getNext();
 						if (nextItem){
 							nextItem.focus();
 						} else if (os != 'mac'){
@@ -1074,9 +1074,9 @@
 				if (metaKey){ // cmd + up (Mac)
 					menu.firstElementChild.focus();
 				} else {
-					if (item.tagName == 'LI'){
+					if (item.tagName == 'COMMAND'){
 						var prevItem = item.getPrevious();
-						if (prevItem && prevItem.hasClass('separator')) prevItem = prevItem.getPrevious();
+						if (prevItem && prevItem.tagName == 'HR') prevItem = prevItem.getPrevious();
 						if (prevItem){
 							prevItem.focus();
 						} else if (os != 'mac'){
