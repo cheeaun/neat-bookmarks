@@ -1188,12 +1188,12 @@
 			canDrop = true;
 			var draggedBookmarkParent = draggedBookmark.parentNode;
 			bookmarkClone.style.top = clientY + 'px';
-			bookmarkClone.style.left = clientX + 'px';
+			bookmarkClone.style.left = (rtl ? (clientX-bookmarkClone.offsetWidth) : clientX) + 'px';
 			var elRect = el.getBoundingClientRect();
 			var top = (clientY >= elRect.top+elRect.height/2) ? elRect.bottom : elRect.top;
 			dropOverlay.className = 'bookmark';
 			dropOverlay.style.top = top + 'px';
-			dropOverlay.style.left = el.style.webkitPaddingStart.toInt() + 16 + 'px';
+			dropOverlay.style.left = rtl ? '0px' : el.style.webkitPaddingStart.toInt() + 16 + 'px';
 			dropOverlay.style.width = window.getComputedStyle(el, null).width.toInt() - 12 + 'px';
 			dropOverlay.style.height = null;
 		} else if (el.tagName == 'SPAN'){

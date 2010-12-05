@@ -202,10 +202,15 @@ menu[type=context] command:focus{
 	margin: -1em 0 0 -24px;
 	white-space: nowrap;
 	line-height: 1em;
-	padding: .3em .5em .3em .3em;
+	padding: .3em;
+	padding-__MSG_@@bidi_end_edge__: .5em;
 	-webkit-mask-image: -webkit-gradient(linear, left top, 320 top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
 	pointer-events: none;
 	cursor: default;
+}
+.rtl #bookmark-clone{
+	margin-left: 24px;
+	-webkit-mask-image: -webkit-gradient(linear, right top, -320 top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
 }
 #bookmark-clone img{
 	vertical-align: text-top;
