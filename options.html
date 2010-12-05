@@ -46,7 +46,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	});
 	
 	var zoom = $('zoom-input');
-	zoom.value = localStorage.zoom || 100;
+	setInterval(function(){
+		zoom.value = localStorage.zoom || 100;
+	}, 1000);
 	zoom.addEventListener('input', function(){
 		var val = zoom.value.toInt();
 		if (val == 100){
