@@ -1306,9 +1306,11 @@
 					draggedBookmark.style.webkitPaddingStart = (14*level) + 'px';
 					if (ul){
 						draggedBookmarkParent.inject(ul);
-						el.focus();
-						onDrop();
+					} else {
+						draggedBookmarkParent.destroy();
 					}
+					el.focus();
+					onDrop();
 				});
 			}
 		} else {
