@@ -12,13 +12,13 @@
 		"description": "Placeholder text for search field."
 	},
 	"openNewTab": {
-		"message": "Open in new tab"
+		"message": "Open in New Tab"
 	},
 	"openNewWindow": {
-		"message": "Open in new window"
+		"message": "Open in New Window"
 	},
 	"openIncognitoWindow": {
-		"message": "Open in incognito window"
+		"message": "Open in Incognito Window"
 	},
 	"edit": {
 		"message": "Edit..."
@@ -30,13 +30,13 @@
 		"message": "Delete..."
 	},
 	"openBookmarks": {
-		"message": "Open all bookmarks"
+		"message": "Open All Bookmarks"
 	},
 	"openBookmarksNewWindow": {
-		"message": "Open all bookmarks in new window"
+		"message": "Open All Bookmarks in New Window"
 	},
 	"openBookmarksIncognitoWindow": {
-		"message": "Open all bookmarks in incognito window"
+		"message": "Open All Bookmarks in Incognito Window"
 	},
 	"noTitle": {
 		"message": "(no title)",
@@ -142,7 +142,7 @@
 		"message": "Oops, an error occured."
 	},
 	"reportError": {
-		"message": "Report this error"
+		"message": "Report Error"
 	},
 	"ignore": {
 		"message": "Ignore"

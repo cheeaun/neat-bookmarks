@@ -267,6 +267,13 @@ menu[type=context] command{
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
+/* convert title-style to sentence-style capitalization, for Windows */
+.win menu[type=context] command{
+	text-transform: lowercase;
+}
+.win menu[type=context] command:first-letter{
+	text-transform: uppercase;
+}
 menu[type=context] hr{
 	border: 0;
 	padding: 0;
