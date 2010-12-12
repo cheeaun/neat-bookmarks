@@ -1,9 +1,6 @@
 Neat Bookmarks
 ==============
 
-About
------
-
 A neat bookmarks tree popup extension for Google Chrome.
 
 Technical Details
@@ -17,6 +14,3 @@ Neat Bookmarks is powered by MooTools 1.3 with these dependencies:
 - Number
 - Function
 - Browser
-- Slick.Parser
-- Slick.Finder
-- Element

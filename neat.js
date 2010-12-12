@@ -9,6 +9,96 @@
 		}
 	});
 	
+	var inserters = {
+		
+		before: function(context, element){
+			var parent = element.parentNode;
+			if (parent) parent.insertBefore(context, element);
+		},
+		
+		after: function(context, element){
+			var parent = element.parentNode;
+			if (parent) parent.insertBefore(context, element.nextSibling);
+		},
+		
+		bottom: function(context, element){
+			element.appendChild(context);
+		},
+		
+		top: function(context, element){
+			element.insertBefore(context, element.firstChild);
+		}
+		
+	};
+	
+	var $ = function(id){
+		return document.getElementById(id);
+	};
+	
+	Element.extend = function(key, value){
+		this[key] = value;
+	}.overloadSetter();
+	
+	new Type('Element', Element);
+	
+	Element.implement({
+		
+		getComputedStyle: function(property){
+			return window.getComputedStyle(this, null).getPropertyValue(property.hyphenate());
+		},
+		
+		// DOM manipulation
+		inject: function(el, where){
+			inserters[where || 'bottom'](this, el);
+			return this;
+		},
+		
+		destroy: function(){
+			return (this.parentNode) ? this.parentNode.removeChild(this) : this;
+		},
+		
+		// DOM traversal
+		getAllNext: function(){
+			var elements = [];
+			var node = this;
+			while (node = node.nextElementSibling){
+				elements.push(node);
+			}
+			return elements;
+		},
+		
+		getAllPrevious: function(){
+			var elements = [];
+			var node = this;
+			while (node = node.previousElementSibling){
+				elements.push(node);
+			}
+			return elements;
+		},
+		
+		getSiblings: function(){
+			return this.getAllNext().combine(this.getAllPrevious());
+		},
+		
+		// classList
+		hasClass: function(className){
+			return this.classList.contains(className);
+		},
+		addClass: function(className){
+			this.classList.add(className);
+			return this;
+		},
+		removeClass: function(className){
+			this.classList.remove(className);
+			return this;
+		},
+		toggleClass: function(className){
+			this.classList.toggle(className);
+			return this;
+		}
+		
+	});
+	
 	var body = document.body;
 	
 	// Confirm dialog
@@ -16,9 +106,9 @@
 		
 		open: function(opts){
 			if (!opts) return;
-			$('confirm-dialog-text').set('html', opts.dialog.widont());
-			$('confirm-dialog-button-1').set('html', opts.button1);
-			$('confirm-dialog-button-2').set('html', opts.button2);
+			$('confirm-dialog-text').innerHTML = opts.dialog.widont();
+			$('confirm-dialog-button-1').innerHTML = opts.button1;
+			$('confirm-dialog-button-2').innerHTML = opts.button2;
 			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
 			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
 			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
@@ -76,17 +166,17 @@
 	}, function(msg, id){
 		var el = $(id), m = _m(msg);
 		if (el.tagName == 'COMMAND') el.label = m;
-		el.innerText = m;
+		el.textContent = m;
 	});
 	
 	// RTL indicator
-	var rtl = (window.getComputedStyle(body, null).direction == 'rtl');
+	var rtl = (body.getComputedStyle('direction') == 'rtl');
 	if (rtl) body.addClass('rtl');
 	
 	// Init some variables
 	var opens = localStorage.opens ? JSON.parse(localStorage.opens) : [];
 	var rememberState = !localStorage.dontRememberState;
-	var a = new Element('a');
+	var a = document.createElement('a');
 	var httpsPattern = /^https?:\/\//i;
 	
 	// Adaptive bookmark tooltips
@@ -100,7 +190,7 @@
 					bookmark.removeClass('titled');
 				}
 			} else if (bookmark.scrollWidth > bookmark.offsetWidth){
-				var text = bookmark.querySelector('i').innerText;
+				var text = bookmark.querySelector('i').textContent;
 				var title = bookmark.title;
 				if (text != title){
 					bookmark.title = text + '\n' + title;
@@ -159,7 +249,8 @@
 						(function(_id){
 							chrome.bookmarks.getChildren(_id, function(children){
 								var html = generateHTML(children, level+1);
-								var div = new Element('div', {html: html});
+								var div = document.createElement('div');
+								div.innerHTML = html;
 								var ul = div.querySelector('ul');
 								ul.inject('neat-tree-item-' + _id);
 								div.destroy();
@@ -180,7 +271,7 @@
 	var $tree = $('tree');
 	chrome.bookmarks.getTree(function(tree){
 		var html = generateHTML(tree[0].children);
-		$tree.set('html', html);
+		$tree.innerHTML = html;
 		
 		if (rememberState) $tree.scrollTop = localStorage.scrollTop || 0;
 		
@@ -219,13 +310,14 @@
 		var parent = el.parentNode;
 		parent.toggleClass('open');
 		var expanded = parent.hasClass('open');
-		parent.setProperty('aria-expanded', expanded);
+		parent.setAttribute('aria-expanded', expanded);
 		var children = parent.querySelector('ul');
 		if (!children){
 			var id = parent.id.replace('neat-tree-item-', '');
 			chrome.bookmarks.getChildren(id, function(children){
-				var html = generateHTML(children, parseInt(parent.parentNode.get('data-level'))+1);
-				var div = new Element('div', {html: html});
+				var html = generateHTML(children, parseInt(parent.parentNode.dataset.level)+1);
+				var div = document.createElement('div');
+				div.innerHTML = html;
 				var ul = div.querySelector('ul');
 				ul.inject(parent);
 				div.destroy();
@@ -237,7 +329,7 @@
 			for (var i=0, l=siblings.length; i<l; i++){
 				var li = siblings[i];
 				if (li.hasClass('parent')){
-					li.removeClass('open').setProperty('aria-expanded', false);
+					li.removeClass('open').setAttribute('aria-expanded', false);
 				}
 			}
 		}
@@ -304,11 +396,12 @@
 			}
 			html += '</ul>';
 			$tree.style.display = 'none';
-			$results.set('html', html).style.display = 'block';
+			$results.innerHTML = html;
+			$results.style.display = 'block';
 			
 			var lis = $results.querySelectorAll('li');
 			Array.each(lis, function(li){
-				var parentId = li.get('data-parentid');
+				var parentId = li.dataset.parentid;
 				chrome.bookmarks.get(parentId, function(node){
 					if (!node || !node.length) return;
 					var a = li.querySelector('a');
@@ -388,7 +481,7 @@
 		
 		open: function(opts){
 			if (!opts) return;
-			$('edit-dialog-text').set('html', opts.dialog.widont());
+			$('edit-dialog-text').innerHTML = opts.dialog.widont();
 			if (opts.fn) EditDialog.fn = opts.fn;
 			var type = opts.type || 'bookmark';
 			var name = $('edit-dialog-name');
@@ -536,16 +629,16 @@
 							if (li){
 								if (isBookmark){
 									var css = li.querySelector('a').style.cssText;
-									li.set('html', generateBookmarkHTML(title, url, 'style="' + css + '"'));
+									li.innerHTML = generateBookmarkHTML(title, url, 'style="' + css + '"');
 								} else {
 									var i = li.querySelector('i');
 									var name = title || (httpsPattern.test(url) ? url.replace(httpsPattern, '') : _m('noTitle'));
-									i.innerText = name;
+									i.textContent = name;
 								}
 							}
 							if (searchMode){
 								li = $('results-item-' + id);
-								li.set('html', generateBookmarkHTML(title, url));
+								li.innerHTML = generateBookmarkHTML(title, url);
 							}
 							li.firstElementChild.focus();
 						});
@@ -559,12 +652,12 @@
 			var li2 = $('results-item-' + id);
 			chrome.bookmarks.remove(id, function(){
 				if (li1){
-					var nearLi1 = li1.getNext() || li1.getPrevious();
+					var nearLi1 = li1.nextElementSibling || li1.previousElementSibling;
 					li1.destroy();
 					if (!searchMode && nearLi1) nearLi1.querySelector('a, span').focus();
 				}
 				if (li2){
-					var nearLi2 = li2.getNext() || li2.getPrevious();
+					var nearLi2 = li2.nextElementSibling || li2.previousElementSibling;
 					li2.destroy();
 					if (searchMode && nearLi2) nearLi2.querySelector('a, span').focus();
 				}
@@ -576,7 +669,7 @@
 			var item = li.querySelector('span');
 			if (bookmarkCount || folderCount){
 				var dialog = '';
-				var folderName = '<cite>' + item.get('text').trim() + '</cite>';
+				var folderName = '<cite>' + item.textContent.trim() + '</cite>';
 				if (bookmarkCount && folderCount){
 					dialog = _m('confirmDeleteFolderSubfoldersBookmarks', [folderName, folderCount, bookmarkCount]);
 				} else if (bookmarkCount){
@@ -592,7 +685,7 @@
 						chrome.bookmarks.removeTree(id, function(){
 							li.destroy();
 						});
-						var nearLi = li.getNext() || li.getPrevious();
+						var nearLi = li.nextElementSibling || li.previousElementSibling;
 						if (nearLi) nearLi.querySelector('a, span').focus();
 					},
 					fn2: function(){
@@ -603,7 +696,7 @@
 				chrome.bookmarks.removeTree(id, function(){
 					li.destroy();
 				});
-				var nearLi = li.getNext() || li.getPrevious();
+				var nearLi = li.nextElementSibling || li.previousElementSibling;
 				if (nearLi) nearLi.querySelector('a, span').focus();
 			}
 		}
@@ -619,7 +712,7 @@
 		var ctrlMeta = (e.ctrlKey || e.metaKey);
 		var shift = e.shiftKey;
 		if (el.tagName == 'A'){
-			var url = el.get('href');
+			var url = el.href;
 			if (ctrlMeta){ // ctrl/meta click
 				actions.openBookmarkNewTab(url, middleClickBgTab ? shift : !shift);
 			} else { // click
@@ -721,7 +814,7 @@
 			var active = body.querySelector('.active');
 			if (active) active.removeClass('active');
 			el.addClass('active');
-			if (el.parentNode.get('data-parentid') == '0'){
+			if (el.parentNode.dataset.parentid == '0'){
 				$folderContextMenu.addClass('hide-editables');
 			} else {
 				$folderContextMenu.removeClass('hide-editables');
@@ -848,14 +941,14 @@
 				if (li.hasClass('open') && liChild){
 					liChild.querySelector('a, span').focus();
 				} else {
-					var nextLi = li.getNext();
+					var nextLi = li.nextElementSibling;
 					if (nextLi){
 						nextLi.querySelector('a, span').focus();
 					} else {
 						var nextLi;
 						do {
 							li = li.parentNode.parentNode;
-							if (li) nextLi = li.getNext();
+							if (li) nextLi = li.nextElementSibling;
 							if (nextLi) nextLi.querySelector('a, span').focus();
 						} while (li && !nextLi);
 					}
@@ -863,7 +956,7 @@
 				break;
 			case 38: // up
 				e.preventDefault();
-				var prevLi = li.getPrevious();
+				var prevLi = li.previousElementSibling;
 				if (prevLi){
 					while (prevLi.hasClass('open') && prevLi.querySelector('ul>li:last-child')){
 						var lis = prevLi.querySelectorAll('ul>li:last-child');
@@ -888,7 +981,7 @@
 					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
 				} else if (rtl){
-					var parentID = li.get('data-parentid');
+					var parentID = li.dataset.parentid;
 					if (parentID == '0') return;
 					$('neat-tree-item-' + parentID).querySelector('span').focus();
 				}
@@ -900,7 +993,7 @@
 					event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 					li.firstElementChild.dispatchEvent(event);
 				} else if (!rtl){
-					var parentID = li.get('data-parentid');
+					var parentID = li.dataset.parentid;
 					if (parentID == '0') return;
 					$('neat-tree-item-' + parentID).querySelector('span').focus();
 				}
@@ -936,7 +1029,7 @@
 					var bound = self.offsetHeight + self.scrollTop;
 					var items = self.querySelectorAll('a, span');
 					return Array.filter(items, function(item){
-						return !!item.getParent('ul').offsetHeight && item.offsetTop < bound;
+						return !!item.parentElement.offsetHeight && item.offsetTop < bound;
 					}).getLast();
 				};
 				var item = getLastItem();
@@ -955,7 +1048,7 @@
 					var bound = self.scrollTop;
 					var items = self.querySelectorAll('a, span');
 					return Array.filter(items, function(item){
-						return !!item.getParent('ul').offsetHeight && ((item.offsetTop + item.offsetHeight) > bound);
+						return !!item.parentElement.offsetHeight && ((item.offsetTop + item.offsetHeight) > bound);
 					})[0];
 				};
 				var item = getFirstItem();
@@ -997,7 +1090,7 @@
 					if (item == activeElement){
 						startFind = true;
 					} else if (startFind){
-						if (pattern.test(item.innerText.trim())){
+						if (pattern.test(item.textContent.trim())){
 							found = true;
 							item.focus();
 							break;
@@ -1009,7 +1102,7 @@
 				if (!found){
 					for (var i=0, l=batch.length; i<l; i++){
 						var item = batch[i];
-						if (pattern.test(item.innerText.trim())){
+						if (pattern.test(item.textContent.trim())){
 							item.focus();
 							break;
 						}
@@ -1057,8 +1150,8 @@
 					menu.lastElementChild.focus();
 				} else {
 					if (item.tagName == 'COMMAND'){
-						var nextItem = item.getNext();
-						if (nextItem && nextItem.tagName == 'HR') nextItem = nextItem.getNext();
+						var nextItem = item.nextElementSibling;
+						if (nextItem && nextItem.tagName == 'HR') nextItem = nextItem.nextElementSibling;
 						if (nextItem){
 							nextItem.focus();
 						} else if (os != 'mac'){
@@ -1075,8 +1168,8 @@
 					menu.firstElementChild.focus();
 				} else {
 					if (item.tagName == 'COMMAND'){
-						var prevItem = item.getPrevious();
-						if (prevItem && prevItem.tagName == 'HR') prevItem = prevItem.getPrevious();
+						var prevItem = item.previousElementSibling;
+						if (prevItem && prevItem.tagName == 'HR') prevItem = prevItem.previousElementSibling;
 						if (prevItem){
 							prevItem.focus();
 						} else if (os != 'mac'){
@@ -1126,7 +1219,7 @@
 		var el = e.target;
 		var elParent = el.parentNode;
 		// can move any bookmarks/folders except the default root folders
-		if ((el.tagName == 'A' && elParent.hasClass('child')) || (el.tagName == 'SPAN' && elParent.hasClass('parent') && elParent.get('data-parentid') != '0')){
+		if ((el.tagName == 'A' && elParent.hasClass('child')) || (el.tagName == 'SPAN' && elParent.hasClass('parent') && elParent.dataset.parentid != '0')){
 			e.preventDefault();
 			draggedBookmark = el;
 			bookmarkClone.innerHTML = el.innerHTML;
@@ -1194,7 +1287,7 @@
 			dropOverlay.className = 'bookmark';
 			dropOverlay.style.top = top + 'px';
 			dropOverlay.style.left = rtl ? '0px' : el.style.webkitPaddingStart.toInt() + 16 + 'px';
-			dropOverlay.style.width = window.getComputedStyle(el, null).width.toInt() - 12 + 'px';
+			dropOverlay.style.width = (el.getComputedStyle('width').toInt() - 12) + 'px';
 			dropOverlay.style.height = null;
 		} else if (el.tagName == 'SPAN'){
 			canDrop = true;
@@ -1204,7 +1297,7 @@
 			var top = null;
 			var elRectTop = elRect.top, elRectHeight = elRect.height;
 			var elParent = el.parentNode;
-			if (elParent.get('data-parentid') != '0'){
+			if (elParent.dataset.parentid != '0'){
 				if (clientY < elRectTop+elRectHeight*.3){
 					top = elRect.top;
 				} else if (clientY > elRectTop+elRectHeight*.7 && !elParent.hasClass('open')){
@@ -1221,7 +1314,7 @@
 				dropOverlay.className = 'bookmark';
 				dropOverlay.style.top = top + 'px';
 				dropOverlay.style.left = el.style.webkitPaddingStart.toInt() + 16 + 'px';
-				dropOverlay.style.width = window.getComputedStyle(el, null).width.toInt() - 12 + 'px';
+				dropOverlay.style.width = (el.getComputedStyle('width').toInt() - 12) + 'px';
 				dropOverlay.style.height = null;
 			}
 		}
@@ -1273,7 +1366,7 @@
 			var move = 0; // 0 = middle, 1 = top, 2 = bottom
 			var elRectTop = elRect.top, elRectHeight = elRect.height;
 			var elParent = el.parentNode;
-			if (elParent.get('data-parentid') != '0'){
+			if (elParent.dataset.parentid != '0'){
 				if (clientY < elRectTop+elRectHeight*.3){
 					move = 1;
 				} else if (clientY > elRectTop+elRectHeight*.7 && !elParent.hasClass('open')){
@@ -1302,7 +1395,7 @@
 					parentId: id
 				}, function(){
 					var ul = elParent.querySelector('ul');
-					var level = parseInt(elParent.parentNode.get('data-level'))+1;
+					var level = parseInt(elParent.parentNode.dataset.level)+1;
 					draggedBookmark.style.webkitPaddingStart = (14*level) + 'px';
 					if (ul){
 						draggedBookmarkParent.inject(ul);
@@ -1373,17 +1466,17 @@
 	
 	// Zoom
 	if (localStorage.zoom){
-		body.set('data-zoom', localStorage.zoom);
+		body.dataset.zoom = localStorage.zoom;
 	}
 	var zoom = function(val){
-		var currentZoom = (body.get('data-zoom') || 100).toInt();
+		var currentZoom = (body.dataset.zoom || 100).toInt();
 		if (val == 0){
-			body.removeAttribute('data-zoom');
+			delete body.dataset.zoom;
 			localStorage.removeItem('zoom');
 		} else {
 			var z = (val>0) ? currentZoom+10 : currentZoom-10;
 			z = Math.min(150, Math.max(100, z));
-			body.set('data-zoom', z);
+			body.dataset.zoom = z;
 			localStorage.zoom = z;
 		}
 		body.addClass('dummy').removeClass('dummy'); // force redraw
@@ -1428,8 +1521,8 @@
 	}
 	
 	if (localStorage.userstyle){
-		new Element('style', {
-			text: localStorage.userstyle
-		}).inject(document.body);
+		var style = document.createElement('style');
+		style.textContent = localStorage.userstyle;
+		style.inject(document.body);
 	}
 })(window, document, chrome);

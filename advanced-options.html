@@ -7,11 +7,14 @@ var _m = chrome.i18n.getMessage;
 var __m = function(){
 	document.write(_m.apply(this, arguments));
 };
+var $ = function(id){
+	return document.getElementById(id);
+};
 document.addEventListener('DOMContentLoaded', function(){
 	document.title = _m('extName') + ' ' + _m('advancedOptions');
 	
 	var customIconPreview = $('custom-icon-preview').firstElementChild;
-	var canvas = new Element('canvas');
+	var canvas = document.createElement('canvas');
 	canvas.width = canvas.height = 19;
 	var ctx = canvas.getContext('2d');
 	var dontLoad = true;
