@@ -1475,7 +1475,7 @@
 			localStorage.removeItem('zoom');
 		} else {
 			var z = (val>0) ? currentZoom+10 : currentZoom-10;
-			z = Math.min(150, Math.max(100, z));
+			z = Math.min(150, Math.max(90, z));
 			body.dataset.zoom = z;
 			localStorage.zoom = z;
 		}
