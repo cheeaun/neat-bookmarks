@@ -82,18 +82,31 @@
 		
 		// classList
 		hasClass: function(className){
-			return this.classList.contains(className);
+			if (this.classList) return this.classList.contains(className);
+			return this.className.clean().contains(className, ' ');
 		},
 		addClass: function(className){
-			this.classList.add(className);
+			if (this.classList){
+				this.classList.add(className);
+			} else if (!this.hasClass(className)){
+				this.className = (this.className + ' ' + className).clean();
+			}
 			return this;
 		},
 		removeClass: function(className){
-			this.classList.remove(className);
+			if (this.classList){
+				this.classList.remove(className);
+			} else {
+				this.className = this.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)'), '$1');
+			}
 			return this;
 		},
 		toggleClass: function(className){
-			this.classList.toggle(className);
+			if (this.classList){
+				this.classList.toggle(className);
+			} else {
+				return this.hasClass(className) ? this.removeClass(className) : this.addClass(className);
+			}
 			return this;
 		}
 		
