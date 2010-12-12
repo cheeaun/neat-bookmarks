@@ -1275,7 +1275,7 @@
 		}
 		// collapse the folder before moving it
 		if (draggedBookmark.tagName == 'SPAN'){
-			draggedBookmark.parentNode.removeClass('open');
+			draggedBookmark.parentNode.removeClass('open').setAttribute('aria-expanded', false);
 		}
 		if (el.tagName == 'A'){
 			canDrop = true;
