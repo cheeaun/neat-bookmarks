@@ -82,6 +82,7 @@ body.linux input{
 	-webkit-box-flex: 1;
 	box-flex: 1;
 	text-shadow: 0 1px #f6f6f6;
+	position: relative;
 }
 #results ul,
 #results ul li,
