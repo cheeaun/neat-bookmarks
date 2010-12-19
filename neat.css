@@ -23,6 +23,9 @@ body[data-zoom='90']>*:not(menu),
 body[data-zoom='90'] menu[type=context] command{
 	zoom: .9;
 }
+body[data-zoom='90'] #drop-overlay.bookmark{ /* zooming out makes the line too hard to see */
+	border-top: 0;
+}
 body[data-zoom='110']>*:not(menu),
 body[data-zoom='110'] menu[type=context] command{
 	zoom: 1.1;

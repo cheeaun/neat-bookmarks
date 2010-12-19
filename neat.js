@@ -1225,6 +1225,7 @@
 	// Drag and drop, baby
 	var draggedBookmark = null;
 	var canDrop = false;
+	var zoomLevel = 1;
 	var bookmarkClone = $('bookmark-clone');
 	var dropOverlay = $('drop-overlay');
 	$tree.addEventListener('mousedown', function(e){
@@ -1235,6 +1236,7 @@
 		if ((el.tagName == 'A' && elParent.hasClass('child')) || (el.tagName == 'SPAN' && elParent.hasClass('parent') && elParent.dataset.parentid != '0')){
 			e.preventDefault();
 			draggedBookmark = el;
+			if (localStorage.zoom) zoomLevel = localStorage.zoom.toInt()/100;
 			bookmarkClone.innerHTML = el.innerHTML;
 			el.focus();
 		}
@@ -1290,6 +1292,8 @@
 		if (draggedBookmark.tagName == 'SPAN'){
 			draggedBookmark.parentNode.removeClass('open').setAttribute('aria-expanded', false);
 		}
+		clientX /= zoomLevel;
+		clientY /= zoomLevel;
 		if (el.tagName == 'A'){
 			canDrop = true;
 			var draggedBookmarkParent = draggedBookmark.parentNode;
@@ -1355,7 +1359,7 @@
 		}
 		var draggedBookmarkParent = draggedBookmark.parentNode;
 		var draggedID = draggedBookmarkParent.id.replace('neat-tree-item-', '');
-		var clientY = e.clientY;
+		var clientY = e.clientY/zoomLevel;
 		if (el.tagName == 'A'){
 			var elRect = el.getBoundingClientRect();
 			var moveBottom = (clientY >= elRect.top+elRect.height/2);
