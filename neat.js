@@ -1289,14 +1289,14 @@
 			}
 		}
 		// collapse the folder before moving it
-		if (draggedBookmark.tagName == 'SPAN'){
-			draggedBookmark.parentNode.removeClass('open').setAttribute('aria-expanded', false);
+		var draggedBookmarkParent = draggedBookmark.parentNode;
+		if (draggedBookmark.tagName == 'SPAN' && draggedBookmarkParent.hasClass('open')){
+			draggedBookmarkParent.removeClass('open').setAttribute('aria-expanded', false);
 		}
 		clientX /= zoomLevel;
 		clientY /= zoomLevel;
 		if (el.tagName == 'A'){
 			canDrop = true;
-			var draggedBookmarkParent = draggedBookmark.parentNode;
 			bookmarkClone.style.top = clientY + 'px';
 			bookmarkClone.style.left = (rtl ? (clientX-bookmarkClone.offsetWidth) : clientX) + 'px';
 			var elRect = el.getBoundingClientRect();
