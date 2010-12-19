@@ -488,7 +488,7 @@
 	};
 	if (!searchMode) resetHeight();
 	$tree.addEventListener('click', resetHeight);
-	document.addEventListener('keyup', resetHeight);
+	$tree.addEventListener('keyup', resetHeight);
 	
 	// Edit dialog
 	var EditDialog = window.EditDialog = {
@@ -1499,6 +1499,7 @@
 			localStorage.zoom = z;
 		}
 		body.addClass('dummy').removeClass('dummy'); // force redraw
+		resetHeight();
 	};
 	document.addEventListener('mousewheel', function(e){
 		if (!e.metaKey && !e.ctrlKey) return;
