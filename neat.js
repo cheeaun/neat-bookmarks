@@ -474,9 +474,10 @@
 	
 	// Popup auto-height
 	var resetHeight = function(){
+		var zoomLevel = localStorage.zoom ? localStorage.zoom.toInt()/100 : 1;
 		setTimeout(function(){
 			var neatTree = $tree.firstElementChild;
-			var fullHeight = neatTree.offsetHeight + $tree.offsetTop + 16;
+			var fullHeight = (neatTree.offsetHeight + $tree.offsetTop + 16)*zoomLevel;
 			// Slide up faster than down
 			body.style.webkitTransitionDuration = (fullHeight < window.innerHeight) ? '.3s' : '.1s';
 			var maxHeight = screen.height - window.screenY - 50;
@@ -487,7 +488,7 @@
 	};
 	if (!searchMode) resetHeight();
 	$tree.addEventListener('click', resetHeight);
-	$tree.addEventListener('keyup', resetHeight);
+	document.addEventListener('keyup', resetHeight);
 	
 	// Edit dialog
 	var EditDialog = window.EditDialog = {
