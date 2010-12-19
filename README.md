@@ -12,5 +12,3 @@ Neat Bookmarks is powered by MooTools 1.3 with these dependencies:
 - Array
 - String
 - Number
-- Function
-- Browser

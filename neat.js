@@ -140,7 +140,7 @@
 	
 	try {
 	
-	var os = Browser.Platform.name;
+	var os = (navigator.platform.toLowerCase().match(/mac|win|linux/i) || ['other'])[0];
 	body.addClass(os);
 	
 	var version = (function(){
@@ -294,7 +294,7 @@
 			if (focusEl) focusEl.firstElementChild.addClass('focus');
 		}
 		
-		adaptBookmarkTooltips.delay(100);
+		setTimeout(adaptBookmarkTooltips, 100);
 	});
 	
 	// Events for the tree
@@ -334,7 +334,7 @@
 				var ul = div.querySelector('ul');
 				ul.inject(parent);
 				div.destroy();
-				adaptBookmarkTooltips.delay(100);
+				setTimeout(adaptBookmarkTooltips, 100);
 			});
 		}
 		if (closeUnusedFolders && expanded){
@@ -540,7 +540,7 @@
 				chrome.tabs.update(tab.id, {
 					url: url
 				});
-				if (!bookmarkClickStayOpen) window.close.delay(200);
+				if (!bookmarkClickStayOpen) setTimeout(window.close, 200);
 			});
 		},
 		
@@ -557,7 +557,7 @@
 						chrome.tabs.update(tab.id, {
 							url: url
 						});
-						if (!bookmarkClickStayOpen) window.close.delay(200);
+						if (!bookmarkClickStayOpen) setTimeout(window.close, 200);
 					} else {
 						open();
 					}
