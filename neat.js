@@ -1486,6 +1486,7 @@
 		body.dataset.zoom = localStorage.zoom;
 	}
 	var zoom = function(val){
+		if (draggedBookmark) return; // prevent zooming when drag-n-droppping
 		var currentZoom = (body.dataset.zoom || 100).toInt();
 		if (val == 0){
 			delete body.dataset.zoom;
