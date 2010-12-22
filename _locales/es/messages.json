@@ -2,12 +2,12 @@
   "nope": {
     "message": "¡No!"
   },
-  "openBookmarksIncognitoWindow": {
-    "message": "Abrir todos los marcadores en ventana de incógnito"
-  },
   "name": {
     "description": "Nombre de marcador o de carpeta.",
     "message": "Nombre"
+  },
+  "openBookmarksIncognitoWindow": {
+    "message": "Abrir todos los marcadores en ventana de incógnito"
   },
   "reportError": {
     "message": "Informar de este error"
@@ -26,24 +26,24 @@
     },
     "message": "¿Está seguro de que quiere eliminar la carpeta $folderName$, $subFolderCount$ subcarpeta(s) y $bookmarkCount$ marcador(es) almacenados en ésta?"
   },
-  "noTitle": {
-    "description": "Título para marcadores sin título con URL sin http(s) o carpetas sin título.",
-    "message": "(sin título)"
-  },
   "extName": {
     "description": "Nombre de la extensión.",
     "message": "Neat Bookmarks"
   },
+  "noTitle": {
+    "description": "Título para marcadores sin título con URL sin http(s) o carpetas sin título.",
+    "message": "(sin título)"
+  },
   "edit": {
     "message": "Editar..."
-  },
-  "searchBookmarks": {
-    "description": "Texto contenedor del campo de búsqueda.",
-    "message": "Buscar marcadores"
   },
   "open": {
     "description": "Acción al abrir marcadores.",
     "message": "Abrir"
+  },
+  "searchBookmarks": {
+    "description": "Texto contenedor del campo de búsqueda.",
+    "message": "Buscar marcadores"
   },
   "delete": {
     "message": "Eliminar"
@@ -82,11 +82,11 @@
   "url": {
     "message": "URL"
   },
-  "optionPopupStays": {
-    "message": "El pop-up se mantiene abiero al abrir (con click izquierdo) los marcadores."
-  },
   "errorOccured": {
     "message": "Ups, ha ocurrido un error."
+  },
+  "optionPopupStays": {
+    "message": "El pop-up se mantiene abierto al abrir (con click izquierdo) los marcadores."
   },
   "optionCloseUnusedFolders": {
     "message": "Cerrar carpetas inactivas al abrir una carpeta."
@@ -111,12 +111,12 @@
   "advancedOptions": {
     "message": "Opciones Avanzadas"
   },
-  "save": {
-    "message": "Guardar"
-  },
   "extDesc": {
     "description": "Descripción de la extensión.",
     "message": "Un pop-up de marcadores en forma de árbol."
+  },
+  "save": {
+    "message": "Guardar"
   },
   "confirmOpenBookmarksNewWindow": {
     "placeholders": {
@@ -127,9 +127,6 @@
     "description": "Mensaje de confirmación para abrir todos los marcadores en una nueva ventana.",
     "message": "¿Está seguro de que quiere abrir $count$ marcadores en una nueva ventana?"
   },
-  "openBookmarks": {
-    "message": "Abrir todos los marcadores"
-  },
   "confirmOpenBookmarks": {
     "placeholders": {
       "count": {
@@ -138,6 +135,9 @@
     },
     "description": "Mensaje de confirmación para abrir todos los marcadores.",
     "message": "¿Está seguro de que quiere abrir $count$ marcadores?"
+  },
+  "openBookmarks": {
+    "message": "Abrir todos los marcadores"
   },
   "optionRememberPrevState": {
     "message": "Recordar estado previo (posición de la barra de desplazamiento y carpetas abiertas)."
@@ -151,32 +151,32 @@
     "description": "Texto de pie para la página Opciones",
     "message": "Escrito por $authorName$."
   },
-  "optionOpenNewTab": {
-    "message": "Botón central del ratón o control-clic abre el marcador en segundo plano (en lugar de en primer plano)."
-  },
   "openBookmarksNewWindow": {
     "message": "Abrir todos los marcadores en una nueva ventana"
   },
-  "openIncognitoWindow": {
-    "message": "Abrir en una ventana de incógnito"
+  "optionOpenNewTab": {
+    "message": "Botón central del ratón o control-clic abre el marcador en segundo plano (en lugar de en primer plano)."
   },
   "ignore": {
     "message": "Ignorar"
   },
-  "openNewWindow": {
-    "message": "Abrir en una nueva ventana"
+  "openIncognitoWindow": {
+    "message": "Abrir en una ventana de incógnito"
   },
   "general": {
     "message": "General"
   },
+  "openNewWindow": {
+    "message": "Abrir en una nueva ventana"
+  },
   "optionZoom": {
     "message": "Zoom"
   },
-  "options": {
-    "message": "Opciones"
-  },
   "optionClickNewTab": {
     "message": "Clic izquierdo abre el marcador en una nueva pestaña."
+  },
+  "options": {
+    "message": "Opciones"
   },
   "confirmDeleteFolderSubfolders": {
     "placeholders": {
