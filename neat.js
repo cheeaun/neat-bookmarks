@@ -1456,13 +1456,15 @@
 		resizerDown = false;
 		adaptBookmarkTooltips();
 	});
-	window.addEventListener('resize', function(){ // in case there's a resizer *outside* the popup page
-		if (resizerDown) return;
-		var width = window.innerWidth;
-		body.style.width = width + 'px';
-		localStorage.popupWidth = width;
-		clearMenu();
-	});
+	setTimeout(function(){ // delaying execution due to stupid Chrome Linux bug
+		window.addEventListener('resize', function(){ // in case there's a resizer *outside* the popup page
+			if (resizerDown) return;
+			var width = window.innerWidth;
+			body.style.width = width + 'px';
+			localStorage.popupWidth = width;
+			clearMenu();
+		});
+	}, 1000);
 	
 	// Closing dialogs on escape
 	var closeDialogs = function(){
