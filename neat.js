@@ -295,6 +295,8 @@
 		}
 		
 		setTimeout(adaptBookmarkTooltips, 100);
+		
+		tree = null;
 	});
 	
 	// Events for the tree
@@ -421,6 +423,10 @@
 					a.title = _m('parentFolder', node[0].title) + '\n' + a.title;
 				});
 			});
+			
+			results = null;
+			vPattern = null;
+			lis = null;
 		});
 	};
 	searchInput.addEventListener('input', search);
