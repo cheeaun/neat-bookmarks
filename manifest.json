@@ -1,6 +1,6 @@
 {
 	"name": "__MSG_extName__",
-	"version": "0.8.3",
+	"version": "0.8.4",
 	"description": "__MSG_extDesc__",
 	"icons": {
 		"16": "icon16.png",
@@ -14,8 +14,11 @@
 	"options_page": "options.html",
 	"background_page": "background.html",
 	"permissions": [
-		"http://*/*", "https://*/*", "chrome://favicon/", "bookmarks", "tabs"
+		"<all_urls>", "chrome://favicon/", "bookmarks", "tabs"
 	],
-	"minimum_chrome_version": "7",
-	"default_locale": "en"
+	"minimum_chrome_version": "8",
+	"default_locale": "en",
+	"omnibox": {
+		"keyword" : "*"
+	}
 }
