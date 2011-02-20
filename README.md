@@ -1,7 +1,7 @@
 Neat Bookmarks
 ==============
 
-A neat bookmarks tree popup extension for Google Chrome.
+A neat bookmarks tree popup extension for Google Chrome. Licensed under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
 Technical Details
 -----------------
