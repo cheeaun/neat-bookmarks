@@ -512,9 +512,11 @@
 			var url = $('edit-dialog-url');
 			if (type == 'bookmark'){
 				url.style.display = '';
+				url.disabled = false;
 				url.value = opts.url;
 			} else {
 				url.style.display = 'none';
+				url.disabled = true;
 				url.value = '';
 			}
 			body.addClass('needEdit');
