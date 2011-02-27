@@ -1,117 +1,4 @@
 (function(window, document, chrome){
-	
-	String.implement({
-		htmlspecialchars: function(){
-			return this.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-		},
-		widont: function(){
-			return this.replace(/\s([^\s]+)$/i, '&nbsp;$1');
-		}
-	});
-	
-	var inserters = {
-		
-		before: function(context, element){
-			var parent = element.parentNode;
-			if (parent) parent.insertBefore(context, element);
-		},
-		
-		after: function(context, element){
-			var parent = element.parentNode;
-			if (parent) parent.insertBefore(context, element.nextSibling);
-		},
-		
-		bottom: function(context, element){
-			element.appendChild(context);
-		},
-		
-		top: function(context, element){
-			element.insertBefore(context, element.firstChild);
-		}
-		
-	};
-	
-	var $ = function(id){
-		return document.getElementById(id);
-	};
-	
-	Element.extend = function(key, value){
-		this[key] = value;
-	}.overloadSetter();
-	
-	new Type('Element', Element);
-	
-	Element.implement({
-		
-		getComputedStyle: function(property){
-			return window.getComputedStyle(this, null).getPropertyValue(property.hyphenate());
-		},
-		
-		// DOM manipulation
-		inject: function(el, where){
-			inserters[where || 'bottom'](this, el);
-			return this;
-		},
-		
-		destroy: function(){
-			return (this.parentNode) ? this.parentNode.removeChild(this) : this;
-		},
-		
-		// DOM traversal
-		getAllNext: function(){
-			var elements = [];
-			var node = this;
-			while (node = node.nextElementSibling){
-				elements.push(node);
-			}
-			return elements;
-		},
-		
-		getAllPrevious: function(){
-			var elements = [];
-			var node = this;
-			while (node = node.previousElementSibling){
-				elements.push(node);
-			}
-			return elements;
-		},
-		
-		getSiblings: function(){
-			return this.getAllNext().combine(this.getAllPrevious());
-		},
-		
-		// classList
-		hasClass: function(className){
-			if (this.classList) return this.classList.contains(className);
-			return this.className.clean().contains(className, ' ');
-		},
-		addClass: function(className){
-			if (this.classList){
-				this.classList.add(className);
-			} else if (!this.hasClass(className)){
-				this.className = (this.className + ' ' + className).clean();
-			}
-			return this;
-		},
-		removeClass: function(className){
-			if (this.classList){
-				this.classList.remove(className);
-			} else {
-				this.className = this.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)'), '$1');
-			}
-			return this;
-		},
-		toggleClass: function(className){
-			if (this.classList){
-				this.classList.toggle(className);
-			} else {
-				return this.hasClass(className) ? this.removeClass(className) : this.addClass(className);
-			}
-			return this;
-		}
-		
-	});
-	
 	var body = document.body;
 	
 	// Confirm dialog
@@ -164,7 +51,7 @@
 	$('search-input').placeholder = _m('searchBookmarks');
 	$('edit-dialog-name').placeholder = _m('name');
 	$('edit-dialog-url').placeholder = _m('url');
-	Object.each({
+	$each({
 		'bookmark-new-tab': 'openNewTab',
 		'bookmark-new-window': 'openNewWindow',
 		'bookmark-new-incognito-window': 'openIncognitoWindow',
@@ -349,9 +236,9 @@
 			}
 		}
 		var opens = $tree.querySelectorAll('li.open');
-		opens = Array.map(opens, function(li){
+		opens = Array.map(function(li){
 			return li.id.replace('neat-tree-item-', '');
-		});
+		}, opens);
 		localStorage.opens = JSON.stringify(opens);
 	});
 	// Force middle clicks to trigger the focus event
@@ -395,8 +282,8 @@
 					if (bIndexTitle < 0) bIndexTitle = Infinity;
 					return aIndexTitle - bIndexTitle;
 				}
-				var aTestTitle = aTitle.test(vPattern);
-				var bTestTitle = bTitle.test(vPattern);
+				var aTestTitle = vPattern.test(aTitle);
+				var bTestTitle = vPattern.test(bTitle);
 				if (aTestTitle && !bTestTitle) return -1;
 				if (!aTestTitle && bTestTitle) return 1;
 				return b.dateAdded - a.dateAdded;
@@ -415,14 +302,14 @@
 			$results.style.display = 'block';
 			
 			var lis = $results.querySelectorAll('li');
-			Array.each(lis, function(li){
+			Array.forEach(function(li){
 				var parentId = li.dataset.parentid;
 				chrome.bookmarks.get(parentId, function(node){
 					if (!node || !node.length) return;
 					var a = li.querySelector('a');
 					a.title = _m('parentFolder', node[0].title) + '\n' + a.title;
 				});
-			});
+			}, lis);
 			
 			results = null;
 			vPattern = null;
@@ -748,9 +635,9 @@
 			var li = el.parentNode;
 			var id = li.id.replace('neat-tree-item-', '');
 			chrome.bookmarks.getChildren(id, function(children){
-				var urls = Array.map(children, function(c){
+				var urls = Array.map(function(c){
 					return c.url;
-				}).clean();
+				}, children).clean();
 				var urlsLen = urls.length;
 				if (!urlsLen) return;
 				if (ctrlMeta){ // ctrl/meta click
@@ -909,9 +796,9 @@
 		var li = currentContext.parentNode;
 		var id = li.id.replace('neat-tree-item-', '');
 		chrome.bookmarks.getChildren(id, function(children){
-			var urls = Array.map(children, function(c){
+			var urls = Array.map(function(c){
 				return c.url;
-			}).clean();
+			}, children).clean();
 			var urlsLen = urls.length;
 			var noURLS = !urlsLen;
 			switch (el.id){
@@ -982,9 +869,9 @@
 				if (prevLi){
 					while (prevLi.hasClass('open') && prevLi.querySelector('ul>li:last-child')){
 						var lis = prevLi.querySelectorAll('ul>li:last-child');
-						prevLi = Array.filter(lis, function(li){
+						prevLi = Array.filter(function(li){
 							return !!li.parentNode.offsetHeight;
-						}).getLast();
+						}, lis).getLast();
 					};
 					prevLi.querySelector('a, span').focus();
 				} else {
@@ -1032,9 +919,9 @@
 					this.querySelector('li:last-child a').focus();
 				} else {
 					var lis = this.querySelectorAll('ul>li:last-child');
-					var li = Array.filter(lis, function(li){
+					var li = Array.filter(function(li){
 						return !!li.parentNode.offsetHeight;
-					}).getLast();
+					}, lis).getLast();
 					li.querySelector('span, a').focus();
 				}
 				break;
@@ -1050,9 +937,9 @@
 				var getLastItem = function(){
 					var bound = self.offsetHeight + self.scrollTop;
 					var items = self.querySelectorAll('a, span');
-					return Array.filter(items, function(item){
+					return Array.filter(function(item){
 						return !!item.parentElement.offsetHeight && item.offsetTop < bound;
-					}).getLast();
+					}, items).getLast();
 				};
 				var item = getLastItem();
 				if (item != document.activeElement){
@@ -1069,9 +956,9 @@
 				var getFirstItem = function(){
 					var bound = self.scrollTop;
 					var items = self.querySelectorAll('a, span');
-					return Array.filter(items, function(item){
+					return Array.filter(function(item){
 						return !!item.parentElement.offsetHeight && ((item.offsetTop + item.offsetHeight) > bound);
-					})[0];
+					}, items)[0];
 				};
 				var item = getFirstItem();
 				if (item != document.activeElement){
@@ -1147,9 +1034,9 @@
 				var id = li.id.replace(/(neat\-tree|results)\-item\-/, '');
 				if (li.hasClass('parent')){
 					chrome.bookmarks.getChildren(id, function(children){
-						var urlsLen = Array.map(children, function(c){
+						var urlsLen = Array.map(function(c){
 							return c.url;
-						}).clean().length;
+						}, children).clean().length;
 						actions.deleteBookmarks(id, urlsLen, children.length-urlsLen);
 					});
 				} else {
@@ -1538,13 +1425,14 @@
 	if (version.build >= 536) body.addClass('chrome-536');
 	
 	} catch(e){
+		var _m = chrome.i18n.getMessage;
 		ConfirmDialog.open({
 			dialog: '<strong>' + _m('errorOccured') + '</strong><pre>' + e + '</pre>',
 			button1: '<strong>' + _m('reportError') + '</strong>',
 			button2: _m('ignore'),
 			fn1: function(){
 				chrome.tabs.create({
-					url: 'https://chrome.google.com/extensions/detail/nnancliccjabjjmipbpjkfbijifaainp'
+					url: 'https://chrome.google.com/webstore/detail/nnancliccjabjjmipbpjkfbijifaainp'
 				});
 			}
 		});

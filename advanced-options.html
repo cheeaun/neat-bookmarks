@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="options.css">
-<script src="mootools.js"></script>
+<script src="neatools.js"></script>
 <script src="codemirror.js"></script>
 <script>
 var _m = chrome.i18n.getMessage;
 var __m = function(){
 	document.write(_m.apply(this, arguments));
-};
-var $ = function(id){
-	return document.getElementById(id);
 };
 document.addEventListener('DOMContentLoaded', function(){
 	document.title = _m('extName') + ' ' + _m('advancedOptions');
