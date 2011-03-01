@@ -2,6 +2,7 @@
 	var document = window.document;
 	var chrome = window.chrome;
 	var localStorage = window.localStorage;
+	var navigator = window.navigator;
 	var body = document.body;
 	
 	// Confirm dialog
@@ -34,19 +35,14 @@
 	body.addClass(os);
 	
 	var version = (function(){
-		var matches = navigator.userAgent.match(/chrome\/([\d\.]+)/i);
-		if (matches && matches[1]){
-			var v = matches[1].split('.').map(function(s){
-				return s.toInt();
-			});
-			return {
-				major: v[0],
-				minor: v[1],
-				build: v[2],
-				patch: v[3]
-			};
-		}
-		return null;
+		var v = {};
+		var keys = ['major', 'minor', 'build', 'patch'];
+		var matches = navigator.userAgent.match(/chrome\/([\d]+)\.([\d]+)\.([\d]+)\.([\d]+)/i);
+		if (!matches) return null;
+		matches.slice(1).forEach(function(m, i){
+			v[keys[i]] = m;
+		});
+		return v;
 	})();
 	
 	// Some i18n
@@ -476,10 +472,14 @@
 		openBookmarks: function(urls, selected){
 			var urlsLen = urls.length;
 			var open = function(){
-				for (var i=0; i<urlsLen; i++){
+				chrome.tabs.create({
+					url: urls.shift(),
+					selected: selected // first tab will be selected
+				});
+				for (var i=0, l=urls.length; i<l; i++){
 					chrome.tabs.create({
 						url: urls[i],
-						selected: selected
+						selected: false
 					});
 				}
 			};
