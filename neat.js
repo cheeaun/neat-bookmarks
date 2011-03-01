@@ -1,4 +1,7 @@
-(function(window, document, chrome){
+(function(window){
+	var document = window.document;
+	var chrome = window.chrome;
+	var localStorage = window.localStorage;
 	var body = document.body;
 	
 	// Confirm dialog
@@ -1443,4 +1446,4 @@
 		style.textContent = localStorage.userstyle;
 		style.inject(document.body);
 	}
-})(window, document, chrome);
+})(window);
