@@ -1427,6 +1427,12 @@
 	// Fix stupid Chrome build 536 bug
 	if (version.build >= 536) body.addClass('chrome-536');
 	
+	// Fix stupid wrong offset of the page, on Chrome Mac
+	setTimeout(function(){
+		var top = body.scrollTop;
+		if (top != 0) body.scrollTop = 0;
+	}, 1500);
+	
 	} catch(e){
 		var _m = chrome.i18n.getMessage;
 		ConfirmDialog.open({
