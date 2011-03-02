@@ -177,7 +177,16 @@
 		var focusID = localStorage.focusID;
 		if (typeof focusID != 'undefined' && focusID != null){
 			var focusEl = $('neat-tree-item-' + focusID);
-			if (focusEl) focusEl.firstElementChild.addClass('focus');
+			if (focusEl){
+				var oriOverflow = $tree.style.overflow;
+				$tree.style.overflow = 'hidden';
+				focusEl.style.width = '100%';
+				focusEl.firstElementChild.addClass('focus');
+				localStorage.removeItem('focusID');
+				setTimeout(function(){
+					$tree.style.overflow = oriOverflow;
+				}, 1);
+			}
 		}
 		
 		setTimeout(adaptBookmarkTooltips, 100);
