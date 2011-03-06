@@ -457,7 +457,7 @@
 			};
 			if (blankTabCheck){
 				chrome.tabs.getSelected(null, function(tab){
-					if (tab.url.test(/^chrome:\/\/newtab/i)){
+					if (/^chrome:\/\/newtab/i.test(tab.url)){
 						chrome.tabs.update(tab.id, {
 							url: url
 						});
