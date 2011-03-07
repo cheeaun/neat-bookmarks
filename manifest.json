@@ -1,6 +1,6 @@
 {
 	"name": "__MSG_extName__",
-	"version": "0.8.5",
+	"version": "0.8.6",
 	"description": "__MSG_extDesc__",
 	"icons": {
 		"16": "icon16.png",
