@@ -653,7 +653,7 @@
 				var urlsLen = urls.length;
 				if (!urlsLen) return;
 				if (ctrlMeta){ // ctrl/meta click
-					actions.openBookmarks(urls, !shift);
+					actions.openBookmarks(urls, middleClickBgTab ? shift : !shift);
 				} else if (shift){ // shift click
 					actions.openBookmarksNewWindow(urls);
 				}
