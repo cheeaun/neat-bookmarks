@@ -37,6 +37,10 @@ if (chrome.omnibox){
 			return;
 		}
 		chrome.bookmarks.search(value, function(results){
+			if (!results.length){
+				resetSuggest();
+				return;
+			}
 			var v = value.replace(/([-.*+?^${}()|[\]\/\\])/g, '\\$1');
 			var vPattern = new RegExp('^' + v.replace(/\s+/g, '.*'), 'ig');
 			results.sort(function(a, b){
@@ -57,10 +61,6 @@ if (chrome.omnibox){
 			});
 			results = results.slice(0, 6);
 			var resultsLen = results.length;
-			if (!resultsLen){
-				resetSuggest();
-				return;
-			}
 			firstResult = results.shift();
 			var firstTitle = matcher(xmlEncode(firstResult.title), v);
 			var firstURL = {text: xmlEncode(firstResult.url)};
