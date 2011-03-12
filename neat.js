@@ -182,10 +182,12 @@
 				$tree.style.overflow = 'hidden';
 				focusEl.style.width = '100%';
 				focusEl.firstElementChild.addClass('focus');
-				localStorage.removeItem('focusID');
 				setTimeout(function(){
 					$tree.style.overflow = oriOverflow;
 				}, 1);
+				setTimeout(function(){
+					localStorage.removeItem('focusID');
+				}, 2000);
 			}
 		}
 		
@@ -344,11 +346,20 @@
 				event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 				item.dispatchEvent(event);
 			}, 30);
-		} else if (key == 9 && !searchMode && typeof focusID != 'undefined' && focusID != null){ // tab
-			var focusEl = $('neat-tree-item-' + focusID);
-			if (focusEl){
-				e.preventDefault();
-				focusEl.firstElementChild.focus();
+		} else if (key == 9 && !searchMode){ // tab
+			if (typeof focusID != 'undefined' && focusID != null){
+				var focusEl = $('neat-tree-item-' + focusID);
+				if (focusEl){
+					e.preventDefault();
+					focusEl.firstElementChild.focus();
+				}
+			} else {
+				var bound = $tree.scrollTop;
+				var items = $tree.querySelectorAll('a, span');
+				var firstItem = Array.filter(function(item){
+					return !!item.parentElement.offsetHeight && ((item.offsetTop + item.offsetHeight) > bound);
+				}, items)[0];
+				if (firstItem) firstItem.focus();
 			}
 		// Pressing esc shouldn't close the popup when search field has value
 		} else if (e.keyCode == 27 && searchInput.value){ // esc
