@@ -1393,6 +1393,9 @@
 		if (e.keyCode == 27 && (body.hasClass('needConfirm') || body.hasClass('needEdit'))){ // esc
 			e.preventDefault();
 			closeDialogs();
+		} else if ((e.metaKey || e.ctrlKey) && e.keyCode == 70){ // cmd/ctrl + f
+			searchInput.focus();
+			searchInput.select();
 		}
 	});
 	$('cover').addEventListener('click', closeDialogs);
