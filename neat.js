@@ -40,7 +40,7 @@
 		var matches = navigator.userAgent.match(/chrome\/([\d]+)\.([\d]+)\.([\d]+)\.([\d]+)/i);
 		if (!matches) return null;
 		matches.slice(1).forEach(function(m, i){
-			v[keys[i]] = m;
+			v[keys[i]] = m.toInt();
 		});
 		return v;
 	})();
@@ -518,11 +518,18 @@
 		openBookmarksNewWindow: function(urls, incognito){
 			var urlsLen = urls.length;
 			var open = function(){
-				chrome.extension.sendRequest({
-					command: 'openAllBookmarksInNewWindow',
-					data: urls,
-					incognito: incognito
-				});
+				if (version.major >= 9){
+					chrome.windows.create({
+						url: urls,
+						incognito: incognito
+					});
+				} else {
+					chrome.extension.sendRequest({
+						command: 'openAllBookmarksInNewWindow',
+						data: urls,
+						incognito: incognito
+					});
+				}
 			};
 			if (!dontConfirmOpenFolder && urlsLen > openBookmarksLimit){
 				var dialog = incognito ? _m('confirmOpenBookmarksNewIncognitoWindow', ''+urlsLen) : _m('confirmOpenBookmarksNewWindow', ''+urlsLen);

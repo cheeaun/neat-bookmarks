@@ -100,34 +100,26 @@ if (chrome.omnibox){
 	chrome.omnibox.onInputCancelled.addListener(resetSuggest);
 }
 
-chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-	switch (request.command){
-		case 'openAllBookmarksInNewWindow':
+if (/chrome\/8\./i(navigator.userAgent)){
+	chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+		if (request.command == 'openAllBookmarksInNewWindow'){
 			var urls = request.data;
-			var incognito = request.incognito;
-			if (parseInt((/chrome\/(\d+)/i(navigator.userAgent) || ['',''])[1], 10) >= 9){ // Chrome 9+
-				chrome.windows.create({
-					url: urls,
-					incognito: incognito
-				});
-			} else {
-				chrome.windows.create({
-					url: urls.shift(),
-					incognito: incognito
-				}, function(w){
-					var id = w.id;
-					for (var i=0, l=urls.length; i<l; i++){
-						chrome.tabs.create({
-							windowId: id,
-							url: urls[i],
-							selected: false
-						});
-					}
-				});
-			}
-			break;
-	}
-});
+			chrome.windows.create({
+				url: urls.shift(),
+				incognito: request.incognito
+			}, function(w){
+				var id = w.id;
+				for (var i=0, l=urls.length; i<l; i++){
+					chrome.tabs.create({
+						windowId: id,
+						url: urls[i],
+						selected: false
+					});
+				}
+			});
+		}
+	});
+}
 
 if (localStorage.customIcon){
 	var canvas = document.createElement('canvas');
