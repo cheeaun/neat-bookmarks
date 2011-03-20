@@ -43,23 +43,25 @@ if (chrome.omnibox){
 			}
 			var v = value.replace(/([-.*+?^${}()|[\]\/\\])/g, '\\$1');
 			var vPattern = new RegExp('^' + v.replace(/\s+/g, '.*'), 'ig');
-			results.sort(function(a, b){
-				var aTitle = a.title;
-				var bTitle = b.title;
-				var aIndexTitle = aTitle.toLowerCase().indexOf(v);
-				var bIndexTitle = bTitle.toLowerCase().indexOf(v);
-				if (aIndexTitle >= 0 || bIndexTitle >= 0){
-					if (aIndexTitle < 0) aIndexTitle = Infinity;
-					if (bIndexTitle < 0) bIndexTitle = Infinity;
-					return aIndexTitle - bIndexTitle;
-				}
-				var aTestTitle = vPattern.test(aTitle);
-				var bTestTitle = vPattern.test(bTitle);
-				if (aTestTitle && !bTestTitle) return -1;
-				if (!aTestTitle && bTestTitle) return 1;
-				return b.dateAdded - a.dateAdded;
-			});
-			results = results.slice(0, 6);
+			if (results.length > 1){
+				results.sort(function(a, b){
+					var aTitle = a.title;
+					var bTitle = b.title;
+					var aIndexTitle = aTitle.toLowerCase().indexOf(v);
+					var bIndexTitle = bTitle.toLowerCase().indexOf(v);
+					if (aIndexTitle >= 0 || bIndexTitle >= 0){
+						if (aIndexTitle < 0) aIndexTitle = Infinity;
+						if (bIndexTitle < 0) bIndexTitle = Infinity;
+						return aIndexTitle - bIndexTitle;
+					}
+					var aTestTitle = vPattern.test(aTitle);
+					var bTestTitle = vPattern.test(bTitle);
+					if (aTestTitle && !bTestTitle) return -1;
+					if (!aTestTitle && bTestTitle) return 1;
+					return b.dateAdded - a.dateAdded;
+				});
+				results = results.slice(0, 6);
+			}
 			var resultsLen = results.length;
 			firstResult = results.shift();
 			var firstTitle = matcher(xmlEncode(firstResult.title), v);
