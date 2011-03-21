@@ -6,9 +6,11 @@ if (chrome.omnibox){
 			description: description
 		});
 	};
-
+	
+	var omniboxValue = null;
 	var firstResult = null;
 	var resetSuggest = function(){
+		omniboxValue = null;
 		firstResult = null;
 		setSuggest('<url><match>*</match></url> ' + chrome.i18n.getMessage('searchBookmarks'));
 	};
@@ -36,6 +38,7 @@ if (chrome.omnibox){
 			resetSuggest();
 			return;
 		}
+		omniboxValue = value;
 		chrome.bookmarks.search(value, function(results){
 			if (!results.length){
 				resetSuggest();
@@ -92,9 +95,10 @@ if (chrome.omnibox){
 			resetSuggest();
 			return;
 		}
+		var url = (text == omniboxValue) ? firstResult.url : text;
 		chrome.tabs.getSelected(null, function(tab){
 			chrome.tabs.update(tab.id, {
-				url: firstResult.url
+				url: url
 			});
 		});
 	});
