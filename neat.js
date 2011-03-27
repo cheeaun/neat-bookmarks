@@ -151,7 +151,7 @@
 								var div = document.createElement('div');
 								div.innerHTML = html;
 								var ul = div.querySelector('ul');
-								ul.inject('neat-tree-item-' + _id);
+								ul.inject($('neat-tree-item-' + _id));
 								div.destroy();
 							});
 						})(id);
