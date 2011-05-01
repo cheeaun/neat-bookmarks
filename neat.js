@@ -187,7 +187,7 @@
 				}, 1);
 				setTimeout(function(){
 					localStorage.removeItem('focusID');
-				}, 2000);
+				}, 4000);
 			}
 		}
 		
