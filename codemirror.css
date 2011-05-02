@@ -1,55 +1,66 @@
-html {
-  cursor: text;
+.CodeMirror {
+  overflow: auto;
+  min-height: 200px;
+  line-height: 1em;
+  font-family: monospace;
 }
 
-.editbox {
-  margin: .4em;
-  padding: 0;
-  font-family: Monaco, Consolas, Courier New, Courier, monospace;
-  font-size: 10pt;
-  color: black;
+.CodeMirror-gutter {
+  position: absolute; left: 0; top: 0;
+  background-color: #f7f7f7;
+  border-right: 1px solid #eee;
+  min-width: 2em;
+  height: 100%;
+}
+.CodeMirror-gutter-text {
+  color: #aaa;
+  text-align: right;
+  padding: .4em .2em .4em .4em;
+}
+.CodeMirror-lines {
+  padding: .4em;
 }
 
-pre.code, .editbox {
-  color: #666;
+.CodeMirror pre {
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  border-width: 0; margin: 0; padding: 0; background: transparent;
+  font-family: inherit;
 }
 
-.editbox p {
-  margin: 0;
+.CodeMirror textarea {
+  font-family: monospace !important;
 }
 
-span.css-at {
-  color: #708;
+.CodeMirror-cursor {
+  z-index: 10;
+  position: absolute;
+  visibility: hidden;
+  border-left: 1px solid black !important;
+}
+.CodeMirror-focused .CodeMirror-cursor {
+  visibility: visible;
 }
 
-span.css-unit {
-  color: #281;
+span.CodeMirror-selected {
+  background: #ccc !important;
+  color: HighlightText !important;
+}
+.CodeMirror-focused span.CodeMirror-selected {
+  background: Highlight !important;
 }
 
-span.css-value {
-  color: #708;
-}
+.CodeMirror-matchingbracket {color: #0f0 !important;}
+.CodeMirror-nonmatchingbracket {color: #f22 !important;}
 
-span.css-identifier {
-  color: black;
-}
-
-span.css-selector {
-  color: #11B;
-}
-
-span.css-important {
-  color: #00F;
-}
-
-span.css-colorcode {
-  color: #299;
-}
-
-span.css-comment {
-  color: #A70;
-}
-
-span.css-string {
-  color: #A22;
-}
+span.css-at {color: #708;}
+span.css-unit {color: #281;}
+span.css-value {color: #708;}
+span.css-identifier {color: black;}
+span.css-selector {color: #11B;}
+span.css-important {color: #00F;}
+span.css-colorcode {color: #299;}
+span.css-comment {color: #A70;}
+span.css-string {color: #A22;}

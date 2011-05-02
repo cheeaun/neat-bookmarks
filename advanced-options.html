@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="options.css">
+<link rel="stylesheet" href="codemirror.css">
 <script src="neatools.js"></script>
 <script src="codemirror.js"></script>
 <script>
@@ -62,16 +63,11 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	var textareaUserstyle = $('userstyle');
 	if (localStorage.userstyle) textareaUserstyle.value = localStorage.userstyle;
-	
-	var codeArea = CodeMirror.fromTextArea('userstyle', {
-		basefiles: 'codemirror-base.js',
-		stylesheet: 'codemirror.css',
-		width: '40em'
+	CodeMirror.fromTextArea(textareaUserstyle, {
+		onChange: function(c){
+			localStorage.userstyle = c.getValue();
+		}
 	});
-	codeArea.frame.contentWindow.onblur = function(){
-		var code = codeArea.editor.getCode();
-		localStorage.userstyle = code;
-	};
 });
 </script>
 <h1><img src="icon32.png" width="32" height="32" alt=""> <script>__m('extName')</script> <small><script>__m('advancedOptions')</script></small></h1>
