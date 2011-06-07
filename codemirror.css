@@ -1,8 +1,13 @@
 .CodeMirror {
-  overflow: auto;
-  min-height: 200px;
   line-height: 1em;
   font-family: monospace;
+}
+
+.CodeMirror-scroll {
+  min-height: 200px;
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
 }
 
 .CodeMirror-gutter {
@@ -28,10 +33,15 @@
   border-radius: 0;
   border-width: 0; margin: 0; padding: 0; background: transparent;
   font-family: inherit;
+  font-size: inherit;
+  padding: 0; margin: 0;
+  white-space: pre;
+  word-wrap: normal;
 }
 
 .CodeMirror textarea {
-  font-family: monospace !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
 }
 
 .CodeMirror-cursor {
@@ -55,12 +65,21 @@ span.CodeMirror-selected {
 .CodeMirror-matchingbracket {color: #0f0 !important;}
 .CodeMirror-nonmatchingbracket {color: #f22 !important;}
 
-span.css-at {color: #708;}
-span.css-unit {color: #281;}
-span.css-value {color: #708;}
-span.css-identifier {color: black;}
-span.css-selector {color: #11B;}
-span.css-important {color: #00F;}
-span.css-colorcode {color: #299;}
-span.css-comment {color: #A70;}
-span.css-string {color: #A22;}
+.cm-s-default span.cm-keyword {color: #708;}
+.cm-s-default span.cm-atom {color: #219;}
+.cm-s-default span.cm-number {color: #164;}
+.cm-s-default span.cm-def {color: #00f;}
+.cm-s-default span.cm-variable {color: black;}
+.cm-s-default span.cm-variable-2 {color: #05a;}
+.cm-s-default span.cm-variable-3 {color: #0a5;}
+.cm-s-default span.cm-property {color: black;}
+.cm-s-default span.cm-operator {color: black;}
+.cm-s-default span.cm-comment {color: #a50;}
+.cm-s-default span.cm-string {color: #a11;}
+.cm-s-default span.cm-meta {color: #555;}
+.cm-s-default span.cm-error {color: #f00;}
+.cm-s-default span.cm-qualifier {color: #555;}
+.cm-s-default span.cm-builtin {color: #30a;}
+.cm-s-default span.cm-bracket {color: #cc7;}
+.cm-s-default span.cm-tag {color: #170;}
+.cm-s-default span.cm-attribute {color: #00c;}
