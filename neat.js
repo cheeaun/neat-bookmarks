@@ -455,7 +455,7 @@
 		openBookmark: function(url){
 			chrome.tabs.getSelected(null, function(tab){
 				chrome.tabs.update(tab.id, {
-					url: url
+					url: decodeURIComponent(url)
 				});
 				if (!bookmarkClickStayOpen) setTimeout(window.close, 200);
 			});
