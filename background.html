@@ -98,7 +98,8 @@ if (chrome.omnibox){
 		var url = (text == omniboxValue) ? firstResult.url : text;
 		chrome.tabs.getSelected(null, function(tab){
 			chrome.tabs.update(tab.id, {
-				url: url
+				url: url,
+				selected: true
 			});
 		});
 	});
