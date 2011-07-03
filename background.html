@@ -105,27 +105,6 @@ if (chrome.omnibox){
 	});
 }
 
-if (/chrome\/8\./i(navigator.userAgent)){
-	chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-		if (request.command == 'openAllBookmarksInNewWindow'){
-			var urls = request.data;
-			chrome.windows.create({
-				url: urls.shift(),
-				incognito: request.incognito
-			}, function(w){
-				var id = w.id;
-				for (var i=0, l=urls.length; i<l; i++){
-					chrome.tabs.create({
-						windowId: id,
-						url: urls[i],
-						selected: false
-					});
-				}
-			});
-		}
-	});
-}
-
 if (localStorage.customIcon){
 	var canvas = document.createElement('canvas');
 	var ctx = canvas.getContext('2d');

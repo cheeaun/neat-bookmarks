@@ -520,18 +520,10 @@
 		openBookmarksNewWindow: function(urls, incognito){
 			var urlsLen = urls.length;
 			var open = function(){
-				if (version.major >= 9){
-					chrome.windows.create({
-						url: urls,
-						incognito: incognito
-					});
-				} else {
-					chrome.extension.sendRequest({
-						command: 'openAllBookmarksInNewWindow',
-						data: urls,
-						incognito: incognito
-					});
-				}
+				chrome.windows.create({
+					url: urls,
+					incognito: incognito
+				});
 			};
 			if (!dontConfirmOpenFolder && urlsLen > openBookmarksLimit){
 				var dialog = incognito ? _m('confirmOpenBookmarksNewIncognitoWindow', ''+urlsLen) : _m('confirmOpenBookmarksNewWindow', ''+urlsLen);
