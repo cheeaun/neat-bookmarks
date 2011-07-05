@@ -638,9 +638,14 @@
 	
 	var middleClickBgTab = !!localStorage.middleClickBgTab;
 	var leftClickNewTab = !!localStorage.leftClickNewTab;
+	var noOpenBookmark = false;
 	var bookmarkHandler = function(e){
 		e.preventDefault();
 		if (e.button != 0) return; // force left-click
+		if (noOpenBookmark){ // flag that disables opening bookmark
+			noOpenBookmark = false;
+			return;
+		}
 		var el = e.target;
 		var ctrlMeta = (e.ctrlKey || e.metaKey);
 		var shift = e.shiftKey;
@@ -1144,6 +1149,7 @@
 	
 	// Drag and drop, baby
 	var draggedBookmark = null;
+	var draggedOut = false;
 	var canDrop = false;
 	var zoomLevel = 1;
 	var bookmarkClone = $('bookmark-clone');
@@ -1155,6 +1161,7 @@
 		// can move any bookmarks/folders except the default root folders
 		if ((el.tagName == 'A' && elParent.hasClass('child')) || (el.tagName == 'SPAN' && elParent.hasClass('parent') && elParent.dataset.parentid != '0')){
 			e.preventDefault();
+			draggedOut = false;
 			draggedBookmark = el;
 			if (localStorage.zoom) zoomLevel = localStorage.zoom.toInt()/100;
 			bookmarkClone.innerHTML = el.innerHTML;
@@ -1179,6 +1186,7 @@
 			canDrop = false;
 			return;
 		}
+		draggedOut = true;
 		// if hovering over the dragged element itself or cursor move outside the tree
 		var treeTop = $tree.offsetTop, treeBottom = window.innerHeight;
 		if (clientX < 0 || clientY < treeTop || clientX > $tree.offsetWidth || clientY > treeBottom){
@@ -1267,6 +1275,8 @@
 		if (!draggedBookmark) return;
 		stopScrollTree();
 		if (!canDrop){
+			if (draggedOut) noOpenBookmark = true;
+			draggedOut = false;
 			onDrop();
 			return;
 		};
