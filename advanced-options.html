@@ -71,6 +71,12 @@ document.addEventListener('DOMContentLoaded', function(){
 			localStorage.userstyle = c.getValue();
 		}
 	});
+	
+	$('reset-button').addEventListener('click', function(){
+		localStorage.clear();
+		alert('Neat Bookmarks has been reset.');
+		location.reload();
+	}, false);
 });
 </script>
 <h1><img src="icon32.png" width="32" height="32" alt=""> <script>__m('extName')</script> <small><script>__m('advancedOptions')</script></small></h1>
@@ -86,6 +92,10 @@ document.addEventListener('DOMContentLoaded', function(){
 <legend>Custom styles</legend>
 <p>This requires some CSS skillz. Hack at your own risk. Code sharing would be wise done via <a href="http://gist.github.com/">GitHub Gist</a>.</p>
 <textarea id="userstyle"></textarea>
+</fieldset>
+<fieldset>
+<legend>Reset settings</legend>
+<div>Reset Neat Bookmarks to default settings. <button id="reset-button">Reset</button></div>
 </fieldset>
 <div id="footer">
 <script>__m('optionsFooterText', '<a href="http://twitter.com/cheeaun">Lim Chee Aun</a>')</script>
