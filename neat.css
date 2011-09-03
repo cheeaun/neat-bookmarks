@@ -120,8 +120,7 @@ body.linux input{
 	border-color: transparent transparent transparent #84919f;
 	border-style: solid;
 	margin: 0 4px;
-	-webkit-transition-property: -webkit-transform;
-	-webkit-transition-duration: .15s;
+	-webkit-transition: -webkit-transform .15s;
 }
 .chrome-536 #tree ul li span .twisty{ /* Chrome build 536 dev bug */
 	-webkit-transition-duration: 0s;
@@ -250,8 +249,7 @@ menu[type=context] command:focus{
 }
 
 menu[type=context]{
-	-webkit-transition-property: opacity;
-	-webkit-transition-duration: .3s;
+	-webkit-transition: opacity .3s;
 	opacity: 0;
 	margin: 0;
 	padding: 5px 0;
@@ -316,8 +314,7 @@ menu[type=context].hide-editables #folder-delete{
 	background-color: rgba(255,255,255,.5);
 }
 .transitional #cover{
-	-webkit-transition-property: opacity;
-	-webkit-transition-duration: .3s;
+	-webkit-transition: opacity .3s;
 }
 .needAlert #cover,
 .needConfirm #cover,
