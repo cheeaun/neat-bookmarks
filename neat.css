@@ -121,6 +121,7 @@ body.linux input{
 	border-style: solid;
 	margin: 0 4px;
 	-webkit-transition: -webkit-transform .15s;
+	-webkit-transform: scaleX(.99);
 }
 .chrome-536 #tree ul li span .twisty{ /* Chrome build 536 dev bug */
 	-webkit-transition-duration: 0s;
