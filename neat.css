@@ -319,6 +319,7 @@ menu[type=context].hide-editables #folder-delete{
 	-webkit-transition-property: opacity;
 	-webkit-transition-duration: .3s;
 }
+.needAlert #cover,
 .needConfirm #cover,
 .needEdit #cover{
 	left: 0;
@@ -343,11 +344,12 @@ menu[type=context].hide-editables #folder-delete{
 }
 .dialog-text{
 	padding: 0;
-	margin: 0 0 1em;
+	margin: 0;
 	line-height: 1.4em;
 	font-size: 110%;
 }
 .dialog .buttons{
+	margin: 1em 0 0;
 	text-align: __MSG_@@bidi_end_edge__;
 }
 .dialog .buttons button{
@@ -375,10 +377,14 @@ menu[type=context].hide-editables #folder-delete{
 #edit-dialog input:invalid{
 	outline-color: red;
 }
+#edit-dialog .buttons{
+	margin: 0;
+}
 #edit-dialog .buttons button{
 	font-weight: bold;
 }
 
+.needAlert #alert-dialog,
 .needConfirm #confirm-dialog,
 .needEdit #edit-dialog{
 	top: 0;

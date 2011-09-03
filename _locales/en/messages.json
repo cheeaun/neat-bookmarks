@@ -141,6 +141,9 @@
 	"errorOccured": {
 		"message": "Oops, an error occured."
 	},
+	"reportedToDeveloper": {
+		"message": "This has been reported to the developer."
+	},
 	"reportError": {
 		"message": "Report Error"
 	},

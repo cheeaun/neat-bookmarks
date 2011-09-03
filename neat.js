@@ -4,36 +4,28 @@
 	var localStorage = window.localStorage;
 	var navigator = window.navigator;
 	var body = document.body;
+	var _m = chrome.i18n.getMessage;
 	
-	// Confirm dialog
-	var ConfirmDialog = window.ConfirmDialog = {
-		
-		open: function(opts){
-			if (!opts) return;
-			$('confirm-dialog-text').innerHTML = opts.dialog.widont();
-			$('confirm-dialog-button-1').innerHTML = opts.button1;
-			$('confirm-dialog-button-2').innerHTML = opts.button2;
-			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
-			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
-			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
-			body.addClass('needConfirm');
+	// Error alert
+	var AlertDialog = {
+		open: function(dialog){
+			if (!dialog) return;
+			$('alert-dialog-text').innerHTML = dialog;
+			body.addClass('needAlert');
 		},
-		
 		close: function(){
-			body.removeClass('needConfirm');
-		},
-		
-		fn1: function(){},
-		
-		fn2: function(){}
-		
+			body.removeClass('needAlert');
+		}
 	};
+	window.addEventListener('error', function(){
+		AlertDialog.open('<strong>' + _m('errorOccured') + '</strong><br>' + _m('reportedToDeveloper'));
+	}, false);
 	
-	try {
-	
+	// Platform detection
 	var os = (navigator.platform.toLowerCase().match(/mac|win|linux/i) || ['other'])[0];
 	body.addClass(os);
 	
+	// Chrome version detection
 	var version = (function(){
 		var v = {};
 		var keys = ['major', 'minor', 'build', 'patch'];
@@ -46,7 +38,6 @@
 	})();
 	
 	// Some i18n
-	var _m = chrome.i18n.getMessage;
 	$('search-input').placeholder = _m('searchBookmarks');
 	$('edit-dialog-name').placeholder = _m('name');
 	$('edit-dialog-url').placeholder = _m('url');
@@ -404,9 +395,27 @@
 	$tree.addEventListener('click', resetHeight);
 	$tree.addEventListener('keyup', resetHeight);
 	
+	// Confirm dialog
+	var ConfirmDialog = {
+		open: function(opts){
+			if (!opts) return;
+			$('confirm-dialog-text').innerHTML = opts.dialog.widont();
+			$('confirm-dialog-button-1').innerHTML = opts.button1;
+			$('confirm-dialog-button-2').innerHTML = opts.button2;
+			if (opts.fn1) ConfirmDialog.fn1 = opts.fn1;
+			if (opts.fn2) ConfirmDialog.fn2 = opts.fn2;
+			$('confirm-dialog-button-' + (opts.focusButton || 1)).focus();
+			document.body.addClass('needConfirm');
+		},
+		close: function(){
+			document.body.removeClass('needConfirm');
+		},
+		fn1: function(){},
+		fn2: function(){}
+	};
+	
 	// Edit dialog
 	var EditDialog = window.EditDialog = {
-		
 		open: function(opts){
 			if (!opts) return;
 			$('edit-dialog-text').innerHTML = opts.dialog.widont();
@@ -429,7 +438,6 @@
 			}
 			body.addClass('needEdit');
 		},
-		
 		close: function(){
 			var urlInput = $('edit-dialog-url');
 			var url = urlInput.value;
@@ -441,9 +449,7 @@
 			EditDialog.fn($('edit-dialog-name').value, url);
 			body.removeClass('needEdit');
 		},
-		
 		fn: function(){}
-		
 	};
 	
 	// Bookmark handling
@@ -1399,9 +1405,10 @@
 	var closeDialogs = function(){
 			if (body.hasClass('needConfirm')) ConfirmDialog.fn2(); ConfirmDialog.close();
 			if (body.hasClass('needEdit')) EditDialog.close();
+			if (body.hasClass('needAlert')) AlertDialog.close();
 	};
 	document.addEventListener('keydown', function(e){
-		if (e.keyCode == 27 && (body.hasClass('needConfirm') || body.hasClass('needEdit'))){ // esc
+		if (e.keyCode == 27 && (body.hasClass('needConfirm') || body.hasClass('needEdit') || body.hasClass('needAlert'))){ // esc
 			e.preventDefault();
 			closeDialogs();
 		} else if ((e.metaKey || e.ctrlKey) && e.keyCode == 70){ // cmd/ctrl + f
@@ -1467,20 +1474,6 @@
 		var top = body.scrollTop;
 		if (top != 0) body.scrollTop = 0;
 	}, 1500);
-	
-	} catch(e){
-		var _m = chrome.i18n.getMessage;
-		ConfirmDialog.open({
-			dialog: '<strong>' + _m('errorOccured') + '</strong><pre>' + e + '</pre>',
-			button1: '<strong>' + _m('reportError') + '</strong>',
-			button2: _m('ignore'),
-			fn1: function(){
-				chrome.tabs.create({
-					url: 'https://chrome.google.com/webstore/detail/nnancliccjabjjmipbpjkfbijifaainp'
-				});
-			}
-		});
-	}
 	
 	if (localStorage.userstyle){
 		var style = document.createElement('style');

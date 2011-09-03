@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="options.css">
+<script>
+onerror = function(){chrome.extension.sendRequest({error: [].slice.call(arguments)}) };
+</script>
 <script src="neatools.js"></script>
 <script>
 var _m = chrome.i18n.getMessage;
