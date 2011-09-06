@@ -142,7 +142,8 @@
 		"message": "Oops, an error occured."
 	},
 	"reportedToDeveloper": {
-		"message": "This has been reported to the developer."
+		"message": "This has been reported to the developer.",
+		"description": "A message for an error occured in the extension, has been reported to the developer."
 	},
 	"reportError": {
 		"message": "Report Error"
