@@ -1,3 +1,5 @@
+﻿**Note**: Neat Bookmarks has been sold and I'm no longer the owner of the extension.
+
 Neat Bookmarks
 ==============
 
