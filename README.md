@@ -1,4 +1,6 @@
-﻿**Notice: Neat Bookmarks has been sold and I'm no longer the owner of the extension.**
+**Notice: Neat Bookmarks has been sold and I'm no longer the owner of the extension.**
+
+Try [Neater Bookmarks](https://chrome.google.com/webstore/detail/neater-bookmarks/ofgjggbjanlhbgaemjbkiegeebmccifi/) instead.
 
 Neat Bookmarks
 ==============
